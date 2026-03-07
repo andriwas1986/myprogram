@@ -91,19 +91,27 @@
             <div class="flex flex-wrap items-center justify-between gap-4 mb-4 p-4 bg-tertiary rounded-lg">
                 <div class="flex flex-wrap items-center gap-4">
                     <input type="text" id="search-transkrip-siswa-input" placeholder="Cari nama atau nosis..." class="bg-input border-main text-main text-sm rounded-lg p-2.5 w-48">
+                    
+                    <select id="sort-transkrip-siswa-select" class="bg-input border-main text-main text-sm rounded-lg p-2.5">
+                        <option value="nosis_asc">Urut Nosis (Awal - Akhir)</option>
+                        <option value="nosis_desc">Urut Nosis (Akhir - Awal)</option>
+                        <option value="nama_asc">Urut Nama (A - Z)</option>
+                        <option value="nama_desc">Urut Nama (Z - A)</option>
+                        <option value="rank_asc">Urut Peringkat (1 - Terakhir)</option>
+                    </select>
                 </div>
                 <div class="flex items-center gap-2">
-					<button id="btn-export-transkrip-excel" class="bg-gray-600 text-white py-2 px-3 rounded-lg hover:bg-gray-700 text-sm flex items-center shadow">
-						<i class="fas fa-file-export mr-2"></i> Ekspor
-					</button>
-					
-					<button id="btn-import-transkrip-excel" class="bg-green-600 text-white py-2 px-3 rounded-lg hover:bg-green-700 text-sm flex items-center shadow">
-						<i class="fas fa-file-import mr-2"></i> Impor
-					</button>
-					<button id="btn-print-all-transcripts" class="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 text-sm flex items-center shadow">
-						<i class="fas fa-print mr-2"></i> Cetak Semua Transkrip
-					</button>
-				</div>
+                    <button id="btn-export-transkrip-excel" class="bg-gray-600 text-white py-2 px-3 rounded-lg hover:bg-gray-700 text-sm flex items-center shadow">
+                        <i class="fas fa-file-export mr-2"></i> Ekspor
+                    </button>
+                    
+                    <button id="btn-import-transkrip-excel" class="bg-green-600 text-white py-2 px-3 rounded-lg hover:bg-green-700 text-sm flex items-center shadow">
+                        <i class="fas fa-file-import mr-2"></i> Impor
+                    </button>
+                    <button id="btn-print-all-transcripts" class="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 text-sm flex items-center shadow">
+                        <i class="fas fa-print mr-2"></i> Cetak Semua Transkrip
+                    </button>
+                </div>
             </div>
             <div class="overflow-x-auto">
                 <table class="w-full text-sm text-left">

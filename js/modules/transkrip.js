@@ -10,6 +10,7 @@ let localTahunAjaran = [];
 let localSettings = {}; 
 let currentUser = {};
 let selectedTranskripFilters = {};
+let currentTranskripRanks = {}; // [BARU] Menyimpan data peringkat sementara
 const DEFAULT_LOGO_URL = 'https://upload.wikimedia.org/wikipedia/id/thumb/8/88/Logo_Pataka_Korps_Airud.png/375px-Logo_Pataka_Korps_Airud.png';
 
 // --- ELEMEN DOM ---
@@ -260,7 +261,30 @@ const renderTranskripSiswaListView = () => {
         s.detailPendidikan === detail &&
         s.tahunAjaran === parseInt(tahun) &&
         (searchTerm ? s.nama.toLowerCase().includes(searchTerm) || (s.nosis && s.nosis.toLowerCase().includes(searchTerm)) : true)
-    ).sort((a, b) => String(a.nosis || '').localeCompare(String(b.nosis || '')));
+    );
+
+    // [BARU] Ambil nilai dari dropdown sort
+    const sortSelect = document.getElementById('sort-transkrip-siswa-select');
+    const sortValue = sortSelect ? sortSelect.value : 'nosis_asc';
+
+    // [BARU] Lakukan pengurutan berdasarkan pilihan
+    filteredSiswa.sort((a, b) => {
+        if (sortValue === 'nosis_asc') {
+            return String(a.nosis || '').localeCompare(String(b.nosis || ''));
+        } else if (sortValue === 'nosis_desc') {
+            return String(b.nosis || '').localeCompare(String(a.nosis || ''));
+        } else if (sortValue === 'nama_asc') {
+            return String(a.nama || '').localeCompare(String(b.nama || ''));
+        } else if (sortValue === 'nama_desc') {
+            return String(b.nama || '').localeCompare(String(a.nama || ''));
+        } else if (sortValue === 'rank_asc') {
+            // Urutkan peringkat, jika belum ada nilainya taruh di urutan terbawah
+            const rankA = currentTranskripRanks[a.id] || 999999;
+            const rankB = currentTranskripRanks[b.id] || 999999;
+            return rankA - rankB; 
+        }
+        return 0;
+    });
 
     const totalItems = filteredSiswa.length;
     const totalPages = Math.ceil(totalItems / TRANSKRIP_ROWS_PER_PAGE);
@@ -1181,7 +1205,25 @@ export const initTranskripModule = async (studentsData, mapelsData, taData, sett
                         titleTranskrip.textContent = `${displayDetail} (TA ${selectedTranskripFilters.tahun})`.toUpperCase();
                         
                         transkripCurrentPage = 1;
-                        renderTranskripSiswaListView();
+
+                        // [BARU] Hitung peringkat dulu sebelum me-render tabel
+                        showLoading('Memuat daftar siswa & peringkat...');
+                        const studentGroup = localStudents.filter(s =>
+                            s.kategori === selectedTranskripFilters.kategori &&
+                            s.detailPendidikan === selectedTranskripFilters.detail &&
+                            s.tahunAjaran === parseInt(selectedTranskripFilters.tahun)
+                        );
+                        
+                        calculateAllStudentRanks(studentGroup).then(ranks => {
+                            currentTranskripRanks = ranks;
+                            hideLoading();
+                            renderTranskripSiswaListView();
+                        }).catch(err => {
+                            console.error("Gagal menghitung peringkat", err);
+                            currentTranskripRanks = {};
+                            hideLoading();
+                            renderTranskripSiswaListView();
+                        });
                     }
                     else if (viewBtn) {
                         openTranskripModal(viewBtn.dataset.id);
@@ -1207,6 +1249,15 @@ export const initTranskripModule = async (studentsData, mapelsData, taData, sett
             if (searchTranskripInput) {
                 searchTranskripInput.addEventListener('input', () => {
                     transkripCurrentPage = 1;
+                    renderTranskripSiswaListView();
+                });
+            }
+
+            // [BARU] Event Listener untuk Dropdown Sort
+            const sortSelect = document.getElementById('sort-transkrip-siswa-select');
+            if (sortSelect) {
+                sortSelect.addEventListener('change', () => {
+                    transkripCurrentPage = 1; // reset ke halaman 1
                     renderTranskripSiswaListView();
                 });
             }
