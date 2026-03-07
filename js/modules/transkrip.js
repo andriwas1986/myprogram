@@ -303,8 +303,8 @@ const renderTranskripSiswaListView = () => {
         const row = document.createElement('tr');
         row.className = 'border-b border-main hover:bg-tertiary';
         
-        let detailPendidikanDisplay = siswa.detailPendidikan;
-        if(detailPendidikanDisplay === '-' || !detailPendidikanDisplay) detailPendidikanDisplay = "";
+        // [BARU] Ambil data peringkat dari variabel state yang sudah dihitung
+        const peringkat = currentTranskripRanks[siswa.id] || '-';
 
         row.innerHTML = `
             <td class="p-3 text-center">${startIndex + index + 1}</td>
@@ -312,7 +312,9 @@ const renderTranskripSiswaListView = () => {
             <td class="p-3 text-center">${siswa.nosis}</td>
             <td class="p-3 text-center">${siswa.noIjazah || '-'}</td>
             <td class="p-3 text-center">${siswa.noSeri || '-'}</td>
-            <td class="p-3 text-center uppercase text-xs">${siswa.kategori} ${detailPendidikanDisplay}</td>
+            
+            <td class="p-3 text-center font-bold text-blue-600">${peringkat}</td>
+            
             <td class="p-3 text-center whitespace-nowrap">
                 <button class="bg-green-600 text-white text-xs py-1 px-3 rounded-md hover:bg-green-700 btn-lihat-transkrip" data-id="${siswa.id}">
                     <i class="fas fa-eye mr-1"></i> Lihat

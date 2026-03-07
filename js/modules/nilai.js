@@ -12,6 +12,10 @@ let selectedNilaiFilters = {};
 let selectedKepribadianFilters = {};
 let selectedJasmaniFilters = {};
 
+// [BARU] State Cache untuk Nilai Akademik & Peringkat
+let currentAkademikScoresCache = {};
+let currentAkademikRanksCache = {};
+
 // --- PAGINATION STATE ---
 const ROWS_PER_CATEGORY_TABLE = 4;
 let categoryPageMap = {
@@ -299,6 +303,42 @@ const renderAkademikPagination = (totalItems, totalPages) => {
     }
 };
 
+// [BARU] Fungsi Menghitung Semua Peringkat Sekaligus 
+const refreshAkademikRanks = async (filters) => {
+    const { kategori, detail, tahun } = filters;
+    const groupStudents = localStudents.filter(s => 
+        s.kategori === kategori && 
+        s.detailPendidikan === detail && 
+        s.tahunAjaran === parseInt(tahun)
+    );
+
+    const allScoresPromises = groupStudents.map(async s => {
+        const scores = await getAcademicScores(s.id);
+        const totalNilai = Object.values(scores).reduce((sum, score) => sum + (parseFloat(score) || 0), 0);
+        return { id: s.id, totalNilai };
+    });
+
+    const studentsWithScores = await Promise.all(allScoresPromises);
+
+    // Sort descending by score
+    studentsWithScores.sort((a, b) => b.totalNilai - a.totalNilai);
+
+    let lastScore = -1;
+    let rank = 0;
+    let rankCounter = 0;
+
+    currentAkademikScoresCache = {};
+    currentAkademikRanksCache = {};
+
+    studentsWithScores.forEach(s => {
+        rankCounter++;
+        if (s.totalNilai !== lastScore) rank = rankCounter;
+        currentAkademikRanksCache[s.id] = rank;
+        currentAkademikScoresCache[s.id] = s.totalNilai;
+        lastScore = s.totalNilai;
+    });
+};
+
 const renderNilaiAkademikSiswaTable = async () => {
     if (!nilaiSiswaTableBody) return;
     
@@ -308,15 +348,19 @@ const renderNilaiAkademikSiswaTable = async () => {
     if (subtitleAkademik) {
         const tahunAjaranData = localTahunAjaran.find(ta => ta.tahun === parseInt(tahun) && ta.pendidikan.some(p => p.jenis === kategori && p.detail === detail));
         const studentCount = localStudents.filter(s => s.kategori === kategori && s.detailPendidikan === detail && s.tahunAjaran === parseInt(tahun)).length;
+        
+        // [UPDATE] Membuat container badge biru dengan teks putih
         subtitleAkademik.innerHTML = `
-            Jumlah Siswa : ${studentCount} &nbsp; | &nbsp;
-            Tanggal Mulai Dik : ${formatDate(tahunAjaranData?.tanggalMulai)} &nbsp; | &nbsp;
-            Tanggal Selesai Dik : ${formatDate(tahunAjaranData?.tanggalBerakhir)}
-            ${!isActive ? '&nbsp; <span class="text-red-500 font-bold">(ARSIP - View Only)</span>' : ''}
+            <div class="inline-block bg-blue-600 text-white text-sm px-4 py-2 rounded-md font-medium shadow mt-2">
+                Jumlah Siswa : ${studentCount} &nbsp; | &nbsp;
+                Tanggal Mulai Dik : ${formatDate(tahunAjaranData?.tanggalMulai)} &nbsp; | &nbsp;
+                Tanggal Selesai Dik : ${formatDate(tahunAjaranData?.tanggalBerakhir)}
+                ${!isActive ? '&nbsp; <span class="text-red-300 font-bold">(ARSIP - View Only)</span>' : ''}
+            </div>
         `;
     }
     
-    const filteredSiswa = localStudents.filter(s =>
+    let filteredSiswa = localStudents.filter(s =>
         s.kategori === kategori &&
         s.detailPendidikan === detail &&
         s.tahunAjaran === parseInt(tahun) &&
@@ -324,7 +368,29 @@ const renderNilaiAkademikSiswaTable = async () => {
         (filterNilaiKompi.value ? s.kompi === filterNilaiKompi.value : true) &&
         (filterNilaiPeleton.value ? s.peleton === filterNilaiPeleton.value : true) &&
         (searchNilaiSiswaInput.value ? s.nama.toLowerCase().includes(searchNilaiSiswaInput.value.toLowerCase()) || (s.nosis && String(s.nosis).includes(searchNilaiSiswaInput.value)) : true)
-    ).sort((a, b) => String(a.nosis || '').localeCompare(String(b.nosis || '')));
+    );
+
+    // [BARU] Ambil nilai dari dropdown sort
+    const sortSelect = document.getElementById('sort-nilai-akademik-select');
+    const sortValue = sortSelect ? sortSelect.value : 'nosis_asc';
+
+    // [BARU] Terapkan Sorting
+    filteredSiswa.sort((a, b) => {
+        if (sortValue === 'nosis_asc') {
+            return String(a.nosis || '').localeCompare(String(b.nosis || ''));
+        } else if (sortValue === 'nosis_desc') {
+            return String(b.nosis || '').localeCompare(String(a.nosis || ''));
+        } else if (sortValue === 'nama_asc') {
+            return String(a.nama || '').localeCompare(String(b.nama || ''));
+        } else if (sortValue === 'nama_desc') {
+            return String(b.nama || '').localeCompare(String(a.nama || ''));
+        } else if (sortValue === 'rank_asc') {
+            const rankA = currentAkademikRanksCache[a.id] || 999999;
+            const rankB = currentAkademikRanksCache[b.id] || 999999;
+            return rankA - rankB; 
+        }
+        return 0;
+    });
 
     const totalItems = filteredSiswa.length;
     const totalPages = Math.ceil(totalItems / AKADEMIK_ROWS_PER_PAGE);
@@ -334,20 +400,16 @@ const renderNilaiAkademikSiswaTable = async () => {
     const endIndex = startIndex + AKADEMIK_ROWS_PER_PAGE;
     const paginatedSiswa = filteredSiswa.slice(startIndex, endIndex);
 
-    nilaiSiswaTableBody.innerHTML = '<tr><td colspan="6" class="text-center p-8"><span class="text-subtle">Menghitung total nilai...</span></td></tr>';
     if (totalItems === 0) {
-        nilaiSiswaTableBody.innerHTML = `<tr><td colspan="6" class="text-center p-4 text-subtle">Tidak ada data siswa yang cocok.</td></tr>`;
+        nilaiSiswaTableBody.innerHTML = `<tr><td colspan="7" class="text-center p-4 text-subtle">Tidak ada data siswa yang cocok.</td></tr>`;
         renderAkademikPagination(0, 1);
         return;
     }
 
-    const allScoresPromises = paginatedSiswa.map(s => getAcademicScores(s.id));
-    const allScoresResults = await Promise.all(allScoresPromises);
-
     nilaiSiswaTableBody.innerHTML = '';
     paginatedSiswa.forEach((siswa, index) => {
-        const scores = allScoresResults[index];
-        const totalNilai = Object.values(scores).reduce((sum, score) => sum + (parseFloat(score) || 0), 0);
+        const totalNilai = currentAkademikScoresCache[siswa.id] || 0;
+        const ranking = currentAkademikRanksCache[siswa.id] || '-';
         const originalIndex = startIndex + index + 1;
 
         const row = document.createElement('tr');
@@ -366,6 +428,7 @@ const renderNilaiAkademikSiswaTable = async () => {
             <td class="p-3 text-center">${siswa.nosis}</td>
             <td class="p-3 text-center uppercase">${siswa.kategori} ${detailPendidikanDisplay}</td>
             <td class="p-3 text-center font-semibold">${totalNilai.toFixed(0)}</td>
+            <td class="p-3 text-center font-bold text-blue-600">${ranking}</td> 
             <td class="p-3 text-center whitespace-nowrap">
                 <button class="bg-green-600 text-white text-xs py-1 px-3 rounded-md hover:bg-green-700 btn-detail-nilai" data-id="${siswa.id}">
                     <i class="fas fa-eye mr-1"></i> Detail
@@ -499,6 +562,10 @@ const handleNilaiAkademikSubmit = async (e) => {
         await saveAcademicScores(siswaId, scores);
         alert('Nilai berhasil disimpan!');
         closeModal('input-nilai-modal');
+        
+        // [UPDATE] Hitung ulang peringkat sebelum render
+        showLoading('Memperbarui peringkat...');
+        await refreshAkademikRanks(selectedNilaiFilters);
         await renderNilaiAkademikSiswaTable();
     } catch (error) {
         console.error("Gagal menyimpan nilai akademik: ", error);
@@ -783,6 +850,9 @@ const importNilaiFromExcel = (type) => {
                 alert(`Berhasil mengimpor dan memproses ${processedCount} dari ${dataRows.length} baris data nilai! Data akan diperbarui secara otomatis.`);
 
                 if (type === 'akademik' && typeof renderNilaiAkademikSiswaTable === 'function') {
+                    // [UPDATE] Hitung ulang Peringkat setelah Impor
+                    showLoading('Memperbarui peringkat...');
+                    await refreshAkademikRanks(selectedNilaiFilters);
                     await renderNilaiAkademikSiswaTable();
                 }
                 if (type === 'kepribadian' && typeof renderNilaiKepribadianSiswaTable === 'function') {
@@ -1529,7 +1599,7 @@ export const initNilaiModule = async (studentsData, mapelsData, taData) => {
             listAkademikView = document.getElementById('nilai-akademik-list-view');
             backButtonAkademik = document.getElementById('btn-back-nilai-akademik');
             titleAkademik = document.getElementById('nilai-akademik-view-title');
-            subtitleAkademik = document.getElementById('nilai-akademik-view-subtitle');
+            subtitleAkademik = document.getElementById('nilai-akademik-subtitle'); // <--- UBAH JADI SEPERTI INI
 
             const containerAkademik = document.getElementById('nilai-akademik-view-container');
 
@@ -1567,6 +1637,12 @@ export const initNilaiModule = async (studentsData, mapelsData, taData) => {
 
                         titleAkademik.textContent = `INPUT NILAI AKADEMIK: ${displayDetail.toUpperCase()} (TA ${selectedNilaiFilters.tahun})`;
                         akademikCurrentPage = 1;
+                        
+                        // [UPDATE] Hitung peringkat saat tombol grup diklik
+                        showLoading('Memuat data dan menghitung peringkat...');
+                        await refreshAkademikRanks(selectedNilaiFilters);
+                        hideLoading();
+                        
                         await renderNilaiAkademikSiswaTable();
                     }
                     else if (inputBtn) {
@@ -1584,6 +1660,10 @@ export const initNilaiModule = async (studentsData, mapelsData, taData) => {
                     backButtonAkademik.classList.add('hidden');
                     titleAkademik.textContent = 'Manajemen Nilai Akademik';
                     if (subtitleAkademik) subtitleAkademik.innerHTML = '';
+                    
+                    // Reset text filter
+                    const searchInput = document.getElementById('search-nilai-siswa-input');
+                    if (searchInput) searchInput.value = '';
                 });
             }
             
@@ -1665,7 +1745,7 @@ export const initNilaiModule = async (studentsData, mapelsData, taData) => {
                                     await updateNilaiInArray(siswaId, 'nilaiKepribadian', parseInt(index), newScore);
                                     hideLoading();
                                 } else {
-                                    alert('Input tidak valid. Harap masukkan angka antara 0 dan 100.');
+                                    alert('Input tidak valid. Harap masukkan angka antara 0 and 100.');
                                 }
                             }
                         }
@@ -1762,6 +1842,16 @@ export const initNilaiModule = async (studentsData, mapelsData, taData) => {
                     renderNilaiAkademikSiswaTable();
                 });
             });
+
+            // [BARU] Event Listener untuk Dropdown Sort Akademik
+            const sortAkademikSelect = document.getElementById('sort-nilai-akademik-select');
+            if (sortAkademikSelect) {
+                sortAkademikSelect.addEventListener('change', () => {
+                    akademikCurrentPage = 1;
+                    renderNilaiAkademikSiswaTable();
+                });
+            }
+
             if(inputNilaiForm) inputNilaiForm.addEventListener('submit', handleNilaiAkademikSubmit);
             
             const paginationContainer = document.getElementById('nilai-akademik-pagination');
@@ -1810,7 +1900,12 @@ export const initNilaiModule = async (studentsData, mapelsData, taData) => {
         renderJasmaniMainView();
 
         if (listAkademikView && !listAkademikView.classList.contains('hidden')) {
-            renderNilaiAkademikSiswaTable();
+            // Kita bungkus pemanggilan ini agar rank terbaru dihitung ulang kalau di-refresh
+            showLoading('Memuat...');
+            refreshAkademikRanks(selectedNilaiFilters).then(() => {
+                hideLoading();
+                renderNilaiAkademikSiswaTable();
+            });
         }
         if (listKepribadianView && !listKepribadianView.classList.contains('hidden')) {
             renderNilaiKepribadianSiswaTable();
