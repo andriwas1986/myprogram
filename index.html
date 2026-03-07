@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+      <!--
+    ################################################################################
+    #                                                                              #
+    #             SISTEM INFORMASI AKADEMIK (SIAP) PUSDIK POLAIR                   #
+    #                                                                              #
+    #   LEAD DEVELOPER : ANDRI WASKITHO ARDI                                       #
+    #   KONTAK         : 08113647707 - HUMAS POLRES MADIUN                         #
+    #                                                                              #
+    #   Modul          : Sistem Akademik Pusdik Polair (Core System)               #
+    #   Deskripsi      : Platform digital terintegrasi yang dirancang untuk        #
+    #                    mengoptimalisasi tata kelola administrasi akademik,       #
+    #                    manajemen data kesiswaan, serta evaluasi pembelajaran     #
+    #                    berbasis data guna mendukung efektivitas, transparansi,   #
+    #                    dan akuntabilitas pendidikan di lingkungan Pusdik Polair. #
+    #                                                                              #
+    ################################################################################
+    -->
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="ANDRI WASKITHO ARDI">
+
+
+    <meta http-equiv="Content-Security-Policy"
+          content="default-src 'self';
+                   script-src 'self' 'unsafe-inline' 
+                             https://cdn.tailwindcss.com 
+                             https://cdnjs.cloudflare.com 
+                             https://cdn.jsdelivr.net 
+                             https://www.gstatic.com 
+                             https://www.google.com 
+                             https://apis.google.com 
+                             https://firebase.googleapis.com
+                             https://sistem-akademik-pusdik-polair-default-rtdb.asia-southeast1.firebasedatabase.app
+                             blob:;
+                   connect-src 'self' 
+                               https://securetoken.googleapis.com 
+                               https://identitytoolkit.googleapis.com 
+                               https://firestore.googleapis.com 
+                               https://www.googleapis.com 
+                               https://firebasestorage.googleapis.com
+                               https://firebase.googleapis.com
+                               https://sistem-akademik-pusdik-polair-default-rtdb.asia-southeast1.firebasedatabase.app
+                               wss://*.firebasedatabase.app 
+                               https://cdn.jsdelivr.net 
+                               https://cdnjs.cloudflare.com 
+                               https://www.google.com 
+                               https://*.gstatic.com 
+                               blob:;
+                   style-src 'self' 'unsafe-inline' 
+                             https://fonts.googleapis.com 
+                             https://cdnjs.cloudflare.com;
+                   font-src 'self' 
+                            https://fonts.gstatic.com 
+                            https://cdnjs.cloudflare.com;
+                   img-src 'self' 
+                           https://akademik.pusdikpolair.my.id 
+                           https://upload.wikimedia.org 
+                           https://ik.imagekit.io 
+                           https://placehold.co 
+                           data: 
+                           blob:;
+                   frame-src 'self' 
+                             https://www.google.com 
+                             https://accounts.google.com
+                             https://www.youtube.com 
+                             https://akademik.pusdikpolair.my.id 
+                             blob:;
+                   object-src 'self' https://akademik.pusdikpolair.my.id;">
+    <title>SIAP - Sistem Akademik Pusdik Polair</title>
+
+    <link rel="icon" type="image/png" href="https://upload.wikimedia.org/wikipedia/id/thumb/8/88/Logo_Pataka_Korps_Airud.png/375px-Logo_Pataka_Korps_Airud.png">
+    
+     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image-more/2.9.5/dom-to-image-more.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="theme-light">
+
+    <div id="loading-overlay" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex flex-col items-center justify-center z-50">
+        <svg class="animate-spin h-8 w-8 text-white mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        <div id="loading-text" class="text-white text-xl">Memuat aplikasi...</div>
+    </div>
+
+    <div id="login-container" class="flex items-center justify-center h-screen bg-cover bg-center" style="background-image: url('https://ik.imagekit.io/d3nxlzdjsu/pusdik-polair1.jpg?updatedAt=1755396252304');">
+        <div class="absolute inset-0 bg-black/40"></div>
+        <div id="login-selection" class="w-full max-w-md p-8 space-y-4 bg-gray-800 rounded-lg shadow-lg z-10 bg-opacity-80 backdrop-blur-sm">
+             <div class="text-center">
+                 <img src="https://upload.wikimedia.org/wikipedia/id/thumb/8/88/Logo_Pataka_Korps_Airud.png/375px-Logo_Pataka_Korps_Airud.png" alt="Logo Aplikasi" class="w-20 h-20 mx-auto mb-4">
+                <h1 class="text-2xl font-bold text-white">SIAP</h1>
+                <p class="text-gray-300">Sistem Akademik Pusdik Polair</p>
+            </div>
+            <h2 class="text-xl font-bold text-center text-white">Login Sebagai</h2>
+            <button data-role="siswa" class="login-role-btn w-full py-2.5 px-4 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700">Siswa</button>
+            <button data-role="gadik" class="login-role-btn w-full py-2.5 px-4 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700">Gadik</button>
+            <button data-role="admin_staff" class="login-role-btn w-full py-2.5 px-4 text-sm font-medium text-white bg-gray-600 rounded-lg hover:bg-gray-700">Operator</button>
+            <div class="pt-2 border-t border-gray-600 mt-2">
+                <button id="btn-menu-alumni" class="w-full py-2.5 px-4 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 transition-colors">
+                    <i class="fas fa-user-graduate mr-2"></i>Portal Alumni
+                </button>
+            </div>
+        </div>
+
+        <div id="login-form-container" class="w-full max-w-md p-8 space-y-8 bg-gray-800 rounded-lg shadow-lg z-10 bg-opacity-80 backdrop-blur-sm hidden">
+             <button id="back-to-selection-btn" class="text-sm text-blue-400 hover:underline">&larr; Kembali</button>
+            <h2 id="login-form-title" class="text-2xl font-bold text-center text-white">Login</h2>
+            <form id="login-form" class="space-y-6" method="POST">
+                 <div id="pendidikan-wrapper" style="display: none;">
+                    <label for="login-pendidikan" class="block mb-2 text-sm font-medium text-gray-300">Pilih Pendidikan Aktif</label>
+                    <select id="login-pendidikan" class="bg-gray-700 border border-gray-600 text-white text-sm rounded-lg block w-full p-2.5">
+                    </select>
+                </div>
+                <div>
+                    <label for="login-id" class="block mb-2 text-sm font-medium text-gray-300">Username</label>
+                    <input type="text" id="login-id" class="bg-gray-700 border border-gray-600 text-white text-sm rounded-lg block w-full p-2.5" required>
+                </div>
+                <div>
+                    <label for="login-password" class="block mb-2 text-sm font-medium text-gray-300">Password</label>
+                    <input type="password" id="login-password" class="bg-gray-700 border border-gray-600 text-white text-sm rounded-lg block w-full p-2.5" required>
+                </div>
+                <div class="flex items-center">
+                    <input id="remember-me" type="checkbox" value="" class="w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-600 ring-offset-gray-800 focus:ring-2">
+                    <label for="remember-me" class="ml-2 text-sm font-medium text-gray-300">Ingat Saya</label>
+                </div>
+                
+                <div id="verification-widget-container" class="py-2 flex justify-center">
+                    </div>
+
+                <button id="login-submit-btn" type="submit" class="w-full py-2.5 px-4 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-800">Login</button>
+            </form>
+        </div>
+
+        <div id="alumni-login-container" class="w-full max-w-md p-8 space-y-6 bg-gray-800 rounded-lg shadow-lg z-10 bg-opacity-80 backdrop-blur-sm hidden">
+            
+            <div class="text-center relative">
+                <button id="back-to-selection-alumni-btn" class="absolute left-0 top-1 text-sm text-blue-400 hover:underline">
+                    <i class="fas fa-arrow-left"></i> Kembali
+                </button>
+                <h2 class="text-2xl font-bold text-white">Portal Alumni</h2>
+                <p class="text-gray-300 text-xs mt-1">Verifikasi Data Lulusan</p>
+            </div>
+
+            <form id="alumni-step-1" class="space-y-5 animate-fade-in">
+                <div class="bg-blue-900/40 p-3 rounded border border-blue-500/30 text-xs text-blue-200">
+                    <i class="fas fa-info-circle mr-1"></i> Masukkan identitas pendidikan Anda.
+                </div>
+
+                <div>
+                    <label class="block mb-1 text-sm font-medium text-gray-300">Nomor Siswa (NOSIS)</label>
+                    <input type="text" id="alumni-nosis" class="bg-gray-700 border border-gray-600 text-white text-sm rounded-lg block w-full p-2.5 focus:ring-blue-500 focus:border-blue-500" placeholder="Masukkan Nomor Siswa" required>
+                </div>
+                <div>
+                    <label class="block mb-1 text-sm font-medium text-gray-300">NRP</label>
+                    <input type="text" id="alumni-nrp" class="bg-gray-700 border border-gray-600 text-white text-sm rounded-lg block w-full p-2.5 focus:ring-blue-500 focus:border-blue-500" placeholder="Masukkan NRP" required>
+                </div>
+
+                <div>
+                    <label class="block mb-2 text-sm font-medium text-gray-300">Kode Keamanan</label>
+                    <div class="flex items-center space-x-3">
+                        <div class="bg-gray-600 border border-gray-500 text-white text-lg font-bold rounded px-4 py-2 select-none tracking-widest min-w-[100px] text-center" id="math-question">
+                            ...
+                        </div>
+                        <input type="number" id="math-answer" class="bg-gray-700 border border-gray-600 text-white text-sm rounded-lg block w-full p-2.5 text-center font-bold" placeholder="Hasil?" required>
+                        <button type="button" id="refresh-captcha" class="text-gray-400 hover:text-white transition-colors" title="Ganti Soal">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full py-2.5 px-4 text-sm font-bold text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-all transform hover:scale-[1.02] shadow-lg">
+                    Lanjut Verifikasi <i class="fas fa-arrow-right ml-2"></i>
+                </button>
+            </form>
+
+            <form id="alumni-step-2" class="space-y-6 hidden animate-fade-in">
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-green-900/50 rounded-full flex items-center justify-center mx-auto mb-3 border-2 border-green-500">
+                        <i class="fas fa-user-check text-2xl text-green-400"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white">Data Ditemukan!</h3>
+                    <p class="text-sm text-gray-300 mb-4">Atas nama: <span id="verify-name" class="font-bold text-yellow-400">...</span></p>
+                </div>
+
+                <div class="bg-yellow-900/40 p-3 rounded border border-yellow-600/30 text-xs text-yellow-200">
+                    <i class="fas fa-lock mr-1"></i> <b>Autentikasi Terakhir:</b><br>
+                    Masukkan <b>Nomor Telepon</b> yang terdaftar pada sistem untuk membuktikan kepemilikan akun.
+                </div>
+
+                <div>
+                    <label class="block mb-1 text-sm font-medium text-gray-300">Nomor Telepon</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-phone text-gray-400"></i>
+                        </div>
+                        <input type="text" id="alumni-phone-auth" class="bg-gray-700 border border-gray-600 text-white text-sm rounded-lg block w-full pl-10 p-2.5 focus:ring-green-500 focus:border-green-500" placeholder="08..." required>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full py-2.5 px-4 text-sm font-bold text-white bg-green-600 rounded-lg hover:bg-green-700 transition-all transform hover:scale-[1.02] shadow-lg">
+                    Masuk Sekarang <i class="fas fa-sign-in-alt ml-2"></i>
+                </button>
+                
+                <button type="button" id="btn-cancel-step-2" class="w-full text-xs text-gray-400 hover:text-white underline text-center">
+                    Bukan akun Anda? Batalkan
+                </button>
+            </form>
+
+        </div>
+
+        <div class="absolute bottom-0 left-0 right-0 running-text-container" style="padding: 0.75rem; background-color: rgba(0,0,0,0.6);">
+            <div class="running-text-content">
+                &copy; 2025 Pusdik Polair. All Rights Reserved. &nbsp;&nbsp; || &nbsp;&nbsp; Arnavat Dharpa Mahe  -  Karena Di Laut Kami Bangga &nbsp;&nbsp; || &nbsp;&nbsp; &copy; 2025 Pusdik Polair. All Rights Reserved.
+            </div>
+        </div>
+    </div>
+
+    <div id="app-container" class="hidden">
+        <div id="mobile-menu-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-20 hidden md:hidden"></div>
+        <div class="flex h-screen">
+            <aside id="sidebar" class="w-64 bg-sidebar p-4 flex flex-col border-r border-main fixed inset-y-0 left-0 z-30 transform -translate-x-full md:relative md:translate-x-0 transition-all duration-300 ease-in-out no-print shadow-md">
+                <div class="flex items-center mb-8">
+                    <img id="app-logo-sidebar" src="https://upload.wikimedia.org/wikipedia/id/thumb/8/88/Logo_Pataka_Korps_Airud.png/375px-Logo_Pataka_Korps_Airud.png" alt="Logo Aplikasi" class="h-10 w-10 object-contain mr-3" onerror="this.onerror=null;this.src='https://placehold.co/400x40/3b82f6/ffffff?text=P';">
+                    <div class="app-name-wrapper">
+                        <h1 id="app-name-sidebar" class="text-xl font-bold text-main leading-tight">SIAP</h1>
+                        <p id="sidebar-username" class="text-xs text-subtle">Sistem Akademik Pusdik Polair</p>
+                    </div>
+                </div>
+               <nav class="flex flex-col space-y-2 flex-grow overflow-y-auto">
+    <a href="#" data-section="dashboard-section" class="nav-item flex items-center py-2 px-4 rounded-lg transition duration-200 hover:bg-tertiary active">
+        <i class="fas fa-tachometer-alt sidebar-icon"></i>
+        <span class="sidebar-text">Dashboard</span>
+    </a>
+    <a href="#" data-section="profil-section" data-permission-id="profil" class="nav-item flex items-center py-2 px-4 rounded-lg transition duration-200 hover:bg-tertiary">
+        <i class="fas fa-user-circle sidebar-icon"></i>
+        <span class="sidebar-text">Profil Saya</span>
+    </a>
+    <a href="#" data-section="pelanggaran-siswa-section" data-permission-id="pelanggaran_siswa" class="nav-item flex items-center py-2 px-4 rounded-lg transition duration-200 hover:bg-tertiary">
+        <i class="fas fa-exclamation-triangle sidebar-icon"></i>
+        <span class="sidebar-text">Pelanggaran Siswa</span>
+    </a>
+    <a href="#" data-section="sosiometri-section" data-permission-id="sosiometri" class="nav-item flex items-center py-2 px-4 rounded-lg transition duration-200 hover:bg-tertiary">
+        <i class="fas fa-people-arrows sidebar-icon"></i> <span class="sidebar-text">Nilai Mental (Sosiometri)</span>
+    </a>
+    <a href="#" data-section="pengumuman-section" data-permission-id="pengumuman" class="nav-item flex items-center py-2 px-4 rounded-lg transition duration-200 hover:bg-tertiary">
+        <i class="fas fa-bullhorn sidebar-icon"></i>
+        <span class="sidebar-text">Pengumuman</span>
+    </a>
+   
+    <div id="nilai-menu-admin" data-permission-id="nilai_siswa">
+        <button id="nilai-siswa-toggle" class="nav-item w-full flex items-center justify-between py-2 px-4 rounded-lg transition duration-200 hover:bg-tertiary">
+            <span class="flex items-center">
+                <i class="fas fa-file-signature sidebar-icon"></i>
+                <span class="sidebar-text">Penilaian Siswa</span>
+            </span>
+            <i class="fas fa-chevron-down sidebar-arrow transition-transform"></i>
+        </button>
+        <div id="nilai-siswa-submenu" class="hidden pl-8 pt-2 space-y-2 submenu">
+            <a href="#" data-section="nilai-akademik-section" class="nav-item block py-1 px-2 rounded-md hover:bg-tertiary">Input Nilai Akademik</a>
+            <a href="#" data-section="nilai-kepribadian-section" class="nav-item block py-1 px-2 rounded-md hover:bg-tertiary">Input Nilai Mental</a>
+            <a href="#" data-section="nilai-jasmani-section" class="nav-item block py-1 px-2 rounded-md hover:bg-tertiary">Input Nilai Jasmani</a>
+            <a href="#" data-section="transkrip-nilai-section" class="nav-item block py-1 px-2 rounded-md hover:bg-tertiary">Transkrip Nilai</a>
+            <a href="#" data-section="petikan-section" class="nav-item block py-1 px-2 rounded-md hover:bg-tertiary">Petikan Skep</a>
+        </div>
+    </div>
+    <a id="nilai-menu-siswa" href="#" data-section="transkrip-nilai-section" data-permission-id="nilai_siswa" class="nav-item flex items-center py-2 px-4 rounded-lg transition duration-200 hover:bg-tertiary" style="display: none;">
+        <i class="fas fa-file-signature sidebar-icon"></i>
+        <span class="sidebar-text">Transkrip Nilai</span>
+    </a>
+
+    <a href="#" data-section="lms-section" data-permission-id="lms" class="nav-item flex items-center py-2 px-4 rounded-lg transition duration-200 hover:bg-tertiary">
+        <i class="fas fa-laptop-code sidebar-icon"></i>
+        <span class="sidebar-text">LMS</span>
+    </a>
+    <a href="#" data-section="elibrary-section" data-permission-id="elibrary" class="nav-item flex items-center py-2 px-4 rounded-lg transition duration-200 hover:bg-tertiary">
+        <i class="fas fa-book-reader sidebar-icon"></i>
+        <span class="sidebar-text">E-Library</span>
+    </a>
+    <a href="#" data-section="e-album-section" data-permission-id="e_album" class="nav-item flex items-center py-2 px-4 rounded-lg transition duration-200 hover:bg-tertiary">
+        <i class="fas fa-images sidebar-icon"></i>
+        <span class="sidebar-text">E-Album</span>
+    </a>
+    <a href="#" data-section="absensi-section" data-permission-id="absensi" class="nav-item flex items-center py-2 px-4 rounded-lg transition duration-200 hover:bg-tertiary hidden">
+        <i class="fas fa-user-check sidebar-icon"></i>
+        <span class="sidebar-text">Absensi</span>
+    </a>
+    <a href="#" data-section="jadwal-mengajar-section" data-permission-id="jadwal" class="nav-item flex items-center py-2 px-4 rounded-lg transition duration-200 hover:bg-tertiary">
+        <i class="fas fa-calendar-alt sidebar-icon"></i>
+        <span class="sidebar-text">Jadwal Pelajaran</span>
+    </a>
+ 
+    <button id="master-toggle" class="nav-item w-full flex items-center justify-between py-2 px-4 rounded-lg transition duration-200 hover:bg-tertiary">
+        <span class="flex items-center">
+            <i class="fas fa-database sidebar-icon"></i>
+            <span class="sidebar-text">Data Master</span>
+        </span>
+        <i class="fas fa-chevron-down sidebar-arrow transition-transform"></i>
+    </button>
+    <div id="master-submenu" class="hidden pl-8 pt-2 space-y-2 submenu">
+        <a href="#" data-section="master-ta-section" data-permission-id="master_ta" class="nav-item block py-1 px-2 rounded-md hover:bg-tertiary">Tahun Ajaran</a>
+        <a href="#" data-section="siswa-section" data-permission-id="data_siswa" class="nav-item block py-1 px-2 rounded-md hover:bg-tertiary">Data Siswa</a>
+        <a href="#" data-section="gadik-section" data-permission-id="data_gadik" class="nav-item block py-1 px-2 rounded-md hover:bg-tertiary">Data Gadik</a>
+        <a href="#" data-section="danton-section" data-permission-id="data_danton" class="nav-item block py-1 px-2 rounded-md hover:bg-tertiary">Data Pengasuh</a>
+        <a href="#" data-section="mapel-section" data-permission-id="data_mapel" class="nav-item block py-1 px-2 rounded-md hover:bg-tertiary">Data Mapel</a>
+		<a href="#" data-section="kartu-siswa-section" data-permission-id="data_siswa" class="nav-item block py-1 px-2 rounded-md hover:bg-tertiary">Kartu Siswa</a>
+        <a href="#" data-section="id-lemari-section" data-permission-id="data_siswa" class="nav-item block py-1 px-2 rounded-md hover:bg-tertiary">ID Lemari</a>
+	</div>
+
+    <button id="sistem-toggle" class="nav-item w-full flex items-center justify-between py-2 px-4 rounded-lg transition duration-200 hover:bg-tertiary">
+        <span class="flex items-center">
+            <i class="fas fa-cogs sidebar-icon"></i>
+            <span class="sidebar-text">Sistem</span>
+        </span>
+        <i class="fas fa-chevron-down sidebar-arrow transition-transform"></i>
+    </button>
+    <div id="sistem-submenu" class="hidden pl-8 pt-2 space-y-2 submenu">
+        <a href="#" data-section="master-admin-section" data-permission-id="master_admin" class="nav-item block py-1 px-2 rounded-md hover:bg-tertiary">Hak Akses</a>
+        <a href="#" data-section="panduan-section" class="nav-item block py-1 px-2 rounded-md hover:bg-tertiary">Panduan Aplikasi</a>
+        <a href="#" data-section="setting-section" data-permission-id="setting" class="nav-item block py-1 px-2 rounded-md hover:bg-tertiary">Setting</a>
+    </div>
+
+    <hr class="my-4 border-main">
+</nav>
+                <div class="mt-auto">
+                    <button id="sidebar-toggle-btn" class="w-full flex items-center py-2 px-4 rounded-lg transition duration-200 hover:bg-tertiary text-subtle md:hidden">
+                         <i id="sidebar-toggle-icon" class="fas fa-chevron-left sidebar-icon"></i>
+                         <span class="sidebar-text">Minimize</span>
+                    </button>
+                    <a href="#" id="logout-btn" class="flex items-center py-2 px-4 rounded-lg transition duration-200 text-red-500 hover:bg-red-500 hover:text-white">
+                        <i class="fas fa-sign-out-alt sidebar-icon"></i>
+                        <span class="sidebar-text">Logout</span>
+                    </a>
+                </div>
+            </aside>
+
+            <div id="main-content" class="flex-1 flex flex-col min-w-0 transition-all duration-300 ease-in-out">
+                
+                <header class="md:hidden bg-sidebar p-4 flex justify-center items-center border-b border-main no-print shadow-md relative">
+                    <button id="mobile-bell-btn" class="p-2 absolute top-1/2 left-4 -translate-y-1/2">
+                        <i class="fas fa-bell text-main text-xl"></i>
+                    </button>
+                    
+                    <a href="#" id="logo-mobile-link" class="flex items-center">
+                        <img id="app-logo-mobile" src="https://ik.imagekit.io/d3nxlzdjsu/LOGO%20SIAP%20PUSDIK.png?updatedAt=1762256764139" alt="Logo Aplikasi" class="h-8 object-contain">
+                    </a>
+                    
+                    <button id="hamburger-btn" class="p-2 absolute top-1/2 right-4 -translate-y-1/2">
+                        <svg class="w-6 h-6 text-main" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                    </button>
+                </header>
+                <main class="flex-1 px-2 py-4 md:px-6 md:py-8 overflow-y-auto bg-main">
+                    <section id="dashboard-section"></section>
+                    <section id="profil-section" class="hidden"></section>
+                    <section id="pengumuman-section" class="hidden"></section>
+                    <section id="nilai-akademik-section" class="hidden"></section>
+                    <section id="nilai-kepribadian-section" class="hidden"></section>
+                    <section id="sosiometri-section" class="hidden"></section>
+					<section id="nilai-jasmani-section" class="hidden"></section>
+                    <section id="transkrip-nilai-section" class="hidden"></section>
+                    <section id="petikan-section" class="hidden"></section>
+                    
+                    <section id="lms-section" class="hidden"></section>
+                    <section id="elibrary-section" class="hidden"></section>
+                    <section id="absensi-section" class="hidden"></section>
+                    <section id="master-ta-section" class="hidden"></section>
+                    <section id="siswa-section" class="hidden"></section>
+                    <section id="pelanggaran-siswa-section" class="hidden"></section>
+                    <section id="kartu-siswa-section" class="hidden"></section>
+                    <section id="gadik-section" class="hidden"></section>
+                    <section id="danton-section" class="hidden"></section>
+                    <section id="mapel-section" class="hidden"></section>
+                    <section id="master-admin-section" class="hidden"></section>
+                    <section id="panduan-section" class="hidden">
+                        <div id="panduan-container"></div>
+                    </section>
+                    <section id="jadwal-mengajar-section" class="hidden"></section>
+                    <section id="setting-section" class="hidden"></section>
+                    
+                    <section id="e-album-section" class="hidden"></section>
+                    <section id="id-lemari-section" class="hidden"></section>
+                    </main>
+                <footer class="text-center p-4 text-xs text-subtle border-t border-main no-print">
+                    &copy; 2025 Pusdik Polair. All Rights Reserved.
+                </footer>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-container">
+        <div id="kartu-siswa-content-container"></div>
+        <div id="siswa-detail-modal-container"></div>
+        <div id="gadik-modal-container"></div>
+        <div id="gadik-detail-modal-container"></div>
+        <div id="danton-modal-container"></div>
+        <div id="danton-detail-modal-container"></div>
+        <div id="ta-modal-container"></div>
+        <div id="ta-detail-modal-container"></div>
+        <div id="mapel-modal-container"></div>
+        <div id="pengguna-modal-container"></div>
+        <div id="pengguna-detail-modal-container"></div>
+        <div id="pengumuman-modal-container"></div>
+        <div id="pengumuman-detail-modal-container"></div>
+        <div id="input-nilai-modal-container"></div>
+        <div id="nilai-akademik-detail-modal-container"></div>
+        <div id="kepribadian-modal-container"></div>
+        <div id="jasmani-modal-container"></div>
+        <div id="transkrip-detail-modal-container"></div>
+        <div id="transkrip-edit-modal-container"></div>
+        
+        <div id="petikan-settings-modal-container"></div>
+        <div id="petikan-view-container"></div>
+
+        <div id="jadwal-pdf-viewer-modal-container"></div>
+        <div id="lms-upload-modal-container"></div>
+        <div id="lms-tugas-modal-container"></div>
+        <div id="lms-forum-modal-container"></div>
+        <div id="lms-enroll-modal-container"></div>
+        <div id="absensi-modal-container"></div>
+        <div id="pelanggaran-siswa-modal-container"></div>
+        <div id="siswa-diktuk-modal-container"></div>
+        <div id="siswa-dikbangspes-modal-container"></div>
+        <div id="print-area" class="hidden"></div>
+        
+        <div id="id-lemari-modal-container"></div>
+		<div id="id-lemari-settings-modal-container"></div>
+    </div>
+
+    <script type="module" src="js/main.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const btnAlumni = document.getElementById('btn-menu-alumni');
+            const btnBackAlumni = document.getElementById('back-to-selection-alumni-btn');
+            const selectionContainer = document.getElementById('login-selection');
+            const alumniContainer = document.getElementById('alumni-login-container');
+
+            if(btnAlumni && alumniContainer) {
+                btnAlumni.addEventListener('click', () => {
+                    selectionContainer.classList.add('hidden');
+                    alumniContainer.classList.remove('hidden');
+                });
+            }
+
+            if(btnBackAlumni && selectionContainer) {
+                btnBackAlumni.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    alumniContainer.classList.add('hidden');
+                    selectionContainer.classList.remove('hidden');
+                });
+            }
+        });
+    </script>
+
+</body>
+</html>

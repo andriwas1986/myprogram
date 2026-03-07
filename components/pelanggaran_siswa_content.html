@@ -1,0 +1,115 @@
+<div class="bg-card p-6 rounded-lg shadow-md">
+    <div class="flex flex-col md:flex-row justify-between items-start mb-6 gap-4">
+        <div id="pelanggaran-header">
+            <button id="btn-back-pelanggaran" class="text-blue-500 hover:underline mb-2 hidden">&larr; Kembali</button>
+            <h2 id="pelanggaran-view-title" class="text-2xl font-bold text-main">Catatan Pelanggaran Siswa</h2>
+            <p id="pelanggaran-view-subtitle" class="text-subtle mt-1 text-sm"></p>
+        </div>
+    </div>
+
+    <div id="pelanggaran-view-container">
+        <div id="pelanggaran-main-view">
+            <p class="text-subtle mb-4">Pilih salah satu jenis pendidikan di bawah untuk membuat catatan pelanggaran siswa.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="text-lg font-semibold text-main mb-2 uppercase">A. DIKTUK TAMTAMA</h3>
+                    <div class="overflow-x-auto border border-main rounded-lg">
+                        <table class="w-full text-sm text-left">
+                            <thead class="text-xs text-subtle uppercase bg-tertiary">
+                                <tr>
+                                    <th class="p-3 text-center w-12">No</th>
+                                    <th class="p-3 text-center">Kategori Pendidikan</th>
+                                    <th class="p-3 text-center">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="pelanggaran-diktuk-tamtama-table-body"></tbody>
+                        </table>
+                    </div>
+                    <div id="pagination-pelanggaran-diktuk-tamtama" class="flex justify-between items-center mt-4 no-print"></div>
+                </div>
+
+                <div>
+                     <h3 class="text-lg font-semibold text-main mb-2 uppercase">B. DIKTUK BINTARA</h3>
+                    <div class="overflow-x-auto border border-main rounded-lg">
+                        <table class="w-full text-sm text-left">
+                           <thead class="text-xs text-subtle uppercase bg-tertiary">
+                               <tr>
+                                    <th class="p-3 text-center w-12">No</th>
+                                    <th class="p-3 text-center">Kategori Pendidikan</th>
+                                    <th class="p-3 text-center">Aksi</th>
+                               </tr>
+                           </thead>
+                            <tbody id="pelanggaran-diktuk-bintara-table-body"></tbody>
+                        </table>
+                    </div>
+                    <div id="pagination-pelanggaran-diktuk-bintara" class="flex justify-between items-center mt-4 no-print"></div>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-semibold text-main mb-2 uppercase">C. DIKBANGSPES</h3>
+                    <div class="overflow-x-auto border border-main rounded-lg">
+                        <table class="w-full text-sm text-left">
+                            <thead class="text-xs text-subtle uppercase bg-tertiary">
+                                <tr>
+                                    <th class="p-3 text-center w-12">No</th>
+                                    <th class="p-3 text-center">Kategori Pendidikan</th>
+                                    <th class="p-3 text-center">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="pelanggaran-dikbangspes-table-body"></tbody>
+                        </table>
+                    </div>
+                    <div id="pagination-pelanggaran-dikbangspes" class="flex justify-between items-center mt-4 no-print"></div>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-semibold text-main mb-2 uppercase">D. DIKBANGUM SEKOLAH BINTARA POLISI</h3>
+                    <div class="overflow-x-auto border border-main rounded-lg">
+                        <table class="w-full text-sm text-left">
+                            <thead class="text-xs text-subtle uppercase bg-tertiary">
+                                <tr>
+                                    <th class="p-3 text-center w-12">No</th>
+                                    <th class="p-3 text-center">Kategori Pendidikan</th>
+                                    <th class="p-3 text-center">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="pelanggaran-dikbagum-sbp-table-body"></tbody>
+                        </table>
+                    </div>
+                    <div id="pagination-pelanggaran-dikbagum-sbp" class="flex justify-between items-center mt-4 no-print"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="pelanggaran-list-view" class="hidden">
+            <div class="flex justify-between items-center mb-4">
+                <div class="flex-1"></div>
+                <button id="btn-tambah-pelanggaran" data-permission-id="pelanggaran_siswa" data-permission-action="create_pelanggaran_siswa" class="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 whitespace-nowrap">
+                    <i class="fas fa-plus mr-2"></i>Catat Pelanggaran
+                </button>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left">
+                    <thead class="text-xs text-subtle uppercase bg-tertiary">
+                        <tr>
+                            <th class="p-3 sticky left-0 bg-tertiary z-20">NO</th>
+                            <th class="p-3 sticky left-12 bg-tertiary z-20 min-w-[200px]">NAMA SISWA</th>
+                            <th class="p-3">TANGGAL</th>
+                            <th class="p-3">JENIS PELANGGARAN</th>
+                            <th class="p-3">SANKSI/HUKUMAN</th>
+                            <th class="p-3">INSTRUKTUR</th>
+                            <th class="p-3 text-center">DOKUMENTASI</th>
+                            <th class="p-3 text-center">AKSI</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pelanggaran-table-body">
+                        </tbody>
+                </table>
+            </div>
+            <div id="pelanggaran-pagination" class="flex justify-between items-center mt-4">
+            </div>
+        </div>
+    </div>
+</div>

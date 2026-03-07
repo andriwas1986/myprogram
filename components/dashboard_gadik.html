@@ -1,0 +1,77 @@
+<div class="space-y-6">
+    <div class="running-text-container rounded-lg shadow-md" aria-label="Pengumuman berjalan">
+        <div class="running-text-content">
+            Pusdik Polair Lemdiklat Polri    ||   Menempa Ksatria Bhayangkara, Penjaga Keamanan Laut Nusantara   ||    Arnavat Dharpa Mahe – Di Laut Kami Bangga  ||   Profesionalisme adalah nafas kami, Bakti di laut adalah kehormatan.   ||   © 2025 Pusdik Polair. All Rights Reserved.
+        </div>
+    </div>
+
+    <div id="gadik-dashboard-header" class="flex items-center gap-4 bg-card p-6 rounded-lg shadow-md" role="banner">
+        <img id="gadik-dashboard-photo" src="https://placehold.co/150x150/e2e8f0/4a5568?text=Foto" alt="Foto Profil" class="w-16 h-16 rounded-full object-cover border-2 border-main flex-shrink-0">
+        <div>
+            <h2 class="text-2xl font-bold text-main">Selamat Datang, <span id="dashboard-welcome-user">Gadik</span>!</h2>
+            <p class="text-subtle mt-1">Ini adalah ringkasan aktivitas akademik di Pusdik Polair.</p>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" role="list">
+        <a href="#" class="dashboard-stat-link transition-transform transform hover:-translate-y-1" data-section="siswa-section">
+            <div class="info-box bg-aqua" role="listitem">
+                <span class="info-box-icon" aria-hidden="true"><i class="fas fa-users"></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text">Total Siswa Aktif</span>
+                    <span id="stat-total-siswa" class="info-box-number">0</span>
+                </div>
+            </div>
+        </a>
+        <a href="#" class="dashboard-stat-link transition-transform transform hover:-translate-y-1" data-section="gadik-section">
+            <div class="info-box bg-green" role="listitem">
+                <span class="info-box-icon" aria-hidden="true"><i class="fas fa-chalkboard-teacher"></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text">Total Gadik</span>
+                    <span id="stat-total-gadik" class="info-box-number">0</span>
+                </div>
+            </div>
+        </a>
+        <a href="#" class="dashboard-stat-link transition-transform transform hover:-translate-y-1" data-section="mapel-section">
+            <div class="info-box bg-yellow" role="listitem">
+                <span class="info-box-icon" aria-hidden="true"><i class="fas fa-book"></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text">Mapel Aktif</span>
+                    <span id="stat-total-mapel" class="info-box-number">0</span>
+                </div>
+            </div>
+        </a>
+        <a href="#" class="dashboard-stat-link transition-transform transform hover:-translate-y-1" data-section="master-ta-section">
+            <div class="info-box bg-red" role="listitem">
+                <span class="info-box-icon" aria-hidden="true"><i class="fas fa-calendar-alt"></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text">Tahun Ajaran Aktif</span>
+                    <span id="stat-tahun-ajaran" class="info-box-number">-</span>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div id="peringkat-container" class="bg-card p-6 rounded-lg shadow-md">
+            <h3 id="peringkat-slider-title" class="text-lg font-bold text-main mb-4 transition-all duration-300">🏆 Peringkat Siswa Terbaik</h3>
+            <div id="peringkat-slider-container" class="relative overflow-hidden" style="height: 320px;">
+                </div>
+            <div id="slider-controls" class="flex justify-center items-center mt-4 gap-2">
+                </div>
+        </div>
+
+        <div class="bg-card p-6 rounded-lg shadow-md">
+            <h3 id="peringkat-chart-title" class="text-xl font-bold text-main mb-4">Grafik Peringkat Siswa</h3>
+            <div class="h-[320px] relative">
+                <canvas id="topStudentChart"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <div class="bg-card p-6 rounded-lg shadow-md mt-6">
+        <h3 class="text-xl font-bold text-main mb-4">Pengumuman Terbaru</h3>
+        <div id="dashboard-pengumuman-container-gadik" class="space-y-4"></div>
+    </div>
+</div>
+

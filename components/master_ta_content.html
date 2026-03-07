@@ -1,0 +1,110 @@
+<div class="space-y-6" id="master-ta-section">
+    <div class="bg-card p-6 rounded-lg shadow-md">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-2xl font-bold text-main">Master Tahun Ajaran</h2>
+            <button id="btn-tambah-ta" data-permission-action="create_master_ta" class="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700">
+                <i class="fas fa-plus mr-2"></i>Tambah Tahun Ajaran
+            </button>
+        </div>
+        <p class="text-subtle text-sm">Gunakan tombol "Detail" untuk melihat informasi lengkap dan mengelola setiap tahun ajaran.</p>
+    </div>
+
+    <div class="bg-card p-6 rounded-lg shadow-md">
+        <div class="border-b border-main mb-4">
+            <div class="ta-tabs-container relative">
+                <nav class="flex space-x-1" aria-label="Tabs">
+                    <button class="ta-tab-btn active" data-tab="diktuk-tamtama">DIKTUK TAMTAMA</button>
+                    <button class="ta-tab-btn" data-tab="diktuk-bintara">DIKTUK BINTARA</button>
+                    <button class="ta-tab-btn" data-tab="dikbangspes">DIKBANGSPES</button>
+                    
+                    <button class="ta-tab-btn" data-tab="dikbangum-sekolah-bintara-polisi">DIKBANGUM SEKOLAH BINTARA POLISI</button>
+                    
+                </nav>
+                <div id="ta-tab-slider" class="absolute bottom-0 h-0.5 bg-blue-600 transition-all duration-300"></div>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <div id="tab-content-diktuk-tamtama" class="ta-tab-content">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left">
+                        <thead class="text-xs text-subtle uppercase bg-tertiary">
+                            <tr>
+                                <th class="p-3 w-12 text-center">No</th>
+                                <th class="p-3 text-center">Pendidikan</th>
+                                <th class="p-3 text-center">Jml. Siswa</th>
+                                <th class="p-3 text-center">Jml. Mapel</th>
+                                <th class="p-3 text-center">Tgl. Mulai</th>
+                                <th class="p-3 text-center">Status</th>
+                                <th class="p-3 text-center">Detail</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ta-diktuk-tamtama-table-body"></tbody>
+                    </table>
+                </div>
+                <div id="pagination-diktuk-tamtama" class="flex justify-between items-center mt-4 no-print"></div>
+            </div>
+
+            <div id="tab-content-diktuk-bintara" class="ta-tab-content hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left">
+                        <thead class="text-xs text-subtle uppercase bg-tertiary">
+                            <tr>
+                                <th class="p-3 w-12 text-center">No</th>
+                                <th class="p-3 text-center">Pendidikan</th>
+                                <th class="p-3 text-center">Jml. Siswa</th>
+                                <th class="p-3 text-center">Jml. Mapel</th>
+                                <th class="p-3 text-center">Tgl. Mulai</th>
+                                <th class="p-3 text-center">Status</th>
+                                <th class="p-3 text-center">Detail</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ta-diktuk-bintara-table-body"></tbody>
+                    </table>
+                </div>
+                <div id="pagination-diktuk-bintara" class="flex justify-between items-center mt-4 no-print"></div>
+            </div>
+
+            <div id="tab-content-dikbangspes" class="ta-tab-content hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left">
+                        <thead class="text-xs text-subtle uppercase bg-tertiary">
+                            <tr>
+                                <th class="p-3 w-12 text-center">No</th>
+                                <th class="p-3 text-center">Pendidikan</th>
+                                <th class="p-3 text-center">Jml. Siswa</th>
+                                <th class="p-3 text-center">Jml. Mapel</th>
+                                <th class="p-3 text-center">Tgl. Mulai</th>
+                                <th class="p-3 text-center">Status</th>
+                                <th class="p-3 text-center">Detail</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ta-dikbangspes-table-body"></tbody>
+                    </table>
+                </div>
+                <div id="pagination-dikbangspes" class="flex justify-between items-center mt-4 no-print"></div>
+            </div>
+
+            <div id="tab-content-dikbangum-sekolah-bintara-polisi" class="ta-tab-content hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left">
+                        <thead class="text-xs text-subtle uppercase bg-tertiary">
+                            <tr>
+                                <th class="p-3 w-12 text-center">No</th>
+                                <th class="p-3 text-center">Pendidikan</th>
+                                <th class="p-3 text-center">Jml. Siswa</th>
+                                <th class="p-3 text-center">Jml. Mapel</th>
+                                <th class="p-3 text-center">Tgl. Mulai</th>
+                                <th class="p-3 text-center">Status</th>
+                                <th class="p-3 text-center">Detail</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ta-dikbangum-sekolah-bintara-polisi-table-body"></tbody> 
+                    </table>
+                </div>
+                <div id="pagination-dikbangum-sekolah-bintara-polisi" class="flex justify-between items-center mt-4 no-print"></div>
+            </div>
+
+        </div>
+    </div>
+</div>

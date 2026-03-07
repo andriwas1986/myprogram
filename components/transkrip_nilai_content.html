@@ -1,0 +1,127 @@
+<div class="bg-card p-6 rounded-lg shadow-md">
+    <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+        <div id="transkrip-header">
+            <button id="btn-back-transkrip" class="text-blue-500 hover:underline mb-2 hidden">&larr; Kembali</button>
+            <h2 id="transkrip-view-title" class="text-2xl font-bold text-main">Transkrip Nilai Siswa</h2>
+            
+            <p class="text-sm text-subtle mt-1">
+                Transkrip nilai merupakan dokumen akademik yang berisi rekapitulasi capaian pembelajaran peserta didik berdasarkan program pendidikan yang diikuti.
+            </p>
+            
+            <div id="transkrip-view-subtitle" class="text-sm text-subtle mt-1"></div>
+        </div>
+    </div>
+
+    <div id="transkrip-view-container">
+        <div id="transkrip-main-view">
+            <p class="text-subtle mb-4">Pilih salah satu jenis pendidikan di bawah untuk melihat daftar siswa.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="text-lg font-semibold text-main mb-2">A. DIKTUK TAMTAMA</h3>
+                    <div class="overflow-x-auto border border-main rounded-lg">
+                        <table class="w-full text-sm text-left">
+                            <thead class="text-xs text-subtle uppercase bg-tertiary">
+                                <tr>
+                                    <th class="p-3 w-12 text-center">No</th>
+                                    <th class="p-3">Kategori Pendidikan</th>
+                                    <th class="p-3 text-center">Status</th> 
+                                    <th class="p-3 text-center">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="transkrip-diktuk-tamtama-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div>
+                     <h3 class="text-lg font-semibold text-main mb-2">B. DIKTUK BINTARA</h3>
+                    <div class="overflow-x-auto border border-main rounded-lg">
+                        <table class="w-full text-sm text-left">
+                           <thead class="text-xs text-subtle uppercase bg-tertiary">
+                               <tr>
+                                   <th class="p-3 w-12 text-center">No</th>
+                                   <th class="p-3">Kategori Pendidikan</th>
+                                   <th class="p-3 text-center">Status</th> 
+                                   <th class="p-3 text-center">Aksi</th>
+                               </tr>
+                           </thead>
+                            <tbody id="transkrip-diktuk-bintara-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-semibold text-main mb-2">C. DIKBANGSPES</h3>
+                    <div class="overflow-x-auto border border-main rounded-lg">
+                        <table class="w-full text-sm text-left">
+                            <thead class="text-xs text-subtle uppercase bg-tertiary">
+                                <tr>
+                                    <th class="p-3 w-12 text-center">No</th>
+                                    <th class="p-3">Kategori Pendidikan</th>
+                                    <th class="p-3 text-center">Status</th> 
+                                    <th class="p-3 text-center">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="transkrip-dikbangspes-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-semibold text-main mb-2">D. DIKBANGUM SEKOLAH BINTARA POLISI</h3>
+                    <div class="overflow-x-auto border border-main rounded-lg">
+                        <table class="w-full text-sm text-left">
+                            <thead class="text-xs text-subtle uppercase bg-tertiary">
+                                <tr>
+                                    <th class="p-3 w-12 text-center">No</th>
+                                    <th class="p-3">Kategori Pendidikan</th>
+                                    <th class="p-3 text-center">Status</th> 
+                                    <th class="p-3 text-center">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="transkrip-dikbangum-sekolah-bintara-polisi-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="transkrip-list-view" class="hidden">
+            <div class="flex flex-wrap items-center justify-between gap-4 mb-4 p-4 bg-tertiary rounded-lg">
+                <div class="flex flex-wrap items-center gap-4">
+                    <input type="text" id="search-transkrip-siswa-input" placeholder="Cari nama atau nosis..." class="bg-input border-main text-main text-sm rounded-lg p-2.5 w-48">
+                </div>
+                <div class="flex items-center gap-2">
+					<button id="btn-export-transkrip-excel" class="bg-gray-600 text-white py-2 px-3 rounded-lg hover:bg-gray-700 text-sm flex items-center shadow">
+						<i class="fas fa-file-export mr-2"></i> Ekspor
+					</button>
+					
+					<button id="btn-import-transkrip-excel" class="bg-green-600 text-white py-2 px-3 rounded-lg hover:bg-green-700 text-sm flex items-center shadow">
+						<i class="fas fa-file-import mr-2"></i> Impor
+					</button>
+					<button id="btn-print-all-transcripts" class="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 text-sm flex items-center shadow">
+						<i class="fas fa-print mr-2"></i> Cetak Semua Transkrip
+					</button>
+				</div>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left">
+                    <thead class="text-xs text-subtle uppercase bg-tertiary">
+                        <tr>
+                            <th class="p-3">No</th>
+                            <th class="p-3">Nama Lengkap</th>
+                            <th class="p-3">Nosis</th>
+                            <th class="p-3">No. Ijazah</th>
+                            <th class="p-3">No. Seri</th>
+                            <th class="p-3">Kategori</th>
+                            <th class="p-3 text-center">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transkrip-siswa-table-body"></tbody>
+                </table>
+            </div>
+            <div id="transkrip-pagination" class="flex justify-between items-center mt-4 no-print"></div>
+        </div>
+    </div>
+</div>

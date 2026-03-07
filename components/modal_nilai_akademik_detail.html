@@ -1,0 +1,46 @@
+<div id="nilai-akademik-detail-modal" class="modal fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center hidden p-4 z-50">
+    <div class="bg-card rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] flex flex-col">
+        <div class="p-4 border-b border-main flex justify-between items-center">
+            <h3 class="text-xl font-bold text-main">Detail Nilai Akademik Siswa</h3>
+            <button type="button" class="btn-close-modal text-gray-400 hover:text-gray-600 text-3xl leading-none">&times;</button>
+        </div>
+        <div class="overflow-y-auto p-6 space-y-6">
+            <div class="flex items-center gap-6 p-4 bg-tertiary rounded-lg">
+                <img id="detail-akademik-foto" src="https://placehold.co/150x150/e2e8f0/4a5568?text=Foto" alt="Foto Siswa" class="w-24 h-32 object-cover rounded-md border-2 border-main">
+                <div class="flex-1">
+                    <h3 id="detail-akademik-nama" class="text-2xl font-bold text-main"></h3>
+                    <p id="detail-akademik-kategori" class="text-subtle"></p>
+                    <div class="grid grid-cols-2 gap-x-4 gap-y-1 mt-2 text-sm">
+                        <div><span class="font-semibold text-subtle">Nosis:</span> <span id="detail-akademik-nosis" class="text-main"></span></div>
+                        <div><span class="font-semibold text-subtle">NRP:</span> <span id="detail-akademik-nrp" class="text-main"></span></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div>
+                <h4 class="text-lg font-semibold text-main mb-2">Rincian Nilai per Mata Pelajaran</h4>
+                <div class="overflow-x-auto border border-main rounded-lg">
+                    <table class="w-full text-sm text-left">
+                        <thead class="text-xs text-subtle uppercase bg-tertiary">
+                            <tr>
+                                <th class="p-3">No</th>
+                                <th class="p-3">Mata Pelajaran</th>
+                                <th class="p-3 text-center">Nilai Angka</th>
+                                <th class="p-3">Nilai Huruf</th>
+                            </tr>
+                        </thead>
+                        <tbody id="akademik-detail-table-body">
+                            </tbody>
+                         <tfoot>
+                            <tr class="font-bold text-main bg-tertiary">
+                                <td colspan="2" class="p-3 text-right">TOTAL NILAI</td>
+                                <td id="akademik-detail-total-nilai" class="p-3 text-center"></td>
+                                <td id="akademik-detail-total-terbilang" class="p-3"></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

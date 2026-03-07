@@ -1,0 +1,48 @@
+<div id="ta-detail-modal" class="modal fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center hidden p-4 z-50">
+    <div class="bg-card rounded-lg shadow-xl w-full max-w-lg">
+        <div class="p-6 border-b border-main flex justify-between items-center">
+            <h3 id="ta-detail-title" class="text-2xl font-bold text-main">Detail Tahun Ajaran</h3>
+            <!-- 
+              MODIFIKASI DI SINI:
+              Menambahkan data-dismiss="modal" pada tombol 'X'
+            -->
+            <button type="button" data-dismiss="modal" class="btn-cancel-modal text-gray-400 hover:text-gray-600 text-3xl leading-none">&times;</button>
+        </div>
+        <div class="p-6 space-y-4">
+            <table class="w-full text-left text-sm">
+                <tbody>
+                    <tr class="border-b border-tertiary">
+                        <td class="py-2 font-medium text-subtle w-1/3">Pendidikan</td>
+                        <td id="detail-ta-pendidikan" class="py-2 text-main font-semibold"></td>
+                    </tr>
+                    <tr class="border-b border-tertiary">
+                        <td class="py-2 font-medium text-subtle">Tahun</td>
+                        <td id="detail-ta-tahun" class="py-2 text-main"></td>
+                    </tr>
+                     <tr class="border-b border-tertiary">
+                        <td class="py-2 font-medium text-subtle">Status</td>
+                        <td id="detail-ta-status" class="py-2 text-main"></td>
+                    </tr>
+                    <tr class="border-b border-tertiary">
+                        <td class="py-2 font-medium text-subtle">Jumlah Peserta</td>
+                        <td id="detail-ta-peserta" class="py-2 text-main"></td>
+                    </tr>
+                    <tr class="border-b border-tertiary">
+                        <td class="py-2 font-medium text-subtle">Lama Pendidikan</td>
+                        <td id="detail-ta-durasi" class="py-2 text-main"></td>
+                    </tr>
+                    <tr class="border-b border-tertiary">
+                        <td class="py-2 font-medium text-subtle">Tanggal Mulai</td>
+                        <td id="detail-ta-mulai" class="py-2 text-main"></td>
+                    </tr>
+                    <tr>
+                        <td class="py-2 font-medium text-subtle">Tanggal Berakhir</td>
+                        <td id="detail-ta-berakhir" class="py-2 text-main"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div id="ta-detail-actions" class="p-6 border-t border-main flex justify-end space-x-4">
+            </div>
+    </div>
+</div>

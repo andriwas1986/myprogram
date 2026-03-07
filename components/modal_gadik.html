@@ -1,0 +1,73 @@
+<div id="gadik-modal" class="modal fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center hidden p-4 z-50">
+    <div class="bg-card rounded-lg shadow-xl w-full max-w-4xl">
+        <div class="p-6 border-b border-main flex justify-between items-center">
+            <h3 id="gadik-modal-title" class="text-2xl font-bold text-main">Tambah Gadik Baru</h3>
+            
+            <!-- [PERBAIKAIK 1]: Tombol Silang (X) ditambahkan data-dismiss="modal" -->
+            <button type="button" class="btn-cancel-gadik text-gray-400 hover:text-gray-600 text-3xl leading-none" data-dismiss="modal">&times;</button>
+        </div>
+        <form id="gadik-form" class="max-h-[80vh] overflow-y-auto">
+            <input type="hidden" id="gadik-id">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 p-6">
+                <div class="flex flex-col items-center md:border-r border-main pr-6">
+                    <img id="gadik-foto-preview" src="https://placehold.co/200x250/e2e8f0/4a5568?text=Foto+Gadik" alt="Foto Gadik" class="w-40 h-52 object-cover rounded-lg border-2 border-main mb-4">
+                    <input type="file" id="gadik-foto" class="hidden" accept="image/*">
+                    <button type="button" id="btn-upload-gadik-foto" class="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 text-sm">Pilih Foto</button>
+                </div>
+                <div class="md:col-span-2">
+                    <div class="border-b border-main mb-4">
+                        <nav class="flex space-x-4" aria-label="Tabs">
+                            <button type="button" data-tab="identitas" class="tab-btn active shrink-0 border-b-2 border-transparent px-1 py-4 text-sm font-medium text-subtle hover:border-gray-300 hover:text-main">Identitas</button>
+                            <button type="button" data-tab="pribadi" class="tab-btn shrink-0 border-b-2 border-transparent px-1 py-4 text-sm font-medium text-subtle hover:border-gray-300 hover:text-main">Data Pribadi</button>
+                            <button type="button" data-tab="kompetensi" class="tab-btn shrink-0 border-b-2 border-transparent px-1 py-4 text-sm font-medium text-subtle hover:border-gray-300 hover:text-main">Kompetensi</button>
+                            <button type="button" data-tab="akademik" class="tab-btn shrink-0 border-b-2 border-transparent px-1 py-4 text-sm font-medium text-subtle hover:border-gray-300 hover:text-main">Akademik</button>
+                        </nav>
+                    </div>
+
+                    <div id="identitas-tab" class="tab-content active space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div><label for="gadik-nama" class="block mb-1 text-sm font-medium text-subtle">Nama Lengkap</label><input type="text" id="gadik-nama" class="bg-input border-main text-main text-sm rounded-lg block w-full p-2.5" required></div>
+                            <div><label for="gadik-nrp" class="block mb-1 text-sm font-medium text-subtle">NRP (Username)</label><input type="text" id="gadik-nrp" class="bg-input border-main text-main text-sm rounded-lg block w-full p-2.5" required></div>
+                            <div><label for="gadik-pangkat" class="block mb-1 text-sm font-medium text-subtle">Pangkat / Golongan</label><input type="text" id="gadik-pangkat" class="bg-input border-main text-main text-sm rounded-lg block w-full p-2.5"></div>
+                            <div><label for="gadik-jabatan" class="block mb-1 text-sm font-medium text-subtle">Jabatan</label><input type="text" id="gadik-jabatan" class="bg-input border-main text-main text-sm rounded-lg block w-full p-2.5"></div>
+                            <div><label for="gadik-password" class="block mb-1 text-sm font-medium text-subtle">Password</label><input type="password" id="gadik-password" class="bg-input border-main text-main text-sm rounded-lg block w-full p-2.5"><p class="text-xs text-subtle mt-1">Kosongkan jika tidak ingin mengubah.</p></div>
+                        </div>
+                    </div>
+                    <div id="pribadi-tab" class="tab-content hidden space-y-4">
+                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div><label for="gadik-tempat-lahir" class="block mb-1 text-sm font-medium text-subtle">Tempat Lahir</label><input type="text" id="gadik-tempat-lahir" class="bg-input border-main text-main text-sm rounded-lg block w-full p-2.5"></div>
+                            <div><label for="gadik-tanggal-lahir" class="block mb-1 text-sm font-medium text-subtle">Tanggal Lahir</label><input type="date" id="gadik-tanggal-lahir" class="bg-input border-main text-main text-sm rounded-lg block w-full p-2.5"></div>
+                            <div><label for="gadik-telepon" class="block mb-1 text-sm font-medium text-subtle">No. HP / WhatsApp</label><input type="tel" id="gadik-telepon" class="bg-input border-main text-main text-sm rounded-lg block w-full p-2.5"></div>
+                            <div><label for="gadik-email" class="block mb-1 text-sm font-medium text-subtle">Email Dinas</label><input type="email" id="gadik-email" class="bg-input border-main text-main text-sm rounded-lg block w-full p-2.5"></div>
+                            <div class="md:col-span-2"><label for="gadik-alamat" class="block mb-1 text-sm font-medium text-subtle">Alamat Lengkap</label><textarea id="gadik-alamat" rows="3" class="bg-input border-main text-main text-sm rounded-lg block w-full p-2.5"></textarea></div>
+                        </div>
+                    </div>
+                    <div id="kompetensi-tab" class="tab-content hidden space-y-4">
+                        <div><label for="gadik-pendidikan-terakhir" class="block mb-1 text-sm font-medium text-subtle">Pendidikan Terakhir</label><input type="text" id="gadik-pendidikan-terakhir" class="bg-input border-main text-main text-sm rounded-lg block w-full p-2.5"></div>
+                        <div><label for="gadik-keahlian" class="block mb-1 text-sm font-medium text-subtle">Bidang Keahlian / Spesialisasi</label><input type="text" id="gadik-keahlian" class="bg-input border-main text-main text-sm rounded-lg block w-full p-2.5"></div>
+                        <div><label for="gadik-sertifikasi" class="block mb-1 text-sm font-medium text-subtle">Sertifikasi / Diklat</label><textarea id="gadik-sertifikasi" rows="4" class="bg-input border-main text-main text-sm rounded-lg block w-full p-2.5" placeholder="Pisahkan dengan koma atau baris baru"></textarea></div>
+                    </div>
+                    <div id="akademik-tab" class="tab-content hidden space-y-4">
+                         <div>
+                            <label class="block mb-1 text-sm font-medium text-subtle">Mata Pelajaran yang Diampu</label>
+                            <div class="custom-multiselect-container relative">
+                                <div id="mapel-pills-container" class="flex flex-wrap gap-2 items-center p-2 border border-main rounded-lg bg-input cursor-text min-h-[42px]">
+                                    <input type="text" id="mapel-search-input" class="flex-grow bg-transparent outline-none text-sm" placeholder="Ketik untuk mencari mapel...">
+                                </div>
+                                <div id="mapel-dropdown" class="absolute z-10 w-full mt-1 bg-card border border-main rounded-lg shadow-lg max-h-48 overflow-y-auto hidden">
+                                    </div>
+                            </div>
+                            <p class="text-xs text-subtle mt-1">Mapel yang tampil adalah mapel pada Tahun Ajaran Aktif.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="p-6 border-t border-main flex justify-end space-x-4">
+                
+                <!-- [PERBAIKAIK 2]: Tombol Batal ditambahkan data-dismiss="modal" -->
+                <button type="button" class="btn-cancel-gadik py-2 px-4 rounded-lg bg-gray-300 text-gray-800 hover:bg-gray-400 font-semibold" data-dismiss="modal">Batal</button>
+                <button type="submit" class="py-2 px-4 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold">Simpan</button>
+            </div>
+        </form>
+    </div>
+</div>

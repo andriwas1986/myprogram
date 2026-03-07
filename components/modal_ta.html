@@ -1,0 +1,92 @@
+<div id="ta-modal" class="modal fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center hidden p-4 z-40">
+    <div class="bg-card rounded-lg shadow-xl w-full max-w-lg">
+        <div class="p-6 border-b border-main flex justify-between items-center">
+            <h3 id="ta-modal-title" class="text-2xl font-bold text-main">Tambah Tahun Ajaran</h3>
+            
+           <button type="button" class="btn-cancel-ta text-gray-400 hover:text-gray-600 text-3xl leading-none" data-dismiss="modal">&times;</button>
+        </div>
+        <form id="ta-form" class="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
+            <input type="hidden" id="ta-id">
+            
+            <div>
+                <label class="block mb-2 text-sm font-medium text-subtle">Jenis Pendidikan</label>
+                <div class="space-y-2">
+                    <div class="flex items-center">
+                        <input id="jenis-diktuk-bintara" name="jenis_pendidikan" type="checkbox" value="Diktuk Bintara" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
+                        <label for="jenis-diktuk-bintara" class="ml-2 text-sm font-medium text-main">Diktuk Bintara</label>
+                    </div>
+                    <div class="flex items-center">
+                        <input id="jenis-diktuk-tamtama" name="jenis_pendidikan" type="checkbox" value="Diktuk Tamtama" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
+                        <label for="jenis-diktuk-tamtama" class="ml-2 text-sm font-medium text-main">Diktuk Tamtama</label>
+                    </div>
+                    <div class="flex items-center">
+                        <input id="jenis-dikbangspes" name="jenis_pendidikan" type="checkbox" value="Dikbangspes" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
+                        <label for="jenis-dikbangspes" class="ml-2 text-sm font-medium text-main">Dikbangspes</label>
+                    </div>
+                    <div class="flex items-center">
+                        <input id="jenis-dikbangum-sekolah-bintara-polisi" name="jenis_pendidikan" type="checkbox" value="DIKBANGUM SEKOLAH BINTARA POLISI" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
+                        <label for="jenis-dikbangum-sekolah-bintara-polisi" class="ml-2 text-sm font-medium text-main">DIKBANGUM SEKOLAH BINTARA POLISI</label>
+                    </div>
+                </div>
+            </div>
+
+            <div id="diktuk-options" class="hidden space-y-4 p-4 bg-tertiary rounded-lg">
+                 <div>
+                    <label for="ta-gelombang-diktuk" class="block mb-2 text-sm font-medium text-subtle">Gelombang (Diktuk)</label>
+                    <select id="ta-gelombang-diktuk" class="bg-input border border-main text-main text-sm rounded-lg block w-full p-2.5">
+                        <option>Gelombang I</option>
+                        <option>Gelombang II</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="dikbangspes-options" class="hidden space-y-4 p-4 bg-tertiary rounded-lg">
+                <div>
+                    <label for="ta-nama-dikbangspes" class="block mb-2 text-sm font-medium text-subtle">Nama Dikbangspes</label>
+                    <input type="text" id="ta-nama-dikbangspes" class="bg-input border border-main text-main text-sm rounded-lg block w-full p-2.5" placeholder="Contoh: Komandan Kapal">
+                </div>
+                <div>
+                    <label for="ta-gelombang-dikbangspes" class="block mb-2 text-sm font-medium text-subtle">Gelombang (Dikbangspes)</label>
+                    <select id="ta-gelombang-dikbangspes" class="bg-input border border-main text-main text-sm rounded-lg block w-full p-2.5">
+                        <option>Gelombang I</option>
+                        <option>Gelombang II</option>
+                        <option>Gelombang III</option>
+                        <option>Gelombang IV</option>
+                        <option>Gelombang V</option>
+                        <option>Gelombang VI</option>
+                        <option>Gelombang VII</option>
+                        <option>Gelombang VIII</option>
+                        <option>Gelombang IX</option>
+                        <option>Gelombang X</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                 <div>
+                    <label for="ta-tahun" class="block mb-2 text-sm font-medium text-subtle">Tahun Ajaran</label>
+                    <input type="number" id="ta-tahun" class="bg-input border border-main text-main text-sm rounded-lg block w-full p-2.5" placeholder="Contoh: 2024" required>
+                </div>
+                <div>
+                    <label for="ta-lama-pendidikan" class="block mb-2 text-sm font-medium text-subtle">Lama Pendidikan</label>
+                    <input type="text" id="ta-lama-pendidikan" class="bg-input border border-main text-main text-sm rounded-lg block w-full p-2.5" placeholder="Contoh: 5 Bulan">
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label for="ta-tanggal-mulai" class="block mb-2 text-sm font-medium text-subtle">Tanggal Mulai</label>
+                    <input type="date" id="ta-tanggal-mulai" class="bg-input border border-main text-main text-sm rounded-lg block w-full p-2.5">
+                </div>
+                <div>
+                    <label for="ta-tanggal-berakhir" class="block mb-2 text-sm font-medium text-subtle">Tanggal Berakhir</label>
+                    <input type="date" id="ta-tanggal-berakhir" class="bg-input border border-main text-main text-sm rounded-lg block w-full p-2.5">
+                </div>
+            </div>
+
+           <div class="pt-4 flex justify-end space-x-4">
+                <button type="button" class="btn-cancel-ta py-2 px-4 rounded-lg bg-gray-300 text-gray-800 hover:bg-gray-400 font-semibold" data-dismiss="modal">Batal</button>
+                <button type="submit" class="py-2 px-4 rounded-lg bg-blue-600 text-white hover:bg-blue-700 font-semibold">Simpan</button>
+            </div>
+        </form>
+    </div>
+</div>

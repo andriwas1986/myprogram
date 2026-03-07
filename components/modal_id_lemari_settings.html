@@ -1,0 +1,119 @@
+<div id="id-lemari-settings-modal" class="modal fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center hidden p-4 z-50">
+    <div class="bg-card rounded-lg shadow-xl w-full max-w-6xl max-h-[95vh] overflow-y-auto flex flex-col">
+        <div class="p-6 border-b border-main flex justify-between items-center sticky top-0 bg-card z-20">
+            <h3 class="text-2xl font-bold text-main">Pengaturan Tata Letak ID Lemari</h3>
+            <button type="button" class="text-gray-400 hover:text-gray-600 text-3xl leading-none" onclick="document.getElementById('id-lemari-settings-modal').classList.add('hidden')">&times;</button>
+        </div>
+        
+        <div class="p-6 flex-1 overflow-y-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
+            
+            <div class="lg:col-span-5 lg:sticky lg:top-0 space-y-4">
+                <div class="p-4 bg-gray-200 rounded-lg border border-gray-300 flex flex-col items-center justify-center overflow-hidden sticky top-0">
+                    <h4 class="text-sm font-bold text-gray-500 mb-2 w-full text-center border-b border-gray-300 pb-2">LIVE PREVIEW</h4>
+                    
+                    <div id="preview-scale-wrapper" style="transform: scale(0.55); transform-origin: center top;">
+                        <div id="lemari-preview-card" class="relative bg-white shadow-lg overflow-hidden text-black" style="width: 26cm; height: 7.8cm; background-size: 100% 100%; background-repeat: no-repeat;">
+                            
+                            <div id="preview-header" class="absolute w-full text-center font-black z-10 whitespace-nowrap">
+                                DIKBANGSPES : CONTOH PENDIDIKAN TA. 2026
+                            </div>
+
+                            <div id="preview-nama" class="absolute font-black whitespace-nowrap overflow-hidden z-10">NAMA SISWA CONTOH</div>
+                            <div id="preview-nosis" class="absolute font-extrabold whitespace-nowrap z-10">NOSIS : 202601001</div>
+                            <div id="preview-pangkat" class="absolute font-bold whitespace-nowrap z-10">BRIPDA / 12345678</div>
+                            <div id="preview-polda" class="absolute font-bold whitespace-nowrap z-10">POLDA METRO JAYA</div>
+
+                            <div id="preview-photo-box" class="absolute bg-gray-300 border-2 border-white shadow-sm z-10 overflow-hidden flex items-center justify-center">
+                                <img src="https://ik.imagekit.io/d3nxlzdjsu/PRESISI%20POLAIR.png?updatedAt=1760423288483" class="w-full h-full object-cover opacity-70">
+                            </div>
+
+                        </div>
+                    </div>
+                    <p class="text-center text-xs text-gray-500 mt-[-20px]">(Preview Skala 55%)</p>
+                </div>
+            </div>
+
+            <div class="lg:col-span-7 space-y-6">
+                <form id="id-lemari-settings-form">
+                    
+                    <div class="bg-tertiary p-4 rounded-lg border border-main">
+                        <h4 class="font-bold text-main text-sm mb-3 uppercase border-b border-gray-300 pb-1">1. Latar Belakang</h4>
+                        <div>
+                            <label class="block mb-1 text-xs font-medium text-subtle">URL Background</label>
+                            <input type="text" id="set-bg" class="bg-input border-main text-main text-xs rounded block w-full p-2 preview-trigger">
+                        </div>
+                    </div>
+
+                    <div class="bg-tertiary p-4 rounded-lg border border-main">
+                        <h4 class="font-bold text-main text-sm mb-3 uppercase border-b border-gray-300 pb-1">2. Foto Siswa</h4>
+                        <div class="grid grid-cols-4 gap-2">
+                            <div><label class="text-xs">Atas (cm)</label><input type="number" step="0.1" id="set-foto-top" class="w-full text-xs p-2 rounded border border-main bg-input preview-trigger"></div>
+                            <div><label class="text-xs">Kanan (cm)</label><input type="number" step="0.1" id="set-foto-right" class="w-full text-xs p-2 rounded border border-main bg-input preview-trigger"></div>
+                            <div><label class="text-xs">Lebar (cm)</label><input type="number" step="0.1" id="set-foto-w" class="w-full text-xs p-2 rounded border border-main bg-input preview-trigger"></div>
+                            <div><label class="text-xs">Tinggi (cm)</label><input type="number" step="0.1" id="set-foto-h" class="w-full text-xs p-2 rounded border border-main bg-input preview-trigger"></div>
+                        </div>
+                    </div>
+
+                    <div class="bg-tertiary p-4 rounded-lg border border-main">
+                        <h4 class="font-bold text-main text-sm mb-3 uppercase border-b border-gray-300 pb-1">3. Header Judul</h4>
+                        <div class="grid grid-cols-3 gap-2">
+                            <div class="col-span-1"><label class="text-xs">Font Family</label>
+                                <select id="set-header-font" class="w-full text-xs p-2 rounded border border-main bg-input preview-trigger font-select"></select>
+                            </div>
+                            <div><label class="text-xs">Ukuran (pt)</label><input type="number" id="set-header-size" class="w-full text-xs p-2 rounded border border-main bg-input preview-trigger"></div>
+                            <div><label class="text-xs">Posisi Atas (cm)</label><input type="number" step="0.1" id="set-header-top" class="w-full text-xs p-2 rounded border border-main bg-input preview-trigger"></div>
+                        </div>
+                    </div>
+
+                    <div class="bg-tertiary p-4 rounded-lg border border-main">
+                        <h4 class="font-bold text-main text-sm mb-3 uppercase border-b border-gray-300 pb-1">4. Nama Siswa</h4>
+                        <div class="grid grid-cols-4 gap-2">
+                            <div class="col-span-2"><label class="text-xs">Font</label><select id="set-nama-font" class="w-full text-xs p-2 rounded border border-main bg-input preview-trigger font-select"></select></div>
+                            <div><label class="text-xs">Size (pt)</label><input type="number" id="set-nama-size" class="w-full text-xs p-2 rounded border border-main bg-input preview-trigger"></div>
+                            <div></div> <div><label class="text-xs">Atas (cm)</label><input type="number" step="0.1" id="set-nama-top" class="w-full text-xs p-2 rounded border border-main bg-input preview-trigger"></div>
+                            <div><label class="text-xs">Kiri (cm)</label><input type="number" step="0.1" id="set-nama-left" class="w-full text-xs p-2 rounded border border-main bg-input preview-trigger"></div>
+                        </div>
+                    </div>
+
+                    <div class="bg-tertiary p-4 rounded-lg border border-main">
+                        <h4 class="font-bold text-main text-sm mb-3 uppercase border-b border-gray-300 pb-1">5. NOSIS</h4>
+                        <div class="grid grid-cols-4 gap-2">
+                            <div class="col-span-2"><label class="text-xs">Font</label><select id="set-nosis-font" class="w-full text-xs p-2 rounded border border-main bg-input preview-trigger font-select"></select></div>
+                            <div><label class="text-xs">Size (pt)</label><input type="number" id="set-nosis-size" class="w-full text-xs p-2 rounded border border-main bg-input preview-trigger"></div>
+                            <div></div>
+                            <div><label class="text-xs">Atas (cm)</label><input type="number" step="0.1" id="set-nosis-top" class="w-full text-xs p-2 rounded border border-main bg-input preview-trigger"></div>
+                            <div><label class="text-xs">Kiri (cm)</label><input type="number" step="0.1" id="set-nosis-left" class="w-full text-xs p-2 rounded border border-main bg-input preview-trigger"></div>
+                        </div>
+                    </div>
+
+                    <div class="bg-tertiary p-4 rounded-lg border border-main">
+                        <h4 class="font-bold text-main text-sm mb-3 uppercase border-b border-gray-300 pb-1">6. Pangkat / NRP</h4>
+                        <div class="grid grid-cols-4 gap-2">
+                            <div class="col-span-2"><label class="text-xs">Font</label><select id="set-pangkat-font" class="w-full text-xs p-2 rounded border border-main bg-input preview-trigger font-select"></select></div>
+                            <div><label class="text-xs">Size (pt)</label><input type="number" id="set-pangkat-size" class="w-full text-xs p-2 rounded border border-main bg-input preview-trigger"></div>
+                            <div></div>
+                            <div><label class="text-xs">Atas (cm)</label><input type="number" step="0.1" id="set-pangkat-top" class="w-full text-xs p-2 rounded border border-main bg-input preview-trigger"></div>
+                            <div><label class="text-xs">Kiri (cm)</label><input type="number" step="0.1" id="set-pangkat-left" class="w-full text-xs p-2 rounded border border-main bg-input preview-trigger"></div>
+                        </div>
+                    </div>
+
+                    <div class="bg-tertiary p-4 rounded-lg border border-main">
+                        <h4 class="font-bold text-main text-sm mb-3 uppercase border-b border-gray-300 pb-1">7. Polda / Kesatuan</h4>
+                        <div class="grid grid-cols-4 gap-2">
+                            <div class="col-span-2"><label class="text-xs">Font</label><select id="set-polda-font" class="w-full text-xs p-2 rounded border border-main bg-input preview-trigger font-select"></select></div>
+                            <div><label class="text-xs">Size (pt)</label><input type="number" id="set-polda-size" class="w-full text-xs p-2 rounded border border-main bg-input preview-trigger"></div>
+                            <div></div>
+                            <div><label class="text-xs">Atas (cm)</label><input type="number" step="0.1" id="set-polda-top" class="w-full text-xs p-2 rounded border border-main bg-input preview-trigger"></div>
+                            <div><label class="text-xs">Kiri (cm)</label><input type="number" step="0.1" id="set-polda-left" class="w-full text-xs p-2 rounded border border-main bg-input preview-trigger"></div>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 pt-4 border-t border-main flex justify-end space-x-4 sticky bottom-0 bg-card z-20 pb-4">
+                        <button type="button" class="py-2 px-4 rounded-lg bg-gray-300 text-gray-800 hover:bg-gray-400" onclick="document.getElementById('id-lemari-settings-modal').classList.add('hidden')">Batal</button>
+                        <button type="submit" class="py-2 px-6 rounded-lg bg-blue-600 text-white hover:bg-blue-700 font-bold shadow-lg">Simpan & Terapkan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

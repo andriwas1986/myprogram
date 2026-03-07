@@ -1,0 +1,312 @@
+<div id="siswa-diktuk-modal" class="modal fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center hidden p-4 z-50">
+    <div class="bg-card rounded-lg shadow-xl w-full max-w-5xl max-h-[90vh] flex flex-col">
+        <div class="p-5 border-b border-main flex justify-between items-center shrink-0">
+            <h3 id="modal-diktuk-title" class="text-xl font-bold text-main">Kelola Siswa Diktuk</h3>
+            <button type="button" class="btn-cancel-modal text-gray-400 hover:text-gray-600 text-3xl leading-none">&times;</button>
+        </div>
+
+        <form id="siswa-diktuk-form" class="p-6 overflow-y-auto custom-scrollbar">
+            <input type="hidden" id="siswa-diktuk-id">
+            <input type="hidden" id="siswa-diktuk-kategori-jenis">
+            <input type="hidden" id="siswa-diktuk-kategori-detail">
+            <input type="hidden" id="siswa-diktuk-tahun-ajaran">
+
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                
+                <div class="lg:col-span-1 flex flex-col items-center space-y-3">
+                    <img id="diktuk-foto-preview" src="https://placehold.co/200x250/e2e8f0/4a5568?text=Foto+Siswa" 
+                         alt="Foto Siswa" class="w-40 h-52 object-cover rounded-lg border-2 border-main shadow-sm bg-gray-100">
+                    
+                    <input type="file" id="diktuk-foto-siswa" class="hidden" accept="image/*">
+                    
+                    <div class="w-full space-y-2">
+                        <button type="button" id="btn-upload-diktuk-foto" class="w-full bg-blue-600 text-white py-2 px-3 rounded-md hover:bg-blue-700 text-sm flex items-center justify-center gap-2 transition">
+                            <i class="fas fa-camera"></i> Pilih Foto
+                        </button>
+                        <button type="button" id="btn-hapus-diktuk-foto" class="w-full bg-red-500 text-white py-2 px-3 rounded-md hover:bg-red-600 text-sm flex items-center justify-center gap-2 transition">
+                            <i class="fas fa-trash"></i> Hapus Foto
+                        </button>
+                    </div>
+                    <p class="text-xs text-subtle text-center mt-2">Format: JPG/PNG. Max 2MB.</p>
+                </div>
+
+                <div class="lg:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="md:col-span-2 border-b border-tertiary pb-2 mb-2">
+                        <h4 class="font-bold text-main text-sm uppercase tracking-wide">Data Pokok</h4>
+                    </div>
+
+                    <div>
+                        <label class="block mb-1 text-sm font-medium text-subtle">Nama Lengkap</label>
+                        <input type="text" id="diktuk-nama" class="bg-input border border-main text-main text-sm rounded-md w-full p-2.5" required placeholder="Nama sesuai KTP">
+                    </div>
+                    <div>
+                        <label class="block mb-1 text-sm font-medium text-subtle">NOSIS</label>
+                        <input type="text" id="diktuk-nosis" class="bg-input border border-main text-main text-sm rounded-md w-full p-2.5" required placeholder="Nomor Siswa">
+                    </div>
+                    <div>
+                        <label class="block mb-1 text-sm font-medium text-subtle">NRP</label>
+                        <input type="text" id="diktuk-nrp" class="bg-input border border-main text-main text-sm rounded-md w-full p-2.5" placeholder="NRP (Jika ada)">
+                    </div>
+                    <div>
+                        <label class="block mb-1 text-sm font-medium text-subtle">NIK</label>
+                        <input type="text" id="diktuk-nik" class="bg-input border border-main text-main text-sm rounded-md w-full p-2.5" placeholder="Nomor Induk Kependudukan">
+                    </div>
+                    
+                    <div class="md:col-span-2 border-b border-tertiary pb-2 mb-2 mt-2">
+                        <h4 class="font-bold text-main text-sm uppercase tracking-wide">Penempatan Kelas</h4>
+                    </div>
+                    <div>
+                        <label class="block mb-1 text-sm font-medium text-subtle">Batalyon</label>
+                        <select id="diktuk-batalyon" class="bg-input border border-main text-main text-sm rounded-md w-full p-2.5">
+                            <option value="">- Pilih -</option><option value="I">I</option><option value="II">II</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block mb-1 text-sm font-medium text-subtle">Kompi</label>
+                        <select id="diktuk-kompi" class="bg-input border border-main text-main text-sm rounded-md w-full p-2.5">
+                            <option value="">- Pilih -</option><option value="A">A</option><option value="B">B</option><option value="C">C</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block mb-1 text-sm font-medium text-subtle">Peleton</label>
+                        <select id="diktuk-peleton" class="bg-input border border-main text-main text-sm rounded-md w-full p-2.5">
+                            <option value="">- Pilih -</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option>
+                        </select>
+                    </div>
+
+                    <div class="md:col-span-2 border-b border-tertiary pb-2 mb-2 mt-2">
+                        <h4 class="font-bold text-main text-sm uppercase tracking-wide">Data Pribadi</h4>
+                    </div>
+                    <div>
+                        <label class="block mb-1 text-sm font-medium text-subtle">Tempat Lahir</label>
+                        <input type="text" id="diktuk-tempatLahir" class="bg-input border border-main text-main text-sm rounded-md w-full p-2.5">
+                    </div>
+                    <div>
+                        <label class="block mb-1 text-sm font-medium text-subtle">Tanggal Lahir</label>
+                        <input type="date" id="diktuk-tanggalLahir" class="bg-input border border-main text-main text-sm rounded-md w-full p-2.5">
+                    </div>
+                    <div>
+                        <label class="block mb-1 text-sm font-medium text-subtle">Agama</label>
+                        <select id="diktuk-agama" class="bg-input border border-main text-main text-sm rounded-md w-full p-2.5">
+                            <option value="">- Pilih -</option>
+                            <option value="Islam">Islam</option><option value="Kristen">Kristen</option><option value="Katolik">Katolik</option>
+                            <option value="Hindu">Hindu</option><option value="Buddha">Buddha</option><option value="Konghucu">Konghucu</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block mb-1 text-sm font-medium text-subtle">Gol. Darah</label>
+                        <input type="text" id="diktuk-goldar" class="bg-input border border-main text-main text-sm rounded-md w-full p-2.5" placeholder="A/B/AB/O">
+                    </div>
+                     <div>
+                        <label class="block mb-1 text-sm font-medium text-subtle">Asal Polda</label>
+                        <input type="text" id="diktuk-asal-polda" class="bg-input border border-main text-main text-sm rounded-md w-full p-2.5">
+                    </div>
+                    <div>
+                        <label class="block mb-1 text-sm font-medium text-subtle">Pangkat (Saat Ini)</label>
+                        <input type="text" id="diktuk-pangkat" class="bg-input border border-main text-main text-sm rounded-md w-full p-2.5">
+                    </div>
+                    <div>
+                        <label class="block mb-1 text-sm font-medium text-subtle">Pend. Terakhir</label>
+                        <input type="text" id="diktuk-pendidikan-terakhir" class="bg-input border border-main text-main text-sm rounded-md w-full p-2.5">
+                    </div>
+                     <div>
+                        <label class="block mb-1 text-sm font-medium text-subtle">No. Telepon</label>
+                        <input type="text" id="diktuk-telp" class="bg-input border border-main text-main text-sm rounded-md w-full p-2.5">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block mb-1 text-sm font-medium text-subtle">Alamat Lengkap</label>
+                        <textarea id="diktuk-alamat" rows="2" class="bg-input border border-main text-main text-sm rounded-md w-full p-2.5"></textarea>
+                    </div>
+
+                     <div class="md:col-span-2 border-b border-tertiary pb-2 mb-2 mt-2">
+                        <h4 class="font-bold text-main text-sm uppercase tracking-wide">Media Sosial</h4>
+                    </div>
+                    <div>
+                         <div class="flex items-center gap-2 mb-1">
+                            <i class="fab fa-instagram text-pink-600"></i>
+                            <label class="text-sm font-medium text-subtle">Instagram</label>
+                        </div>
+                        <input type="text" id="diktuk-instagram" class="bg-input border border-main text-main text-sm rounded-md w-full p-2.5" placeholder="@username">
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <i class="fab fa-facebook text-blue-600"></i>
+                            <label class="text-sm font-medium text-subtle">Facebook</label>
+                        </div>
+                        <input type="text" id="diktuk-facebook" class="bg-input border border-main text-main text-sm rounded-md w-full p-2.5" placeholder="Username/Link">
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <i class="fab fa-tiktok text-black"></i>
+                            <label class="text-sm font-medium text-subtle">TikTok</label>
+                        </div>
+                        <input type="text" id="diktuk-tiktok" class="bg-input border border-main text-main text-sm rounded-md w-full p-2.5" placeholder="@username">
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <i class="fab fa-twitter text-blue-400"></i>
+                            <label class="text-sm font-medium text-subtle">Twitter/X</label>
+                        </div>
+                        <input type="text" id="diktuk-x" class="bg-input border border-main text-main text-sm rounded-md w-full p-2.5" placeholder="@username">
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <div class="p-5 border-t border-main flex justify-end space-x-3 shrink-0 bg-card rounded-b-lg">
+            <button type="button" class="btn-cancel-modal py-2 px-5 rounded-md bg-gray-200 text-gray-700 hover:bg-gray-300 font-medium transition">Batal</button>
+            <button type="submit" form="siswa-diktuk-form" class="py-2 px-5 rounded-md bg-blue-600 hover:bg-blue-700 text-white font-medium shadow-md transition">
+                <i class="fas fa-save mr-1"></i> Simpan Data
+            </button>
+        </div>
+    </div>
+</div>
+
+
+<div id="siswa-dikbangspes-modal" class="modal fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center hidden p-4 z-50">
+    <div class="bg-card rounded-lg shadow-xl w-full max-w-5xl max-h-[90vh] flex flex-col">
+        <div class="p-5 border-b border-main flex justify-between items-center shrink-0">
+            <h3 id="siswa-dikbangspes-modal-title" class="text-xl font-bold text-main">Kelola Siswa Dikbangspes</h3>
+            <button type="button" class="btn-cancel-modal text-gray-400 hover:text-gray-600 text-3xl leading-none">&times;</button>
+        </div>
+
+        <form id="siswa-dikbangspes-form" class="p-6 overflow-y-auto custom-scrollbar">
+            <input type="hidden" id="siswa-dikbangspes-id">
+            <input type="hidden" id="siswa-dikbangspes-kategori-jenis">
+            <input type="hidden" id="siswa-dikbangspes-kategori-detail">
+            <input type="hidden" id="siswa-dikbangspes-tahun-ajaran">
+
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                
+                <div class="lg:col-span-1 flex flex-col items-center space-y-3">
+                    <img id="dikbangspes-foto-preview" src="https://placehold.co/200x250/e2e8f0/4a5568?text=Foto+Siswa" 
+                         alt="Foto Siswa" class="w-40 h-52 object-cover rounded-lg border-2 border-main shadow-sm bg-gray-100">
+                    
+                    <input type="file" id="dikbangspes-foto-siswa" class="hidden" accept="image/*">
+                    
+                    <div class="w-full space-y-2">
+                        <button type="button" id="btn-upload-dikbangspes-foto" class="w-full bg-blue-600 text-white py-2 px-3 rounded-md hover:bg-blue-700 text-sm flex items-center justify-center gap-2 transition">
+                            <i class="fas fa-camera"></i> Pilih Foto
+                        </button>
+                         <button type="button" id="btn-hapus-dikbangspes-foto" class="w-full bg-red-500 text-white py-2 px-3 rounded-md hover:bg-red-600 text-sm flex items-center justify-center gap-2 transition">
+                            <i class="fas fa-trash"></i> Hapus Foto
+                        </button>
+                    </div>
+                    <p class="text-xs text-subtle text-center mt-2">Format: JPG/PNG. Max 2MB.</p>
+                </div>
+
+                <div class="lg:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    
+                    <div class="md:col-span-2 mb-2">
+                         <label class="block mb-1 text-sm font-medium text-subtle">Program Pendidikan</label>
+                         <input type="text" id="siswa-dikbangspes-kategori-display" class="bg-gray-100 border border-gray-300 text-gray-500 text-sm rounded-md w-full p-2.5 font-bold" readonly>
+                    </div>
+
+                    <div class="md:col-span-2 border-b border-tertiary pb-2 mb-2">
+                        <h4 class="font-bold text-main text-sm uppercase tracking-wide">Data Pokok</h4>
+                    </div>
+
+                    <div>
+                        <label class="block mb-1 text-sm font-medium text-subtle">Nama Lengkap</label>
+                        <input type="text" id="siswa-dikbangspes-nama" class="bg-input border border-main text-main text-sm rounded-md w-full p-2.5" required placeholder="Nama Lengkap">
+                    </div>
+                    <div>
+                        <label class="block mb-1 text-sm font-medium text-subtle">Pangkat</label>
+                        <input type="text" id="siswa-dikbangspes-pangkat" class="bg-input border border-main text-main text-sm rounded-md w-full p-2.5" placeholder="Pangkat">
+                    </div>
+                    <div>
+                        <label class="block mb-1 text-sm font-medium text-subtle">NRP / NIP</label>
+                        <input type="text" id="siswa-dikbangspes-nrp" class="bg-input border border-main text-main text-sm rounded-md w-full p-2.5" placeholder="NRP/NIP">
+                    </div>
+                    <div>
+                        <label class="block mb-1 text-sm font-medium text-subtle">NOSIS</label>
+                        <input type="text" id="siswa-dikbangspes-nosis" class="bg-input border border-main text-main text-sm rounded-md w-full p-2.5" placeholder="Nomor Siswa">
+                    </div>
+                    <div>
+                        <label class="block mb-1 text-sm font-medium text-subtle">Jabatan</label>
+                        <input type="text" id="siswa-dikbangspes-jabatan" class="bg-input border border-main text-main text-sm rounded-md w-full p-2.5" placeholder="Jabatan">
+                    </div>
+                     <div>
+                        <label class="block mb-1 text-sm font-medium text-subtle">Kesatuan / Asal Polda</label>
+                        <input type="text" id="siswa-dikbangspes-asal-polda" class="bg-input border border-main text-main text-sm rounded-md w-full p-2.5" placeholder="Asal Pengiriman">
+                    </div>
+
+                    <div class="md:col-span-2 border-b border-tertiary pb-2 mb-2 mt-2">
+                        <h4 class="font-bold text-main text-sm uppercase tracking-wide">Data Pribadi</h4>
+                    </div>
+                    <div>
+                        <label class="block mb-1 text-sm font-medium text-subtle">Tempat Lahir</label>
+                        <input type="text" id="siswa-dikbangspes-tempat-lahir" class="bg-input border border-main text-main text-sm rounded-md w-full p-2.5">
+                    </div>
+                    <div>
+                        <label class="block mb-1 text-sm font-medium text-subtle">Tanggal Lahir</label>
+                        <input type="date" id="siswa-dikbangspes-tanggal-lahir" class="bg-input border border-main text-main text-sm rounded-md w-full p-2.5">
+                    </div>
+                    <div>
+                        <label class="block mb-1 text-sm font-medium text-subtle">Agama</label>
+                        <input type="text" id="siswa-dikbangspes-agama" class="bg-input border border-main text-main text-sm rounded-md w-full p-2.5">
+                    </div>
+                    <div>
+                        <label class="block mb-1 text-sm font-medium text-subtle">Gol. Darah</label>
+                        <input type="text" id="siswa-dikbangspes-goldar" class="bg-input border border-main text-main text-sm rounded-md w-full p-2.5">
+                    </div>
+                    <div>
+                        <label class="block mb-1 text-sm font-medium text-subtle">No. Telepon</label>
+                        <input type="text" id="siswa-dikbangspes-telepon" class="bg-input border border-main text-main text-sm rounded-md w-full p-2.5">
+                    </div>
+                     <div>
+                        <label class="block mb-1 text-sm font-medium text-subtle">NIK</label>
+                        <input type="text" id="siswa-dikbangspes-nik" class="bg-input border border-main text-main text-sm rounded-md w-full p-2.5">
+                    </div>
+                     <div>
+                        <label class="block mb-1 text-sm font-medium text-subtle">Pend. Terakhir</label>
+                        <input type="text" id="siswa-dikbangspes-pendidikan-terakhir" class="bg-input border border-main text-main text-sm rounded-md w-full p-2.5">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block mb-1 text-sm font-medium text-subtle">Alamat</label>
+                        <textarea id="siswa-dikbangspes-alamat" rows="2" class="bg-input border border-main text-main text-sm rounded-md w-full p-2.5"></textarea>
+                    </div>
+
+                     <div class="md:col-span-2 border-b border-tertiary pb-2 mb-2 mt-2">
+                        <h4 class="font-bold text-main text-sm uppercase tracking-wide">Media Sosial</h4>
+                    </div>
+                    <div>
+                         <div class="flex items-center gap-2 mb-1">
+                            <i class="fab fa-instagram text-pink-600"></i>
+                            <label class="text-sm font-medium text-subtle">Instagram</label>
+                        </div>
+                        <input type="text" id="siswa-dikbangspes-instagram" class="bg-input border border-main text-main text-sm rounded-md w-full p-2.5" placeholder="@username">
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <i class="fab fa-facebook text-blue-600"></i>
+                            <label class="text-sm font-medium text-subtle">Facebook</label>
+                        </div>
+                        <input type="text" id="siswa-dikbangspes-facebook" class="bg-input border border-main text-main text-sm rounded-md w-full p-2.5" placeholder="Username/Link">
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <i class="fab fa-tiktok text-black"></i>
+                            <label class="text-sm font-medium text-subtle">TikTok</label>
+                        </div>
+                        <input type="text" id="siswa-dikbangspes-tiktok" class="bg-input border border-main text-main text-sm rounded-md w-full p-2.5" placeholder="@username">
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <i class="fab fa-twitter text-blue-400"></i>
+                            <label class="text-sm font-medium text-subtle">Twitter/X</label>
+                        </div>
+                        <input type="text" id="siswa-dikbangspes-x" class="bg-input border border-main text-main text-sm rounded-md w-full p-2.5" placeholder="@username">
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <div class="p-5 border-t border-main flex justify-end space-x-3 shrink-0 bg-card rounded-b-lg">
+            <button type="button" class="btn-cancel-modal py-2 px-5 rounded-md bg-gray-200 text-gray-700 hover:bg-gray-300 font-medium transition">Batal</button>
+            <button type="submit" form="siswa-dikbangspes-form" class="py-2 px-5 rounded-md bg-blue-600 hover:bg-blue-700 text-white font-medium shadow-md transition">
+                <i class="fas fa-save mr-1"></i> Simpan Data
+            </button>
+        </div>
+    </div>
+</div>

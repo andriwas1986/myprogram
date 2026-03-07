@@ -1,0 +1,119 @@
+<div class="bg-card p-6 rounded-lg shadow-md">
+    <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+        <div id="nilai-kepribadian-header">
+            <button id="btn-back-nilai-kepribadian" class="text-blue-500 hover:underline mb-2 hidden">
+                &larr; Kembali
+            </button>
+            <h2 id="nilai-kepribadian-view-title" class="text-2xl font-bold text-main">Manajemen Nilai Mental Kepribadian</h2>
+            <p id="nilai-kepribadian-view-subtitle" class="text-sm text-subtle mt-1"></p>
+            
+            <p class="text-xs text-subtle mt-1 bg-blue-50 p-2 rounded border border-blue-100 text-blue-800">
+                <strong>Metode Penilaian Dikbangspes & DIKBANGUM SEKOLAH BINTARA POLISI:</strong><br>
+                NILAI AKHIR = (Nilai Instruktur Minggu Terakhir × 70%) + (Nilai Sosiometri × 30%).
+                <br>
+                <i class="opacity-80">*Nilai Sosiometri dinilai sekali oleh rekan siswa menjelang Tupdik.</i>
+            </p>
+        </div>
+    </div>
+
+    <div id="nilai-kepribadian-view-container">
+        <div id="nilai-kepribadian-main-view">
+            <p class="text-subtle mb-4">Pilih salah satu jenis pendidikan di bawah untuk mulai menginput nilai.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="text-lg font-semibold text-main mb-2">A. DIKTUK TAMTAMA</h3>
+                    <div class="overflow-x-auto border border-main rounded-lg">
+                        <table class="w-full text-sm text-left">
+                            <thead class="text-xs text-subtle uppercase bg-tertiary">
+                                <tr>
+                                    <th class="p-3 w-12 text-center">No</th>
+                                    <th class="p-3 text-center">Kategori Pendidikan</th>
+                                    <th class="p-3 text-center">Status</th> 
+                                    <th class="p-3 text-center">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="nilai-kepribadian-diktuk-tamtama-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div>
+                     <h3 class="text-lg font-semibold text-main mb-2">B. DIKTUK BINTARA</h3>
+                    <div class="overflow-x-auto border border-main rounded-lg">
+                        <table class="w-full text-sm text-left">
+                           <thead class="text-xs text-subtle uppercase bg-tertiary">
+                               <tr>
+                                   <th class="p-3 w-12 text-center">No</th>
+                                   <th class="p-3 text-center">Kategori Pendidikan</th>
+                                   <th class="p-3 text-center">Status</th>
+                                   <th class="p-3 text-center">Aksi</th>
+                               </tr>
+                           </thead>
+                            <tbody id="nilai-kepribadian-diktuk-bintara-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-semibold text-main mb-2">C. DIKBANGSPES</h3>
+                    <div class="overflow-x-auto border border-main rounded-lg">
+                        <table class="w-full text-sm text-left">
+                            <thead class="text-xs text-subtle uppercase bg-tertiary">
+                                <tr>
+                                    <th class="p-3 w-12 text-center">No</th>
+                                    <th class="p-3 text-center">Kategori Pendidikan</th>
+                                    <th class="p-3 text-center">Status</th> 
+                                    <th class="p-3 text-center">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="nilai-kepribadian-dikbangspes-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-semibold text-main mb-2">D. DIKBANGUM SEKOLAH BINTARA POLISI</h3>
+                    <div class="overflow-x-auto border border-main rounded-lg">
+                        <table class="w-full text-sm text-left">
+                            <thead class="text-xs text-subtle uppercase bg-tertiary">
+                                <tr>
+                                    <th class="p-3 w-12 text-center">No</th>
+                                    <th class="p-3 text-center">Kategori Pendidikan</th>
+                                    <th class="p-3 text-center">Status</th>
+                                    <th class="p-3 text-center">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="nilai-kepribadian-dikbangum-sekolah-bintara-polisi-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="nilai-kepribadian-list-view" class="hidden">
+            <div class="flex flex-wrap items-center justify-between gap-4 mb-4 p-4 bg-tertiary rounded-lg">
+                <input type="text" id="search-kepribadian-input" placeholder="Cari siswa..." class="bg-input border-main text-main text-sm rounded-lg p-2.5 flex-grow max-w-md">
+                <div class="flex items-center gap-2">
+                    <button class="btn-import-excel bg-green-600 text-white text-xs py-2 px-3 rounded-md hover:bg-green-700" data-type="kepribadian"><i class="fas fa-file-excel mr-1"></i> Impor</button>
+                    <button class="btn-export-excel bg-blue-600 text-white text-xs py-2 px-3 rounded-md hover:bg-blue-700" data-type="kepribadian"><i class="fas fa-file-export mr-1"></i> Ekspor</button>
+                </div>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left">
+                    <thead id="nilai-kepribadian-table-head" class="text-xs text-subtle uppercase bg-tertiary">
+                        <tr>
+                            <th class="p-3 text-center">No</th>
+                            <th class="p-3 text-center">Nosis</th>
+                            <th class="p-3">Nama Lengkap</th>
+                            <th class="p-3 text-center">Rata-Rata</th>
+                            <th class="p-3 text-center">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="nilai-kepribadian-table-body"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

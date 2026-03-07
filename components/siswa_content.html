@@ -1,0 +1,131 @@
+<div class="bg-card p-6 rounded-lg shadow-md">
+    <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+        <div id="siswa-header">
+            <button id="btn-back-siswa" class="text-blue-500 hover:underline mb-2 hidden">&larr; Kembali</button>
+            <h2 id="siswa-view-title" class="text-2xl font-bold text-main">Manajemen Data Siswa</h2>
+            <div id="siswa-view-subtitle" class="text-sm text-subtle mt-1"></div>
+        </div>
+    </div>
+
+    <div id="siswa-view-container">
+        <div id="main-view">
+            <div class="border-b border-main mb-4">
+                <div class="ta-tabs-container relative">
+                    <nav class="flex space-x-1" aria-label="Tabs">
+                        <button class="ta-tab-btn" data-tab="dikbangspes">DIKBANGSPES</button>
+                        <button class="ta-tab-btn" data-tab="diktuk-tamtama">DIKTUK TAMTAMA</button>
+                        <button class="ta-tab-btn" data-tab="diktuk-bintara">DIKTUK BINTARA</button>
+                        <button class="ta-tab-btn" data-tab="dikbangum-sekolah-bintara-polisi">DIKBANGUM SEKOLAH BINTARA POLISI</button>
+                    </nav>
+                    <div id="siswa-tab-slider"></div>
+                </div>
+            </div>
+
+            <div>
+                <div id="tab-content-dikbangspes" class="ta-tab-content hidden">
+                    <div class="overflow-x-auto border border-main rounded-lg">
+                        <table class="w-full text-sm text-left">
+                            <thead class="text-xs text-subtle uppercase bg-tertiary">
+                                <tr>
+                                    <th class="p-3 w-12 text-center">No</th> <th class="p-3 text-center">KATEGORI PENDIDIKAN</th>
+                                    <th class="p-3 text-center">JUMLAH SISWA</th>
+                                    <th class="p-3 text-center">TANGGAL DIK</th>
+                                    <th class="p-3 text-center">STATUS</th>
+                                    <th class="p-3 text-center">AKSI</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dikbangspes-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="tab-content-diktuk-tamtama" class="ta-tab-content hidden">
+                    <div class="overflow-x-auto border border-main rounded-lg">
+                        <table class="w-full text-sm text-left">
+                            <thead class="text-xs text-subtle uppercase bg-tertiary">
+                                <tr>
+                                    <th class="p-3 w-12 text-center">No</th> <th class="p-3 text-center">KATEGORI PENDIDIKAN</th>
+                                    <th class="p-3 text-center">JUMLAH SISWA</th>
+                                    <th class="p-3 text-center">TANGGAL DIK</th>
+                                    <th class="p-3 text-center">STATUS</th>
+                                    <th class="p-3 text-center">AKSI</th>
+                                </tr>
+                            </thead>
+                            <tbody id="diktuk-tamtama-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="tab-content-diktuk-bintara" class="ta-tab-content hidden">
+                    <div class="overflow-x-auto border border-main rounded-lg">
+                        <table class="w-full text-sm text-left">
+                            <thead class="text-xs text-subtle uppercase bg-tertiary">
+                                <tr>
+                                    <th class="p-3 w-12 text-center">No</th> <th class="p-3 text-center">KATEGORI PENDIDIKAN</th>
+                                    <th class="p-3 text-center">JUMLAH SISWA</th>
+                                    <th class="p-3 text-center">TANGGAL DIK</th>
+                                    <th class="p-3 text-center">STATUS</th>
+                                    <th class="p-3 text-center">AKSI</th>
+                                </tr>
+                            </thead>
+                            <tbody id="diktuk-bintara-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="tab-content-dikbangum-sekolah-bintara-polisi" class="ta-tab-content hidden">
+                    <div class="overflow-x-auto border border-main rounded-lg">
+                        <table class="w-full text-sm text-left">
+                            <thead class="text-xs text-subtle uppercase bg-tertiary">
+                                <tr>
+                                    <th class="p-3 w-12 text-center">No</th> <th class="p-3 text-center">KATEGORI PENDIDIKAN</th>
+                                    <th class="p-3 text-center">JUMLAH SISWA</th>
+                                    <th class="p-3 text-center">TANGGAL DIK</th>
+                                    <th class="p-3 text-center">STATUS</th>
+                                    <th class="p-3 text-center">AKSI</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dikbangum-sekolah-bintara-polisi-table-body"></tbody> 
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="class-detail-view" class="hidden">
+             <div class="flex flex-col md:flex-row justify-between items-center mb-4 gap-4 no-print">
+                <div>
+                     <button id="btn-tambah-siswa-detail" class="bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 flex items-center text-sm font-semibold shadow">
+                        <i class="fas fa-user-plus mr-2"></i>
+                        <span>Tambah Siswa</span>
+                    </button>
+                </div>
+                <div class="flex items-center justify-end gap-2 flex-wrap">
+                    <button class="btn-import-excel bg-blue-600 text-white text-xs py-2 px-3 rounded-md hover:bg-blue-700 flex items-center shadow" data-permission-action="create_data_siswa"><i class="fas fa-file-excel mr-1"></i> import</button>
+                    <button class="btn-export-excel bg-gray-600 text-white text-xs py-2 px-3 rounded-md hover:bg-gray-700 flex items-center shadow"><i class="fas fa-file-export mr-1"></i> export</button>
+                    
+                    <button id="btn-delete-all-siswa" class="bg-red-700 text-white text-xs py-2 px-3 rounded-md hover:bg-red-800 flex items-center shadow" data-permission-action="delete_data_siswa">
+                        <i class="fas fa-trash-alt mr-1"></i> Hapus Semua
+                    </button>
+                    <button id="btn-view-all-details" class="bg-purple-600 text-white text-xs py-2 px-3 rounded-md hover:bg-purple-700 flex items-center shadow"><i class="fas fa-list-alt mr-1"></i> view detail</button>
+                    <button id="btn-print-details" class="bg-gray-600 text-white text-xs py-2 px-3 rounded-md hover:bg-gray-700 flex items-center shadow"><i class="fas fa-print mr-1"></i> Print</button>
+                    <button id="btn-export-pdf" class="bg-red-600 text-white text-xs py-2 px-3 rounded-md hover:bg-red-700 flex items-center shadow"><i class="fas fa-file-pdf mr-1"></i> PDF</button>
+                </div>
+             </div>
+            <div id="student-table-container" class="overflow-x-auto border border-main rounded-lg">
+                <table class="w-full text-sm text-left">
+                    <thead class="text-xs text-subtle uppercase bg-tertiary">
+                        <tr><th class="p-3">No</th><th class="p-3">Nama</th><th class="p-3">Nosis</th><th class="p-3">Peleton</th><th class="p-3">Kompi</th><th class="p-3">Batalyon</th><th class="p-3">Alamat</th><th class="p-3 text-center">Aksi</th></tr>
+                    </thead>
+                    <tbody id="student-list-table-body"></tbody>
+                </table>
+            </div>
+            
+            <div id="siswa-pagination" class="flex justify-between items-center mt-4 no-print">
+            </div>
+
+            <div id="student-all-details-view" class="hidden mt-6">
+            </div>
+        </div>
+    </div>
+</div>

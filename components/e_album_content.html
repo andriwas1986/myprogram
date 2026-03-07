@@ -1,0 +1,119 @@
+<div class="space-y-6">
+    <div class="bg-card p-6 rounded-lg shadow-md">
+        <div class="flex flex-col md:flex-row justify-between items-start mb-2 gap-4">
+            <div id="e-album-header">
+                <button id="btn-back-e-album" class="text-blue-500 hover:underline mb-2 hidden">&larr; Kembali</button>
+                <h2 id="e-album-title" class="text-2xl font-bold text-main">E-Album Angkatan</h2>
+                <p id="e-album-subtitle" class="text-subtle mt-1 text-sm"></p>
+            </div>
+        </div>
+    </div>
+
+    <div id="e-album-main-view" class="bg-card p-6 rounded-lg shadow-md">
+        <div class="border-b border-main mb-4">
+            <div class="ta-tabs-container relative">
+                <nav class="flex space-x-1" aria-label="Tabs">
+                    <button class="ta-tab-btn" data-tab="diktuk-tamtama">DIKTUK TAMTAMA</button>
+                    <button class="ta-tab-btn" data-tab="diktuk-bintara">DIKTUK BINTARA</button>
+                    <button class="ta-tab-btn" data-tab="dikbangspes">DIKBANGSPES</button>
+                    <button class="ta-tab-btn" data-tab="dikbagum-sbp">DIKBANGUM SEKOLAH BINTARA POLISI</button>
+                </nav>
+                <div id="e-album-tab-slider" class="slider"></div>
+            </div>
+        </div>
+        <div>
+            <div id="e-album-tab-content-diktuk-tamtama" class="ta-tab-content">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left">
+                        <thead class="text-xs text-subtle uppercase bg-tertiary">
+                            <tr>
+                                <th class="p-3 w-12 text-center">No</th>
+                                <th class="p-3">Pendidikan</th>
+                                <th class="p-3 text-center">Jml. Siswa</th>
+                                <th class="p-3 text-center">Status</th>
+                                <th class="p-3 text-center">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="e-album-diktuk-tamtama-table-body"></tbody>
+                    </table>
+                </div>
+                <div id="pagination-e-album-diktuk-tamtama" class="flex justify-between items-center mt-4 no-print"></div>
+            </div>
+
+            <div id="e-album-tab-content-diktuk-bintara" class="ta-tab-content hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left">
+                         <thead class="text-xs text-subtle uppercase bg-tertiary">
+                            <tr>
+                                <th class="p-3 w-12 text-center">No</th>
+                                <th class="p-3">Pendidikan</th>
+                                <th class="p-3 text-center">Jml. Siswa</th>
+                                <th class="p-3 text-center">Status</th>
+                                <th class="p-3 text-center">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="e-album-diktuk-bintara-table-body"></tbody>
+                    </table>
+                </div>
+                <div id="pagination-e-album-diktuk-bintara" class="flex justify-between items-center mt-4 no-print"></div>
+            </div>
+
+            <div id="e-album-tab-content-dikbangspes" class="ta-tab-content hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left">
+                        <thead class="text-xs text-subtle uppercase bg-tertiary">
+                            <tr>
+                                <th class="p-3 w-12 text-center">No</th>
+                                <th class="p-3">Pendidikan</th>
+                                <th class="p-3 text-center">Jml. Siswa</th>
+                                <th class="p-3 text-center">Status</th>
+                                <th class="p-3 text-center">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="e-album-dikbangspes-table-body"></tbody>
+                    </table>
+                </div>
+                <div id="pagination-e-album-dikbangspes" class="flex justify-between items-center mt-4 no-print"></div>
+            </div>
+
+            <div id="e-album-tab-content-dikbagum-sbp" class="ta-tab-content hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left">
+                        <thead class="text-xs text-subtle uppercase bg-tertiary">
+                            <tr>
+                                <th class="p-3 w-12 text-center">No</th>
+                                <th class="p-3">Pendidikan</th>
+                                <th class="p-3 text-center">Jml. Siswa</th>
+                                <th class="p-3 text-center">Status</th>
+                                <th class="p-3 text-center">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="e-album-dikbagum-sbp-table-body"></tbody>
+                    </table>
+                </div>
+                <div id="pagination-e-album-dikbagum-sbp" class="flex justify-between items-center mt-4 no-print"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="e-album-grid-view" class="hidden">
+        <div class="w-full sm:w-auto sm:max-w-xs mb-6">
+            <input type="text" id="e-album-search" 
+                   class="w-full p-3 bg-card border border-border rounded-lg shadow-sm text-main placeholder-subtle" 
+                   placeholder="Cari nama, nosis, pangkat...">
+        </div>
+    
+        <div id="e-album-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            </div>
+    
+        <div id="e-album-no-data" class="text-center py-20 text-subtle hidden">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <p class="mt-4 text-lg">Album tidak ditemukan</p>
+        </div>
+    
+        <div id="e-album-pagination" class="mt-8 flex justify-center items-center">
+            </div>
+    </div>
+</div>

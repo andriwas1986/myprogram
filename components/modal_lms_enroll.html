@@ -1,0 +1,32 @@
+<div id="lms-enroll-modal" class="modal fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center hidden p-4 z-50">
+    <div class="bg-card rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] flex flex-col">
+        <div class="p-6 border-b border-main flex justify-between items-center">
+            <div>
+                <h3 class="text-2xl font-bold text-main">Kelola Pendaftaran Siswa</h3>
+                <p id="lms-enroll-mapel-title" class="text-subtle text-sm"></p>
+            </div>
+            <button type="button" class="btn-cancel-lms-enroll text-gray-400 hover:text-gray-600 text-3xl leading-none">&times;</button>
+        </div>
+        <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6 overflow-y-auto">
+            <div class="flex flex-col">
+                <h4 class="font-semibold text-main mb-2">Siswa yang Tersedia</h4>
+                <div class="bg-tertiary p-2 rounded-t-lg">
+                    <input type="text" id="search-available-students" placeholder="Cari siswa untuk didaftarkan..." class="w-full bg-input border-main text-main text-sm rounded-lg p-2">
+                </div>
+                <div id="available-students-list" class="bg-tertiary p-2 rounded-b-lg overflow-y-auto flex-grow h-64">
+                    </div>
+            </div>
+            <div class="flex flex-col">
+                <h4 class="font-semibold text-main mb-2">Siswa Terdaftar di Kelas Ini</h4>
+                 <div class="bg-tertiary p-2 rounded-t-lg">
+                    <input type="text" id="search-enrolled-students" placeholder="Cari siswa terdaftar..." class="w-full bg-input border-main text-main text-sm rounded-lg p-2">
+                </div>
+                <div id="enrolled-students-list" class="bg-tertiary p-2 rounded-b-lg overflow-y-auto flex-grow h-64">
+                    </div>
+            </div>
+        </div>
+        <div class="p-6 border-t border-main flex justify-end">
+            <button type="button" id="btn-save-enrollment" class="py-2 px-5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold">Simpan Perubahan</button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,89 @@
+<div id="print-area-modern" class="p-6 space-y-6 bg-white rounded-lg">
+    <div class="hidden print:block text-center mb-6 border-b-2 border-black pb-4">
+        <div class="flex items-center justify-center gap-4">
+            <img id="modern-transkrip-logo" src="https://upload.wikimedia.org/wikipedia/id/thumb/8/88/Logo_Pataka_Korps_Airud.png/375px-Logo_Pataka_Korps_Airud.png" alt="Logo" class="w-16 h-auto">
+            <div class="text-left font-bold uppercase">
+                <p id="modern-transkrip-header1" class="text-lg">KEPOLISIAN NEGARA REPUBLIK INDONESIA</p>
+                <p id="modern-transkrip-header2" class="text-md">LEMBAGA PENDIDIKAN DAN PELATIHAN</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex flex-col md:flex-row items-center gap-6 p-4 bg-tertiary rounded-lg border border-main print:border-none print:bg-transparent print:p-0">
+        <img id="modern-transkrip-foto" src="https://placehold.co/150x150/e2e8f0/4a5568?text=Foto" alt="Foto Siswa" class="w-24 h-32 object-cover rounded-md border-2 border-main print:border print:w-32 print:h-40">
+        <div class="flex-1 text-center md:text-left print:text-left">
+            <h3 id="modern-transkrip-nama" class="text-2xl font-bold text-main print:text-black uppercase">NAMA SISWA</h3>
+            <p id="modern-transkrip-kategori" class="text-subtle print:text-black font-medium text-lg mt-1">JENIS PENDIDIKAN</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2 mt-3 text-sm print:grid-cols-2">
+                <div class="flex justify-center md:justify-start gap-2">
+                    <span class="font-semibold text-subtle print:text-black w-16">Nosis</span>
+                    <span class="font-bold text-main print:text-black">:</span>
+                    <span id="modern-transkrip-nosis" class="text-main print:text-black font-mono"></span>
+                </div>
+                <div class="flex justify-center md:justify-start gap-2">
+                    <span class="font-semibold text-subtle print:text-black w-16">NRP</span>
+                    <span class="font-bold text-main print:text-black">:</span>
+                    <span id="modern-transkrip-nrp" class="text-main print:text-black font-mono"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <h4 class="text-lg font-semibold text-main mb-2 print:text-black border-b border-gray-300 pb-1">I. Rincian Nilai Akhir</h4>
+        <div class="overflow-x-auto border border-main rounded-lg print:border-black">
+            <table class="w-full text-sm text-left">
+                <thead class="text-xs text-subtle uppercase bg-tertiary print:bg-gray-200 print:text-black border-b border-main print:border-black">
+                    <tr>
+                        <th class="p-3 w-2/3">Aspek Penilaian</th>
+                        <th class="p-3 text-center">Rata-Rata Nilai</th>
+                    </tr>
+                </thead>
+                <tbody id="modern-transkrip-rekap-body" class="print:text-black">
+                    </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <div>
+        <h4 class="text-lg font-semibold text-main mb-2 print:text-black border-b border-gray-300 pb-1 mt-6">II. Rincian Nilai Akademik</h4>
+        <div class="overflow-x-auto border border-main rounded-lg print:border-black">
+            <table class="w-full text-sm text-left">
+                <thead class="text-xs text-subtle uppercase bg-tertiary print:bg-gray-200 print:text-black border-b border-main print:border-black">
+                    <tr>
+                        <th class="p-3 w-12 text-center">No</th>
+                        <th class="p-3">Mata Pelajaran</th>
+                        <th class="p-3 text-center w-24">Nilai Angka</th>
+                        <th class="p-3 w-1/3">Nilai Huruf</th>
+                    </tr>
+                </thead>
+                <tbody id="modern-transkrip-akademik-body" class="print:text-black">
+                    </tbody>
+                 <tfoot class="border-t border-main print:border-black">
+                    <tr class="font-bold text-main bg-tertiary print:bg-gray-100 print:text-black">
+                        <td colspan="2" class="p-3 text-right uppercase">Total Nilai Akademik</td>
+                        <td id="modern-transkrip-total-nilai" class="p-3 text-center">0</td>
+                        <td id="modern-transkrip-total-terbilang" class="p-3 italic font-normal text-xs">Nol</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+    <div class="hidden print:flex justify-end mt-12 pt-8">
+        <div class="text-center w-1/3">
+            <p class="mb-16">Mengetahui,<br>Kepala Bagian Pengajaran dan Latihan</p>
+            <p class="font-bold underline">(NAMA PEJABAT)</p>
+            <p>NRP. .....................</p>
+        </div>
+    </div>
+</div>
+
+<div class="flex justify-end gap-3 p-6 border-t border-main bg-card rounded-b-lg">
+    <button id="btn-print-modern" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 flex items-center gap-2">
+        <i class="fas fa-print"></i> Cetak
+    </button>
+    <button id="btn-close-modern" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600" onclick="closeModal('transkrip-detail-modal')">
+        Tutup
+    </button>
+</div>

@@ -1,0 +1,140 @@
+<div class="bg-card p-6 rounded-lg shadow-md">
+    <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+        <div id="petikan-header">
+            <button id="btn-back-petikan" class="text-blue-500 hover:underline mb-2 hidden flex items-center transition-colors">
+                <i class="fas fa-arrow-left mr-2"></i> Kembali
+            </button>
+            <h2 id="petikan-view-title" class="text-2xl font-bold text-main">PETIKAN KEPUTUSAN KAPUSDIK POLAIR</h2>
+            <div id="petikan-view-subtitle" class="text-sm text-subtle mt-1">
+                Kelola dan cetak Petikan Keputusan Kelulusan Siswa.
+            </div>
+            <div id="petikan-view-info" class="text-sm text-main mt-2 font-semibold border-t border-dashed border-gray-300 pt-2 hidden">
+            </div>
+        </div>
+
+        <div class="flex items-center space-x-2">
+            <button id="btn-petikan-settings" class="bg-yellow-500 text-white py-2 px-4 rounded-lg hover:bg-yellow-600 text-sm flex items-center shadow hidden transition-colors">
+                <i class="fas fa-cog mr-2"></i> Pengaturan SKEP
+            </button>
+        </div>
+    </div>
+
+    <div id="petikan-view-container">
+        
+        <div id="petikan-main-view">
+            <p class="text-subtle mb-4">Pilih pendidikan aktif di bawah ini:</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="text-lg font-semibold text-main mb-2">A. DIKTUK TAMTAMA</h3>
+                    <div class="overflow-x-auto border border-main rounded-lg">
+                        <table class="w-full text-sm text-left">
+                            <thead class="text-xs text-subtle uppercase bg-tertiary">
+                                <tr>
+                                    <th class="p-3 w-12 text-center">NO</th>
+                                    <th class="p-3">KATEGORI PENDIDIKAN</th>
+                                    <th class="p-3 text-center">STATUS</th>
+                                    <th class="p-3 text-center">AKSI</th>
+                                </tr>
+                            </thead>
+                            <tbody id="list-diktuk-tamtama"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div>
+                     <h3 class="text-lg font-semibold text-main mb-2">B. DIKTUK BINTARA</h3>
+                    <div class="overflow-x-auto border border-main rounded-lg">
+                        <table class="w-full text-sm text-left">
+                           <thead class="text-xs text-subtle uppercase bg-tertiary">
+                               <tr>
+                                   <th class="p-3 w-12 text-center">NO</th>
+                                   <th class="p-3">KATEGORI PENDIDIKAN</th>
+                                   <th class="p-3 text-center">STATUS</th>
+                                   <th class="p-3 text-center">AKSI</th>
+                               </tr>
+                           </thead>
+                            <tbody id="list-diktuk-bintara"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-semibold text-main mb-2">C. DIKBANGSPES</h3>
+                    <div class="overflow-x-auto border border-main rounded-lg">
+                        <table class="w-full text-sm text-left">
+                            <thead class="text-xs text-subtle uppercase bg-tertiary">
+                                <tr>
+                                    <th class="p-3 w-12 text-center">NO</th>
+                                    <th class="p-3">KATEGORI PENDIDIKAN</th>
+                                    <th class="p-3 text-center">STATUS</th>
+                                    <th class="p-3 text-center">AKSI</th>
+                                </tr>
+                            </thead>
+                            <tbody id="list-dikbangspes"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-semibold text-main mb-2">D. DIKBANGUM SEKOLAH BINTARA POLISI</h3>
+                    <div class="overflow-x-auto border border-main rounded-lg">
+                        <table class="w-full text-sm text-left">
+                            <thead class="text-xs text-subtle uppercase bg-tertiary">
+                                <tr>
+                                    <th class="p-3 w-12 text-center">NO</th>
+                                    <th class="p-3">KATEGORI PENDIDIKAN</th>
+                                    <th class="p-3 text-center">STATUS</th>
+                                    <th class="p-3 text-center">AKSI</th>
+                                </tr>
+                            </thead>
+                            <tbody id="list-dikbagum-sbp"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="petikan-detail-view" class="hidden">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-4 gap-4 bg-tertiary p-4 rounded-lg border border-main">
+                <div class="w-full md:w-1/2 relative">
+                     <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                        <i class="fas fa-search text-subtle"></i>
+                    </div>
+                    <input type="text" id="petikan-search" class="bg-input border border-main text-main text-sm rounded-lg block w-full pl-10 p-2.5" placeholder="Cari Nama Siswa atau NOSIS...">
+                </div>
+                
+                <div class="flex items-center gap-2">
+                    <div class="text-sm text-subtle mr-2" id="petikan-total-data">Total Siswa: 0</div>
+                    <button id="btn-print-all-petikan" class="bg-blue-600 text-white py-2 px-3 rounded-lg hover:bg-blue-700 text-sm flex items-center shadow transition-colors">
+                        <i class="fas fa-print mr-2"></i> Cetak Semua
+                    </button>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto border border-main rounded-lg shadow-sm">
+                <table class="w-full text-sm text-left text-main">
+                    <thead class="text-xs text-subtle uppercase bg-tertiary border-b border-main">
+                        <tr>
+                            <th class="p-3 text-center w-12">NO</th>
+                            <th class="p-3">NAMA LENGKAP</th>
+                            <th class="p-3 text-center">NOSIS</th>
+                            <th class="p-3 text-center">PANGKAT/NRP</th>
+                            <th class="p-3 text-center">NOMOR KEP</th>
+                            <th class="p-3 text-center text-blue-700">N. AKADEMIK</th>
+                            <th class="p-3 text-center text-green-700">N. MENTAL</th>
+                            <th class="p-3 text-center text-red-700">N. JASMANI</th>
+                            <th class="p-3 text-center font-bold">NILAI AKHIR</th>
+                            <th class="p-3 text-center w-32">AKSI (CETAK)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="petikan-table-body" class="bg-main divide-y divide-main">
+                        </tbody>
+                </table>
+            </div>
+
+            <div id="petikan-pagination" class="flex justify-between items-center mt-4"></div>
+        </div>
+
+    </div>
+</div>

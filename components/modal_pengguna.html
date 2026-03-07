@@ -1,0 +1,57 @@
+<div id="pengguna-modal" class="modal fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center hidden p-4 z-50">
+    <div class="bg-card rounded-lg shadow-xl w-full max-w-3xl">
+        <div class="p-6 border-b border-main flex justify-between items-center">
+            <h3 id="pengguna-modal-title" class="text-2xl font-bold text-main">Tambah Pengguna</h3>
+            <!-- 
+              MODIFIKASI DI SINI:
+              Menambahkan data-dismiss="modal" pada tombol 'X'
+            -->
+            <button type="button" data-dismiss="modal" class="btn-cancel-pengguna text-gray-400 hover:text-gray-600 text-3xl leading-none">&times;</button>
+        </div>
+        <form id="pengguna-form" class="p-6">
+            <input type="hidden" id="pengguna-id">
+            <input type="hidden" id="pengguna-role">
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="flex flex-col items-center">
+                    <img id="pengguna-foto-preview" src="https://placehold.co/150x150/e2e8f0/4a5568?text=Foto" alt="Foto Pengguna" class="w-32 h-32 object-cover rounded-full border-4 border-main mb-4">
+                    <input type="file" id="pengguna-foto" class="hidden" accept="image/*">
+                    <button type="button" id="btn-upload-pengguna-foto" class="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 text-sm">Pilih Foto</button>
+                </div>
+                
+                <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="pengguna-nama" class="block mb-1 text-sm font-medium text-subtle">Nama Lengkap</label>
+                        <input type="text" id="pengguna-nama" class="bg-input border border-main text-main text-sm rounded-lg block w-full p-2.5" required>
+                    </div>
+                    <div>
+                        <label for="pengguna-email" class="block mb-1 text-sm font-medium text-subtle">Email (untuk login)</label>
+                        <input type="email" id="pengguna-email" class="bg-input border border-main text-main text-sm rounded-lg block w-full p-2.5" required>
+                    </div>
+                    <div>
+                        <label for="pengguna-jabatan" class="block mb-1 text-sm font-medium text-subtle">Jabatan</label>
+                        <input type="text" id="pengguna-jabatan" class="bg-input border border-main text-main text-sm rounded-lg block w-full p-2.5">
+                    </div>
+                    <div>
+                        <label for="pengguna-nip" class="block mb-1 text-sm font-medium text-subtle">NIP / NRP</label>
+                        <input type="text" id="pengguna-nip" class="bg-input border border-main text-main text-sm rounded-lg block w-full p-2.5">
+                    </div>
+                    <div>
+                        <label for="pengguna-password" class="block mb-1 text-sm font-medium text-subtle">Password</label>
+                        <input type="password" id="pengguna-password" class="bg-input border border-main text-main text-sm rounded-lg block w-full p-2.5">
+                        <p class="text-xs text-subtle mt-1">Kosongkan jika tidak ingin mengubah password.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-6 flex justify-end space-x-4">
+                <!-- 
+                  MODIFIKASI DI SINI:
+                  Menambahkan data-dismiss="modal" pada tombol 'Batal'
+                -->
+                <button type="button" data-dismiss="modal" class="btn-cancel-pengguna py-2 px-4 rounded-lg bg-gray-300 text-gray-800 hover:bg-gray-400 font-semibold">Batal</button>
+                <button type="submit" class="py-2 px-4 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold">Simpan</button>
+            </div>
+        </form>
+    </div>
+</div>

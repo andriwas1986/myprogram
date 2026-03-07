@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pembuat Kuis - SIAP</title>
+    <link rel="icon" type="image/png" href="https://upload.wikimedia.org/wikipedia/id/thumb/8/88/Logo_Pataka_Korps_Airud.png/375px-Logo_Pataka_Korps_Airud.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="theme-light bg-main text-main">
+
+    <div id="loading-overlay" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex-col items-center justify-center z-50 hidden">
+        <div id="loading-text" class="text-white text-xl">Memuat...</div>
+    </div>
+
+    <div id="app-container" class="max-w-5xl mx-auto p-4 md:p-8">
+        <div class="flex justify-between items-center mb-6">
+            <div>
+                <h1 id="quiz-title" class="text-3xl font-bold">Pembuat Kuis Baru</h1>
+                <p id="quiz-description" class="text-subtle mt-1">Buat dan atur pertanyaan untuk kuis Anda.</p>
+            </div>
+            <div>
+                <a href="index.html#lms-section" class="py-2 px-4 rounded-lg bg-gray-600 hover:bg-gray-700 text-white font-semibold mr-2">Kembali ke LMS</a>
+                <button id="btn-save-quiz" class="py-2 px-5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold">Simpan Kuis</button>
+            </div>
+        </div>
+
+        <div class="bg-card p-6 rounded-lg shadow-md mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label for="quiz-title-input" class="block mb-1 text-sm font-medium text-subtle">Judul Kuis</label>
+                    <input type="text" id="quiz-title-input" class="bg-input border-main text-main text-sm rounded-lg block w-full p-2.5" placeholder="Contoh: Kuis Bab 1">
+                </div>
+                <div>
+                    <label for="quiz-duration" class="block mb-1 text-sm font-medium text-subtle">Durasi (menit)</label>
+                    <input type="number" id="quiz-duration" class="bg-input border-main text-main text-sm rounded-lg block w-full p-2.5" placeholder="Contoh: 60">
+                </div>
+                <div class="md:col-span-2">
+                    <label for="quiz-description-input" class="block mb-1 text-sm font-medium text-subtle">Deskripsi</label>
+                    <textarea id="quiz-description-input" rows="2" class="bg-input border-main text-main text-sm rounded-lg block w-full p-2.5"></textarea>
+                </div>
+            </div>
+        </div>
+        
+        <div id="questions-container" class="space-y-4">
+            </div>
+
+        <div class="mt-6 flex justify-center gap-4">
+            <button id="btn-add-mc" class="py-2 px-4 rounded-lg bg-green-600 hover:bg-green-700 text-white font-semibold flex items-center gap-2">
+                <i class="fas fa-plus-circle"></i> Pilihan Ganda
+            </button>
+            <button id="btn-add-essay" class="py-2 px-4 rounded-lg bg-yellow-600 hover:bg-yellow-700 text-white font-semibold flex items-center gap-2">
+                <i class="fas fa-plus-circle"></i> Esai
+            </button>
+        </div>
+    </div>
+
+    <template id="mc-question-template">
+        <div class="bg-card p-4 rounded-lg shadow-md question-item" data-type="mc">
+            <div class="flex justify-between items-center mb-2">
+                <p class="font-semibold text-main">Pertanyaan Pilihan Ganda</p>
+                <button class="text-red-500 hover:text-red-400 btn-delete-question"><i class="fas fa-trash"></i></button>
+            </div>
+            <textarea class="question-text bg-input border-main text-main text-sm rounded-lg block w-full p-2.5 mb-2" rows="3" placeholder="Tulis pertanyaan di sini..."></textarea>
+            <div class="space-y-2 pl-4">
+                <div class="flex items-center gap-2">
+                    <input type="radio" name="correct-answer" value="A" class="correct-answer-radio">
+                    <input type="text" class="option-text bg-input border-main text-sm rounded w-full p-2" placeholder="Opsi A">
+                </div>
+                <div class="flex items-center gap-2">
+                    <input type="radio" name="correct-answer" value="B" class="correct-answer-radio">
+                    <input type="text" class="option-text bg-input border-main text-sm rounded w-full p-2" placeholder="Opsi B">
+                </div>
+                <div class="flex items-center gap-2">
+                    <input type="radio" name="correct-answer" value="C" class="correct-answer-radio">
+                    <input type="text" class="option-text bg-input border-main text-sm rounded w-full p-2" placeholder="Opsi C">
+                </div>
+                <div class="flex items-center gap-2">
+                    <input type="radio" name="correct-answer" value="D" class="correct-answer-radio">
+                    <input type="text" class="option-text bg-input border-main text-sm rounded w-full p-2" placeholder="Opsi D">
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="essay-question-template">
+        <div class="bg-card p-4 rounded-lg shadow-md question-item" data-type="essay">
+            <div class="flex justify-between items-center mb-2">
+                <p class="font-semibold text-main">Pertanyaan Esai</p>
+                <button class="text-red-500 hover:text-red-400 btn-delete-question"><i class="fas fa-trash"></i></button>
+            </div>
+            <textarea class="question-text bg-input border-main text-main text-sm rounded-lg block w-full p-2.5" rows="4" placeholder="Tulis pertanyaan esai di sini..."></textarea>
+        </div>
+    </template>
+
+    <script type="module" src="js/quiz_builder.js"></script>
+</body>
+</html>

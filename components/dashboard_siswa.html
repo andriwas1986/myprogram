@@ -1,0 +1,170 @@
+<div class="space-y-6">
+    <div class="running-text-container rounded-lg shadow-md" aria-label="Pengumuman berjalan">
+        <div class="running-text-content">
+            Pusdik Polair Lemdiklat Polri    ||   Menempa Ksatria Bhayangkara, Penjaga Keamanan Laut Nusantara   ||    Arnavat Dharpa Mahe – Di Laut Kami Bangga, Di Samudera Kami Setia   ||   Profesionalisme adalah nafas kami, bakti di laut adalah kehormatan.   ||   © 2025 Pusdik Polair. All Rights Reserved.
+        </div>
+    </div>
+
+    <div id="welcome-header-block" class="px-4 lg:px-0 lg:mb-0">
+        <h2 class="text-2xl font-bold text-main">Selamat Datang, <span id="dashboard-welcome-user">Siswa</span>!</h2>
+        <p id="student-dashboard-details" class="text-subtle mt-1"></p>
+    </div>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="lg:col-span-1 space-y-6">
+            <div id="kta-container">
+                <div id="new-kts-card" class="new-kts-card mx-auto">
+                    <img id="kts-foto" src="https://ik.imagekit.io/d3nxlzdjsu/PRESISI%20POLAIR.png?updatedAt=1760423288483" alt="Foto Siswa" class="kts-foto">
+                    <p id="kts-nama" class="kts-nama-print"></p>
+                    <p id="kts-nosis" class="kts-nosis-print"></p>
+                    <p id="kts-pendidikan" class="kts-pendidikan-print"></p>
+                </div>
+            </div>
+
+            <div id="peringkat-card" class="bg-card p-4 rounded-lg shadow-md">
+                <h3 id="peringkat-title" class="text-lg font-bold text-main mb-3 border-b border-main pb-2">
+                    <i class="fas fa-trophy mr-2 text-yellow-400"></i>Peringkat Kelas
+                </h3>
+                <div id="peringkat-siswa-container" class="space-y-2">
+                    <p class="text-subtle text-sm text-center">Memuat peringkat...</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="lg:col-span-2 space-y-6">
+            <div class="bg-card p-6 rounded-lg shadow-md">
+                
+                <div id="desktop-dashboard-buttons" class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                    <button data-section="profil-section" class="dashboard-action-btn bg-blue-600 hover:bg-blue-700">
+                        <i class="fas fa-user-circle text-2xl"></i>
+                        <span class="font-semibold">Profil</span>
+                        <span class="text-xs">Lihat Profil Siswa</span>
+                    </button>
+                    <button data-section="transkrip-nilai-section" class="dashboard-action-btn bg-orange-500 hover:bg-orange-600">
+                        <i class="fas fa-file-invoice text-2xl"></i>
+                        <span class="font-semibold">Transkrip</span>
+                        <span class="text-xs">Lihat Transkrip Nilai</span>
+                    </button>
+                    <button data-section="e-album-section" class="dashboard-action-btn bg-red-600 hover:bg-red-700">
+                        <i class="fas fa-users text-2xl"></i>
+                        <span class="font-semibold">E-Album</span>
+                        <span class="text-xs">Lihat Angkatan</span>
+                    </button>
+                </div>
+
+                <div id="mobile-dashboard-icons" class="grid grid-cols-4 gap-x-2 gap-y-5 text-center">
+                    <a href="#" data-section="profil-section" class="dashboard-icon-btn">
+                        <div class="icon-wrapper bg-blue-500">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <span class="icon-label">Profil</span>
+                    </a>
+                    <a href="#" data-section="transkrip-nilai-section" class="dashboard-icon-btn">
+                        <div class="icon-wrapper bg-orange-500">
+                            <i class="fas fa-file-invoice"></i>
+                        </div>
+                        <span class="icon-label">Transkrip</span>
+                    </a>
+                    <a href="#" data-section="jadwal-mengajar-section" class="dashboard-icon-btn">
+                        <div class="icon-wrapper bg-green-500">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <span class="icon-label">Jadwal</span>
+                    </a>
+                    <a href="#" data-section="lms-section" class="dashboard-icon-btn">
+                        <div class="icon-wrapper bg-purple-500">
+                            <i class="fas fa-laptop-code"></i>
+                        </div>
+                        <span class="icon-label">LMS</span>
+                    </a>
+                    <a href="#" data-section="elibrary-section" class="dashboard-icon-btn">
+                        <div class="icon-wrapper bg-sky-500">
+                            <i class="fas fa-book-reader"></i>
+                        </div>
+                        <span class="icon-label">E-Library</span>
+                    </a>
+                    <a href="#" data-section="pelanggaran-siswa-section" class="dashboard-icon-btn">
+                        <div class="icon-wrapper bg-red-500">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <span class="icon-label">Pelanggaran</span>
+                    </a>
+                    <a href="#" data-section="e-album-section" class="dashboard-icon-btn">
+                        <div class="icon-wrapper bg-pink-500">
+                            <i class="fas fa-images"></i>
+                        </div>
+                        <span class="icon-label">E-Album</span>
+                    </a>
+                    
+                    <a href="#" data-section="sosiometri-section" class="dashboard-icon-btn">
+                        <div class="icon-wrapper bg-indigo-500">
+                            <i class="fas fa-people-arrows"></i>
+                        </div>
+                        <span class="icon-label">Sosiometri</span>
+                    </a>
+                    <a href="#" data-section="pengumuman-section" class="dashboard-icon-btn hidden">
+                        <div class="icon-wrapper bg-yellow-500">
+                            <i class="fas fa-bullhorn"></i>
+                        </div>
+                        <span class="icon-label">Info</span>
+                    </a>
+                </div>
+
+            </div>
+
+            <div id="pengumuman-card" class="bg-card p-6 rounded-lg shadow-md">
+                <h3 class="text-xl font-bold text-main mb-4">
+                    <i class="fas fa-bell mr-2 text-yellow-500"></i>Pengumuman Terbaru
+                </h3>
+                <div id="dashboard-pengumuman-container" class="space-y-4"></div>
+            </div>
+
+            <div id="grafik-card" class="bg-card p-6 rounded-lg shadow-md">
+                
+                <h3 class="text-xl font-bold text-main mb-4">
+                    <i class="fas fa-chart-bar mr-2 text-blue-500"></i>Performa Siswa
+                </h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4" style="height: 280px;">
+                    
+                    <div class="md:col-span-2 h-full flex flex-col">
+                        <h4 class="text-center font-semibold text-subtle text-sm mb-2 flex-shrink-0">Grafik Peringkat Kelas (Top 5)</h4>
+                        
+                        <div class="flex-1 relative">
+                            <canvas id="peringkatSiswaChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="md:col-span-1 h-full flex flex-col justify-around space-y-2 border-l border-main pl-4">
+                        <h4 class="text-center font-semibold text-subtle text-sm -mb-1">Nilai Rata-Rata Anda</h4>
+                        
+                        <div class="flex items-center">
+                            <div class="w-16 h-16 relative">
+                                <canvas id="donutAkademik"></canvas>
+                                <span id="donutAkademikValue" class="absolute inset-0 flex items-center justify-center text-main font-bold text-sm">0%</span>
+                            </div>
+                            <span class="ml-3 text-main font-semibold">Akademik</span>
+                        </div>
+                        
+                        <div class="flex items-center">
+                            <div class="w-16 h-16 relative">
+                                <canvas id="donutMental"></canvas>
+                                <span id="donutMentalValue" class="absolute inset-0 flex items-center justify-center text-main font-bold text-sm">0%</span>
+                            </div>
+                            <span class="ml-3 text-main font-semibold">Mental</span>
+                        </div>
+
+                        <div id="donutJasmaniContainer" class="flex items-center">
+                            <div class="w-16 h-16 relative">
+                                <canvas id="donutJasmani"></canvas>
+                                <span id="donutJasmaniValue" class="absolute inset-0 flex items-center justify-center text-main font-bold text-sm">0%</span>
+                            </div>
+                            <span class="ml-3 text-main font-semibold">Jasmani</span>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

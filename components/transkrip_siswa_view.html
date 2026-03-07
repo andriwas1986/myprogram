@@ -1,0 +1,27 @@
+<div class="bg-card rounded-lg shadow-xl w-full max-w-4xl mx-auto">
+    <div class="p-4 border-b border-main flex justify-between items-center no-print">
+        <h3 id="transkrip-view-title" class="text-xl font-bold text-main">Transkrip Nilai</h3>
+        <div>
+            <button id="btn-download-pdf-view" class="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 text-sm flex items-center shadow">
+                <i class="fas fa-file-pdf mr-2"></i> Download PDF
+            </button>
+        </div>
+    </div>
+    
+    <style>
+        #printable-transcript thead th {
+            color: black !important; /* Memaksa warna teks header menjadi hitam */
+        }
+    </style>
+
+    <div id="modern-transcript-view" class="overflow-y-auto no-print">
+        <div class="text-center p-8">
+            <p class="text-subtle">Memuat data transkrip...</p>
+        </div>
+    </div>
+
+    <div class="printable-only hidden">
+        <div id="printable-transcript">
+            </div>
+    </div>
+</div>

@@ -1,0 +1,138 @@
+<div class="bg-card p-6 rounded-lg shadow-md">
+    <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+        <div id="id-lemari-header">
+            <button id="btn-back-id-lemari" class="text-blue-500 hover:underline mb-2 hidden flex items-center transition-colors">
+                <i class="fas fa-arrow-left mr-2"></i> Kembali
+            </button>
+            <h2 id="id-lemari-view-title" class="text-2xl font-bold text-main">Cetak ID Lemari</h2>
+            <div id="id-lemari-view-subtitle" class="text-sm text-subtle mt-1">
+                Pilih kelas untuk mencetak Label Identitas Lemari Siswa.
+            </div>
+        </div>
+        
+        <button id="btn-settings-id-lemari" class="bg-yellow-500 text-white py-2 px-4 rounded-lg hover:bg-yellow-600 text-sm flex items-center shadow transition-colors">
+            <i class="fas fa-cog mr-2"></i> Pengaturan
+        </button>
+    </div>
+
+    <div id="id-lemari-view-container">
+        
+        <div id="id-lemari-main-view">
+            <p class="text-subtle mb-4">Pilih pendidikan aktif di bawah ini:</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="text-lg font-semibold text-main mb-2">A. DIKTUK TAMTAMA</h3>
+                    <div class="overflow-x-auto border border-main rounded-lg">
+                        <table class="w-full text-sm text-left">
+                            <thead class="text-xs text-subtle uppercase bg-tertiary">
+                                <tr>
+                                    <th class="p-3 w-12 text-center">No</th>
+                                    <th class="p-3">Kategori Pendidikan</th>
+                                    <th class="p-3 text-center">Status</th>
+                                    <th class="p-3 text-center">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="id-lemari-diktuk-tamtama-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div>
+                     <h3 class="text-lg font-semibold text-main mb-2">B. DIKTUK BINTARA</h3>
+                    <div class="overflow-x-auto border border-main rounded-lg">
+                        <table class="w-full text-sm text-left">
+                           <thead class="text-xs text-subtle uppercase bg-tertiary">
+                               <tr>
+                                   <th class="p-3 w-12 text-center">No</th>
+                                   <th class="p-3">Kategori Pendidikan</th>
+                                   <th class="p-3 text-center">Status</th>
+                                   <th class="p-3 text-center">Aksi</th>
+                               </tr>
+                           </thead>
+                            <tbody id="id-lemari-diktuk-bintara-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-semibold text-main mb-2">C. DIKBANGSPES</h3>
+                    <div class="overflow-x-auto border border-main rounded-lg">
+                        <table class="w-full text-sm text-left">
+                            <thead class="text-xs text-subtle uppercase bg-tertiary">
+                                <tr>
+                                    <th class="p-3 w-12 text-center">No</th>
+                                    <th class="p-3">Kategori Pendidikan</th>
+                                    <th class="p-3 text-center">Status</th>
+                                    <th class="p-3 text-center">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="id-lemari-dikbangspes-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-semibold text-main mb-2">D. DIKBANGUM SEKOLAH BINTARA POLISI</h3>
+                    <div class="overflow-x-auto border border-main rounded-lg">
+                        <table class="w-full text-sm text-left">
+                            <thead class="text-xs text-subtle uppercase bg-tertiary">
+                                <tr>
+                                    <th class="p-3 w-12 text-center">No</th>
+                                    <th class="p-3">Kategori Pendidikan</th>
+                                    <th class="p-3 text-center">Status</th>
+                                    <th class="p-3 text-center">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="id-lemari-dikbangum-sekolah-bintara-polisi-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="id-lemari-detail-view" class="hidden">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-4 gap-4 bg-tertiary p-4 rounded-lg border border-main">
+                <div class="w-full md:w-1/2 relative">
+                     <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                        <i class="fas fa-search text-subtle"></i>
+                    </div>
+                    <input type="text" id="id-lemari-search" class="bg-input border border-main text-main text-sm rounded-lg block w-full pl-10 p-2.5" placeholder="Cari Nama Siswa atau NOSIS...">
+                </div>
+                
+                <div class="flex items-center gap-2">
+                    <div class="text-sm text-subtle mr-2" id="id-lemari-total-data">Total: 0</div>
+                    
+                    <button id="btn-print-selected-id-lemari" class="hidden bg-green-600 text-white py-2 px-3 rounded-lg hover:bg-green-700 text-sm flex items-center shadow transition-colors">
+                        <i class="fas fa-check-square mr-2"></i> Cetak Terpilih (<span id="count-selected-lemari">0</span>)
+                    </button>
+
+                    <button id="btn-print-all-id-lemari" class="bg-blue-600 text-white py-2 px-3 rounded-lg hover:bg-blue-700 text-sm flex items-center shadow transition-colors">
+                        <i class="fas fa-print mr-2"></i> Cetak Semua (Satu Kelas)
+                    </button>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto border border-main rounded-lg shadow-sm">
+                <table class="w-full text-sm text-left text-main">
+                    <thead class="text-xs text-subtle uppercase bg-tertiary border-b border-main">
+                        <tr>
+                            <th class="p-3 text-center w-10">
+                                <input type="checkbox" id="id-lemari-check-all" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 cursor-pointer">
+                            </th>
+                            <th class="p-3 text-center w-12">NO</th>
+                            <th class="p-3">NAMA LENGKAP</th>
+                            <th class="p-3 text-center">NOSIS</th>
+                            <th class="p-3 text-center">PANGKAT/NRP</th>
+                            <th class="p-3 text-center w-32">AKSI</th>
+                        </tr>
+                    </thead>
+                    <tbody id="id-lemari-table-body" class="bg-main divide-y divide-main"></tbody>
+                </table>
+            </div>
+
+            <div id="id-lemari-pagination" class="flex justify-between items-center mt-4"></div>
+        </div>
+
+    </div>
+</div>

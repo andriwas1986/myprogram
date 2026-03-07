@@ -1,0 +1,102 @@
+<div class="bg-card p-6 rounded-lg shadow-md">
+    <div class="flex flex-col md:flex-row gap-8">
+        <!-- Navigasi Samping -->
+        <aside class="md:w-1/4">
+            <h3 class="text-lg font-semibold text-main mb-4 border-b border-main pb-2">Navigasi Panduan</h3>
+            <nav class="flex flex-col space-y-2">
+                <button data-target="panduan-konsep-umum" class="panduan-nav-btn text-left p-3 rounded-md transition-colors duration-200 flex items-center">
+                    <i class="fas fa-book-open w-5 mr-3 text-center"></i>
+                    <span>Konsep Umum</span>
+                </button>
+                <button data-target="panduan-superadmin" class="panduan-nav-btn text-left p-3 rounded-md transition-colors duration-200 flex items-center">
+                    <i class="fas fa-user-shield w-5 mr-3 text-center"></i>
+                    <span>Untuk Super Admin</span>
+                </button>
+                 <button data-target="panduan-operator" class="panduan-nav-btn text-left p-3 rounded-md transition-colors duration-200 flex items-center">
+                    <i class="fas fa-user-cog w-5 mr-3 text-center"></i>
+                    <span>Untuk Operator</span>
+                </button>
+                <button data-target="panduan-gadik" class="panduan-nav-btn text-left p-3 rounded-md transition-colors duration-200 flex items-center">
+                    <i class="fas fa-chalkboard-teacher w-5 mr-3 text-center"></i>
+                    <span>Untuk Gadik</span>
+                </button>
+                <button data-target="panduan-siswa" class="panduan-nav-btn text-left p-3 rounded-md transition-colors duration-200 flex items-center">
+                    <i class="fas fa-user-graduate w-5 mr-3 text-center"></i>
+                    <span>Untuk Siswa</span>
+                </button>
+            </nav>
+        </aside>
+
+        <!-- Konten Utama Panduan -->
+        <main class="md:w-3/4 prose max-w-none text-main">
+            <div id="panduan-konsep-umum" class="panduan-content space-y-4">
+                <h2 class="text-2xl font-bold border-b border-main pb-2">📘 Konsep & Alur Sistem</h2>
+                
+                <h3 class="text-xl font-semibold">🎯 Tujuan Utama</h3>
+                <p>Membangun aplikasi akademik yang terstruktur dan berkelanjutan. Kunci utama dari sistem ini adalah pengelolaan data yang rapi berdasarkan <strong>Tahun Ajaran</strong>, dengan hak akses yang jelas untuk setiap peran pengguna (Super Admin, Operator, Siswa, dan Gadik).</p>
+
+                <h3 class="text-xl font-semibold">🔑 Kunci Utama: Tahun Ajaran</h3>
+                <p><strong>Tahun Ajaran</strong> adalah pusat dari semua data. Super Admin memiliki wewenang penuh untuk menentukan Tahun Ajaran mana yang sedang aktif. Saat sebuah Tahun Ajaran baru dibuat dan diaktifkan, sistem akan mempersiapkan fondasi data baru, seperti:</p>
+                <ul class="list-disc list-inside space-y-2">
+                    <li><strong>Data Siswa:</strong> Kerangka data siswa baru (seperti alokasi Pleton, Kompi, dan Batalyon) dapat mulai diisi.</li>
+                    <li><strong>Data Gadik & Mapel:</strong> Data Tenaga Pendidik (Gadik) dan Mata Pelajaran baru dapat ditambahkan khusus untuk tahun tersebut.</li>
+                    <li><strong>Data Nilai:</strong> Seluruh format penilaian (Akademik, Kepribadian, Jasmani) akan dibuat dalam keadaan kosong, siap untuk diisi oleh Gadik atau Operator.</li>
+                </ul>
+                <p>Tahun Ajaran yang sudah tidak aktif akan diarsipkan dan hanya bisa diakses oleh pengguna dengan hak akses tertentu (misalnya, Operator untuk keperluan pelaporan).</p>
+                
+                 <h3 class="text-xl font-semibold">🔄 Alur Utama Sistem</h3>
+                <ol class="list-decimal list-inside space-y-2">
+                    <li><strong>Super Admin</strong> login dan memilih Tahun Ajaran mana yang akan diaktifkan.</li>
+                    <li><strong>Operator</strong> login dan mulai mengelola data master (siswa, gadik, mapel) sesuai dengan Tahun Ajaran yang aktif.</li>
+                    <li><strong>Gadik</strong> login menggunakan NRP untuk melihat daftar siswa yang diajarnya, menginput nilai, dan mengunggah materi ajar.</li>
+                    <li><strong>Siswa</strong> login menggunakan NOSIS untuk melihat profil, jadwal, nilai, dan informasi akademik lainnya.</li>
+                </ol>
+            </div>
+
+            <div id="panduan-superadmin" class="panduan-content hidden space-y-4">
+                <h2 class="text-2xl font-bold border-b border-main pb-2">🛡️ Panduan Super Admin</h2>
+                <p>Sebagai Super Admin, Anda memiliki kontrol penuh atas seluruh sistem. Tugas utama Anda adalah memastikan fondasi sistem, yaitu Tahun Ajaran, berjalan dengan benar.</p>
+                <ul class="list-disc list-inside space-y-2">
+                    <li><strong>Master Tahun Ajaran:</strong> Menu ini adalah kewenangan utama Anda. Anda bisa menambah Tahun Ajaran baru dan yang terpenting, <strong>mengaktifkan</strong> atau <strong>menonaktifkan</strong> sebuah Tahun Ajaran. Hanya ada satu set Tahun Ajaran yang bisa aktif pada satu waktu untuk setiap kategori pendidikan.</li>
+                    <li><strong>Manajemen Data Master:</strong> Anda bisa mengelola (tambah, edit, hapus) semua data inti seperti Data Siswa, Data Gadik, dan Data Mapel di semua Tahun Ajaran.</li>
+                    <li><strong>Master Admin & Hak Akses:</strong> Anda dapat menambah atau menghapus pengguna lain (Operator dan Super Admin lainnya) serta mengatur menu apa saja yang bisa diakses oleh Siswa dan Gadik.</li>
+                    <li><strong>Monitoring:</strong> Dashboard memberikan Anda gambaran umum tentang seluruh aktivitas pendidikan yang sedang berjalan.</li>
+                </ul>
+            </div>
+
+            <div id="panduan-operator" class="panduan-content hidden space-y-4">
+                <h2 class="text-2xl font-bold border-b border-main pb-2">⚙️ Panduan Operator</h2>
+                <p>Sebagai Operator, Anda adalah penanggung jawab utama dalam pengelolaan data sehari-hari. Anda bekerja di dalam lingkup Tahun Ajaran yang telah ditetapkan oleh Super Admin.</p>
+                <ul class="list-disc list-inside space-y-2">
+                    <li><strong>Fokus pada Tahun Ajaran Aktif:</strong> Semua menu input data seperti Data Siswa, Gadik, dan Mapel secara default akan beroperasi pada Tahun Ajaran yang sedang aktif.</li>
+                    <li><strong>Input dan Edit Data:</strong> Tugas utama Anda adalah memasukkan, memperbarui, dan memastikan keakuratan data siswa, gadik, dan mata pelajaran.</li>
+                    <li><strong>Input Nilai:</strong> Anda juga memiliki wewenang untuk membantu Gadik dalam menginput nilai siswa, baik nilai akademik, kepribadian, maupun jasmani.</li>
+                    <li><strong>Cetak Transkrip:</strong> Anda dapat melihat dan mencetak transkrip nilai akhir untuk setiap siswa.</li>
+                    <li><strong>Manajemen Pengumuman:</strong> Anda dapat membuat dan mempublikasikan pengumuman untuk seluruh pengguna.</li>
+                </ul>
+            </div>
+
+            <div id="panduan-gadik" class="panduan-content hidden space-y-4">
+                <h2 class="text-2xl font-bold border-b border-main pb-2">👨‍🏫 Panduan Gadik (Tenaga Pendidik)</h2>
+                <p>Sebagai Gadik, fokus Anda adalah pada proses belajar mengajar. Anda login menggunakan <strong>NRP</strong> sebagai password.</p>
+                <ul class="list-disc list-inside space-y-2">
+                    <li><strong>Input Nilai Akademik:</strong> Menu "Input Nilai Akademik" adalah menu utama Anda. Anda hanya bisa mengisi nilai untuk mata pelajaran yang telah ditetapkan untuk Anda oleh Operator/Super Admin.</li>
+                    <li><strong>Melihat Daftar Siswa:</strong> Di dalam menu input nilai, Anda akan melihat daftar siswa yang terdaftar pada mata pelajaran yang Anda ampu.</li>
+                    <li><strong>Jadwal Mengajar & LMS:</strong> Anda dapat melihat jadwal mengajar dan mengunggah materi pembelajaran melalui menu LMS.</li>
+                </ul>
+            </div>
+            
+            <div id="panduan-siswa" class="panduan-content hidden space-y-4">
+                <h2 class="text-2xl font-bold border-b border-main pb-2">🎓 Panduan Siswa</h2>
+                <p>Sebagai Siswa, Anda dapat mengakses semua informasi akademik yang relevan. Anda login menggunakan <strong>NOSIS</strong> sebagai password.</p>
+                <ul class="list-disc list-inside space-y-2">
+                    <li><strong>Dashboard:</strong> Halaman pertama yang Anda lihat akan menampilkan ringkasan data diri, foto profil, dan pengumuman terbaru.</li>
+                    <li><strong>Melihat Nilai:</strong> Anda dapat melihat rincian nilai akademik per mata pelajaran, serta rekap nilai kepribadian dan jasmani melalui menu "Transkrip Nilai".</li>
+                    <li><strong>Jadwal & LMS:</strong> Lihat jadwal pelajaran dan unduh materi yang telah diunggah oleh Gadik melalui menu LMS.</li>
+                    <li><strong>Update Profil Terbatas:</strong> Anda diizinkan untuk memperbarui beberapa data pribadi seperti alamat, nomor HP, atau foto profil jika diperlukan.</li>
+                </ul>
+            </div>
+        </main>
+    </div>
+</div>
+

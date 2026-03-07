@@ -1,0 +1,23 @@
+<div class="bg-card p-6 rounded-lg shadow-md">     <div class="flex flex-col md:flex-row justify-between items-center mb-4 gap-4 border-b border-main pb-4">
+        <div>
+             <h2 class="text-2xl font-bold text-main">E-Library</h2>
+             <p class="text-subtle mt-1 text-sm">E-Library Pusdik Polair – Meningkatkan Literasi, Menguatkan Profesionalisme Siswa Polair.</p>
+        </div>
+        <div class="w-full md:w-1/3">
+            <div class="relative">
+                                <input type="text" id="elibrary-search" placeholder="Cari nama file..." class="bg-input border-main text-main text-sm rounded-lg p-2.5 w-full pl-10 focus:ring-blue-500 focus:border-blue-500">
+                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                        <i class="fas fa-search text-subtle"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        <nav id="elibrary-breadcrumb" class="flex items-center gap-2 text-sm text-blue-600 mb-6 flex-wrap"></nav>
+
+        <div id="elibrary-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">
+        <div id="elibrary-loading" class="col-span-full text-center p-8">
+                        <p class="text-subtle">Memuat file...</p>
+        </div>
+        </div>
+</div>

@@ -1,0 +1,110 @@
+<div class="bg-card p-6 rounded-lg shadow-md">
+    <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+        <div id="danton-header">
+            <button id="btn-back-danton" class="text-blue-500 hover:underline mb-2 hidden">&larr; Kembali</button>
+            <h2 id="danton-view-title" class="text-2xl font-bold text-main">Manajemen Data Danton/Pengasuh</h2>
+        </div>
+        <button id="btn-tambah-danton" data-permission-action="create_data_danton" class="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 whitespace-nowrap">
+            <i class="fas fa-plus mr-2"></i>Tambah Danton Baru
+        </button>
+    </div>
+
+    <div id="danton-view-container">
+        <div id="danton-main-view">
+            <p class="text-subtle mb-4">Pilih salah satu jenis pendidikan di bawah untuk melihat daftar danton/pengasuh.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="text-lg font-semibold text-main mb-2">A. DIKTUK TAMTAMA</h3>
+                    <div class="overflow-x-auto border border-main rounded-lg">
+                        <table class="w-full text-sm text-left">
+                            <thead class="text-xs text-subtle uppercase bg-tertiary">
+                                <tr>
+                                    <th class="p-3 w-12 text-center">No</th>
+                                    <th class="p-3">Kategori Pendidikan</th>
+                                    <th class="p-3 text-center w-24">Status</th>
+                                    <th class="p-3 text-center w-32">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="danton-diktuk-tamtama-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div>
+                     <h3 class="text-lg font-semibold text-main mb-2">B. DIKTUK BINTARA</h3>
+                    <div class="overflow-x-auto border border-main rounded-lg">
+                        <table class="w-full text-sm text-left">
+                           <thead class="text-xs text-subtle uppercase bg-tertiary">
+                               <tr>
+                                   <th class="p-3 w-12 text-center">No</th>
+                                   <th class="p-3">Kategori Pendidikan</th>
+                                   <th class="p-3 text-center w-24">Status</th>
+                                   <th class="p-3 text-center w-32">Aksi</th>
+                               </tr>
+                           </thead>
+                            <tbody id="danton-diktuk-bintara-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-semibold text-main mb-2">C. DIKBANGSPES</h3>
+                    <div class="overflow-x-auto border border-main rounded-lg">
+                        <table class="w-full text-sm text-left">
+                            <thead class="text-xs text-subtle uppercase bg-tertiary">
+                                <tr>
+                                    <th class="p-3 w-12 text-center">No</th>
+                                    <th class="p-3">Kategori Pendidikan</th>
+                                    <th class="p-3 text-center w-24">Status</th>
+                                    <th class="p-3 text-center w-32">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="danton-dikbangspes-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-semibold text-main mb-2">D. DIKBANGUM SEKOLAH BINTARA POLISI</h3>
+                    <div class="overflow-x-auto border border-main rounded-lg">
+                        <table class="w-full text-sm text-left">
+                            <thead class="text-xs text-subtle uppercase bg-tertiary">
+                                <tr>
+                                    <th class="p-3 w-12 text-center">No</th>
+                                    <th class="p-3">Kategori Pendidikan</th>
+                                    <th class="p-3 text-center w-24">Status</th>
+                                    <th class="p-3 text-center w-32">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="danton-dikbagum-sbp-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="danton-list-view" class="hidden">
+            <div class="flex flex-wrap items-center gap-4 mb-4 p-4 bg-tertiary rounded-lg">
+                <input type="text" id="search-danton-input" placeholder="Cari nama atau NRP..." class="bg-input border-main text-main text-sm rounded-lg p-2.5 flex-grow">
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left">
+                    <thead class="text-xs text-subtle uppercase bg-tertiary">
+                        <tr>
+                            <th class="p-3">No</th>
+                            <th class="p-3">Nama Lengkap</th>
+                            <th class="p-3">NRP</th>
+                            <th class="p-3">Pangkat</th>
+                            <th class="p-3">Jabatan</th>
+                            <th class="p-3 text-center">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="danton-table-body"></tbody>
+                </table>
+            </div>
+            <div id="danton-pagination" class="flex justify-between items-center mt-4 no-print">
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,95 @@
+<!-- Container utama tanpa batas lebar, untuk tampilan halaman penuh -->
+<div>
+    <!-- Header Halaman -->
+    <div class="bg-card p-6 rounded-lg shadow-md text-center border-b border-main mb-6">
+        <h2 class="text-2xl font-bold text-main">Penilaian Mental Kepribadian (Sosiometri) Antar Siswa</h2>
+        <p class="text-subtle mt-1">Penilaian ini bertujuan untuk mengukur interaksi sosial di antara rekan satu angkatan Dikbangspes.</p>
+    </div>
+
+    <!-- Container untuk berbagai status tampilan (loading, selesai, dll.) -->
+    <div id="sosiometri-container">
+        <!-- Tampilan Loading -->
+        <div id="sosiometri-loading" class="text-center p-8">
+            <p class="text-subtle">Mencari rekan yang akan dinilai...</p>
+        </div>
+
+        <!-- Tampilan Sudah Menilai -->
+        <div id="sosiometri-completed" class="hidden text-center p-8 bg-card rounded-lg shadow-md">
+            <i class="fas fa-check-circle text-5xl text-green-500 mb-4"></i>
+            <h3 class="text-xl font-semibold text-main">Terima Kasih!</h3>
+            <p class="text-subtle mt-2">Anda telah berhasil memberikan penilaian sosiometri.</p>
+        </div>
+        
+        <!-- Tampilan Tidak Ada Rekan atau Tidak Berlaku -->
+        <div id="sosiometri-no-target" class="hidden text-center p-8 bg-card rounded-lg shadow-md">
+             <i class="fas fa-info-circle text-5xl text-yellow-500 mb-4"></i>
+            <h3 class="text-xl font-semibold text-main">Informasi</h3>
+            <p class="text-subtle mt-2">Saat ini tidak ada rekan yang perlu dinilai atau Anda tidak termasuk dalam sesi penilaian sosiometri.</p>
+        </div>
+
+        <!-- Wrapper untuk Form Penilaian (Tampilan Halaman Penuh) -->
+        <div id="sosiometri-form-wrapper" class="hidden">
+            <!-- Grid Layout untuk layar besar -->
+            <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+                
+                <!-- Kolom Kiri: Aturan Penilaian -->
+                <div class="lg:col-span-2 bg-card p-6 rounded-lg shadow-md border border-main">
+                    <h4 class="font-semibold text-main mb-3 text-lg border-b border-main pb-2"><i class="fas fa-info-circle mr-2"></i>Aturan Penilaian Sosiometri:</h4>
+                    <ul class="list-disc list-inside space-y-2 text-sm text-subtle">
+                        <li>Penilaian ini bertujuan untuk melihat bagaimana Anda memandang rekan satu kelas Anda.</li>
+                        <li>Anda akan menilai <strong>satu rekan</strong> yang sistem tentukan secara berurutan.</li>
+                        <li>Berikan nilai <strong>objektif</strong> antara <strong>0 sampai 100</strong> berdasarkan interaksi Anda selama pendidikan.</li>
+                        <!-- [PERUBAHAN] Menambahkan detail aspek penilaian -->
+                        <li>Fokuskan penilaian Anda pada beberapa aspek berikut:
+                            <ul class="list-['-_'] list-inside pl-4 mt-2 space-y-1 text-xs">
+                                <li>Disiplin & Tanggung Jawab</li>
+                                <li>Kerja Sama & Kekompakan Tim</li>
+                                <li>Loyalitas, Kejujuran & Integritas</li>
+                                <li>Inisiatif & Kepemimpinan</li>
+                                <li>Sikap & Perilaku Sehari-hari</li>
+                            </ul>
+                        </li>
+                        <li>Penilaian bersifat <strong>rahasia</strong> dan hanya akan digunakan untuk rekapitulasi akhir.</li>
+                        <li>Setelah mengirim, penilaian <strong>tidak dapat diubah</strong>.</li>
+                    </ul>
+                </div>
+                
+                <!-- Kolom Kanan: Informasi Siswa dan Form Penilaian -->
+                <div class="lg:col-span-3 bg-card p-6 rounded-lg shadow-md border border-main">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                        <!-- Informasi Siswa yang Dinilai -->
+                        <div class="flex flex-col items-center text-center">
+                            <!-- Wrapper untuk membuat gambar menjadi bulat -->
+                            <div class="w-40 h-40 rounded-full border-4 border-main shadow-lg mb-4 overflow-hidden flex items-center justify-center bg-gray-200">
+                                <img id="target-siswa-foto" src="https://placehold.co/150x150/e2e8f0/4a5568?text=Foto" alt="Foto Siswa" class="w-full h-full object-cover">
+                            </div>
+                            <p class="text-subtle text-sm">Anda akan menilai:</p>
+                            <h3 id="target-siswa-nama" class="text-2xl font-bold text-main mt-1">Nama Siswa</h3>
+                            <p class="text-subtle text-sm">Nosis: <span id="target-siswa-nosis" class="font-semibold">00000</span></p>
+                            <p id="target-siswa-pendidikan" class="text-subtle text-xs mt-1 italic"></p>
+                        </div>
+                        
+                        <!-- Form Input Nilai -->
+                        <div class="flex flex-col justify-center h-full">
+                            <form id="sosiometri-form" class="space-y-6">
+                                <input type="hidden" id="target-siswa-id">
+                                <p class="text-subtle text-sm mb-2 text-center">Silakan berikan penilaian objektif berdasarkan interaksi Anda selama pendidikan.</p>
+                                <div>
+                                    <label for="nilai-sosiometri-input" class="block mb-2 text-lg font-medium text-subtle text-center">Berikan Nilai (Skala 0 - 100)</label>
+                                    <input type="number" step="0.01" id="nilai-sosiometri-input" min="0" max="100" class="bg-input border border-main text-main text-4xl font-bold rounded-lg block w-full p-4 text-center focus:ring-blue-500 focus:border-blue-500" placeholder="0.00 - 100.00" required>
+                                    <p class="text-xs text-subtle mt-2 text-center">Gunakan tanda titik (.) untuk desimal (contoh: 78.68).</p>
+                                </div>
+                                <div class="pt-2">
+                                    <button type="submit" class="w-full bg-blue-600 text-white font-semibold py-3 px-4 rounded-lg hover:bg-blue-700 transition duration-200 flex items-center justify-center gap-2 shadow-lg text-lg">
+                                        <i class="fas fa-paper-plane"></i> Kirim Penilaian
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

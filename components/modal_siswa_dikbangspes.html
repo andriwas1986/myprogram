@@ -1,0 +1,147 @@
+<div id="siswa-dikbangspes-modal" class="modal fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center hidden p-4 z-50">
+    <div class="bg-card rounded-lg shadow-xl w-full max-w-4xl">
+        <div class="p-6 border-b border-main flex justify-between items-center">
+            <h3 id="siswa-dikbangspes-modal-title" class="text-2xl font-bold text-main">Tambah Siswa Dikbangspes</h3>
+             <!-- 
+              MODIFIKASI DI SINI:
+              Menambahkan data-dismiss="modal" pada tombol 'X'
+            -->
+            <button type="button" data-dismiss="modal" class="btn-cancel-modal text-gray-400 hover:text-gray-600 text-3xl leading-none">&times;</button>
+        </div>
+        <form id="siswa-dikbangspes-form" class="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
+            <input type="hidden" id="siswa-dikbangspes-id">
+            <input type="hidden" id="siswa-dikbangspes-kategori-jenis">
+            <input type="hidden" id="siswa-dikbangspes-kategori-detail">
+            <input type="hidden" id="siswa-dikbangspes-tahun-ajaran">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="flex flex-col items-center">
+                    <img id="dikbangspes-foto-preview" src="https://placehold.co/200x250/e2e8f0/4a5568?text=Foto+Siswa" alt="Foto Siswa" class="w-40 h-52 object-cover rounded-lg border-2 border-main mb-4">
+                    <input type="file" id="dikbangspes-foto-siswa" class="hidden" accept="image/*">
+                    <button type="button" id="btn-upload-dikbangspes-foto" class="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 text-sm">Pilih Foto</button>
+                </div>
+                <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+                     <div class="md:col-span-2">
+                        <label class="block mb-1 text-sm font-medium text-subtle">Kategori Pendidikan</label>
+                        <input type="text" id="siswa-dikbangspes-kategori-display" class="bg-tertiary border-main text-main text-sm rounded-lg block w-full p-2.5 uppercase" readonly>
+                    </div>
+                    <div>
+                        <label for="siswa-dikbangspes-nama" class="block mb-1 text-sm font-medium text-subtle">Nama Lengkap</label>
+                        <input type="text" id="siswa-dikbangspes-nama" class="bg-input border border-main text-main text-sm rounded-lg block w-full p-2.5" required>
+                    </div>
+                    <div>
+                        <label for="siswa-dikbangspes-pangkat" class="block mb-1 text-sm font-medium text-subtle">Pangkat</label>
+                        <input type="text" id="siswa-dikbangspes-pangkat" class="bg-input border border-main text-main text-sm rounded-lg block w-full p-2.5">
+                    </div>
+                    <div>
+                        <label for="siswa-dikbangspes-nrp" class="block mb-1 text-sm font-medium text-subtle">NRP</label>
+                        <input type="text" id="siswa-dikbangspes-nrp" class="bg-input border border-main text-main text-sm rounded-lg block w-full p-2.5">
+                    </div>
+                    <div>
+                        <label for="siswa-dikbangspes-nik" class="block mb-1 text-sm font-medium text-subtle">NIK</label>
+                        <input type="text" id="siswa-dikbangspes-nik" class="bg-input border border-main text-main text-sm rounded-lg block w-full p-2.5">
+                    </div>
+                     <div>
+                        <label for="siswa-dikbangspes-nosis" class="block mb-1 text-sm font-medium text-subtle">Nosis</label>
+                        <input type="text" id="siswa-dikbangspes-nosis" class="bg-input border border-main text-main text-sm rounded-lg block w-full p-2.5" required>
+                    </div>
+                     <div>
+                        <label for="siswa-dikbangspes-jabatan" class="block mb-1 text-sm font-medium text-subtle">Jabatan</label>
+                        <input type="text" id="siswa-dikbangspes-jabatan" class="bg-input border border-main text-main text-sm rounded-lg block w-full p-2.5">
+                    </div>
+                    <div>
+                        <label for="siswa-dikbangspes-pendidikan-terakhir" class="block mb-1 text-sm font-medium text-subtle">Pendidikan Terakhir</label>
+                        <input type="text" id="siswa-dikbangspes-pendidikan-terakhir" class="bg-input border border-main text-main text-sm rounded-lg block w-full p-2.5">
+                    </div>
+                    <div>
+                        <label for="siswa-dikbangspes-asal-polda" class="block mb-1 text-sm font-medium text-subtle">Asal Polda</label>
+                        <input type="text" id="siswa-dikbangspes-asal-polda" class="bg-input border border-main text-main text-sm rounded-lg block w-full p-2.5">
+                    </div>
+                    <div>
+                        <label for="siswa-dikbangspes-tempat-lahir" class="block mb-1 text-sm font-medium text-subtle">Tempat Lahir</label>
+                        <input type="text" id="siswa-dikbangspes-tempat-lahir" class="bg-input border border-main text-main text-sm rounded-lg block w-full p-2.5">
+                    </div>
+                    <div>
+                        <label for="siswa-dikbangspes-tanggal-lahir" class="block mb-1 text-sm font-medium text-subtle">Tanggal Lahir</label>
+                        <input type="date" id="siswa-dikbangspes-tanggal-lahir" class="bg-input border border-main text-main text-sm rounded-lg block w-full p-2.5">
+                    </div>
+                    <div>
+                        <label for="siswa-dikbangspes-agama" class="block mb-1 text-sm font-medium text-subtle">Agama</label>
+                        <select id="siswa-dikbangspes-agama" class="bg-input border border-main text-main text-sm rounded-lg block w-full p-2.5">
+                            <option selected disabled>Pilih Agama</option>
+                            <option value="Islam">ISLAM</option>
+                            <option value="Kristen Protestan">KRISTEN PROTESTAN</option>
+                            <option value="Katolik">KATOLIK</option>
+                            <option value="Hindu">HINDU</option>
+                            <option value="Buddha">BUDDHA</option>
+                            <option value="Khonghucu">KHONGHUCU</option>
+                        </select>
+                    </div>
+                     <div>
+                        <label for="siswa-dikbangspes-goldar" class="block mb-1 text-sm font-medium text-subtle">Gol. Darah</label>
+                        <input type="text" id="siswa-dikbangspes-goldar" class="bg-input border border-main text-main text-sm rounded-lg block w-full p-2.5">
+                    </div>
+                      <div>
+                        <label for="siswa-dikbangspes-telepon" class="block mb-1 text-sm font-medium text-subtle">Telepon</label>
+                        <input type="tel" id="siswa-dikbangspes-telepon" class="bg-input border border-main text-main text-sm rounded-lg block w-full p-2.5">
+                    </div>
+                    
+                    <div class="md:col-span-2">
+                        <label class="block mb-2 text-sm font-medium text-subtle">Media Sosial</label>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- Instagram -->
+                            <div>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                        <svg class="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.42a3.917 3.917 0 0 0-1.417.923A3.917 3.917 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.703.01 5.555 0 5.827 0 8s.01 2.444.048 3.297c.04.852.174 1.433.372 1.942.205.526.478.972.923 1.417.444.445.89.719 1.416.923.51.198 1.09.333 1.942.372C5.555 15.99 5.827 16 8 16s2.444-.01 3.297-.048c.852-.04 1.433-.174 1.942-.372.526-.205.972-.478 1.417-.923.445-.444.718-.891.923-1.417.198-.51.333-1.09.372-1.942C15.99 10.444 16 10.173 16 8s-.01-2.444-.048-3.297c-.04-.852-.174-1.433-.372-1.942a3.916 3.916 0 0 0-.923-1.417A3.916 3.916 0 0 0 13.24.42c-.51-.198-1.09-.333-1.942-.372C10.444.01 10.173 0 8 0zm0 1.44c2.136 0 2.389.007 3.232.046.78.035 1.204.166 1.486.275.373.145.64.319.92.599.28.28.453.546.598.92.11.281.24.705.275 1.486.039.843.047 1.096.047 3.232s-.008 2.389-.047 3.232c-.035.78-.166 1.203-.275 1.486a2.478 2.478 0 0 1-.598.92 2.478 2.478 0 0 1-.92.598c-.28.11-.704.24-1.486.275-.843.038-1.096.047-3.232.047s-2.39-.009-3.232-.047c-.78-.036-1.203-.166-1.486-.275a2.478 2.478 0 0 1-.92-.598 2.478 2.478 0 0 1-.598-.92c-.11-.281-.24-.705-.275-1.486-.038-.843-.046-1.096-.046-3.232s.008-2.389.046-3.232c.036-.78.166-1.204.275-1.486.145-.373.319-.64.599-.92.28-.28.546-.453.92-.598.282-.11.705-.24 1.486-.275.843-.039 1.096-.046 3.232-.046zM8 4.865a3.135 3.135 0 1 0 0 6.27 3.135 3.135 0 0 0 0-6.27zM8 11a1.135 1.135 0 1 1 0-2.27 1.135 1.135 0 0 1 0 2.27zm4.57-6.218a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5z"/></svg>
+                                    </div>
+                                    <input type="text" id="siswa-dikbangspes-instagram" class="bg-input border border-main text-main text-sm rounded-lg block w-full p-2.5 pl-10" placeholder="Instagram">
+                                </div>
+                            </div>
+                            <!-- Facebook -->
+                            <div>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                        <svg class="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M16 8.049c0-4.446-3.582-8.05-8-8.05C3.58 0-.002 3.603-.002 8.05c0 4.017 2.926 7.347 6.75 7.951v-5.625h-2.03V8.05H6.75V6.275c0-2.017 1.195-3.131 3.022-3.131.876 0 1.791.157 1.791.157v1.98h-1.009c-.993 0-1.303.621-1.303 1.258v1.51h2.218l-.354 2.326H9.25V16c3.824-.604 6.75-3.934 6.75-7.951z"/></svg>
+                                    </div>
+                                    <input type="text" id="siswa-dikbangspes-facebook" class="bg-input border border-main text-main text-sm rounded-lg block w-full p-2.5 pl-10" placeholder="Facebook">
+                                </div>
+                            </div>
+                            <!-- TikTok -->
+                            <div>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                        <svg class="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M9 0h1.98c.144.715.54 1.617 1.235 2.512C12.895 3.389 13.797 4 15 4v2c-1.753 0-3.07-.814-4-1.829V11a5 5 0 1 1-5-5v2a3 3 0 1 0 3 3V0Z"/></svg>
+                                    </div>
+                                    <input type="text" id="siswa-dikbangspes-tiktok" class="bg-input border border-main text-main text-sm rounded-lg block w-full p-2.5 pl-10" placeholder="TikTok">
+                                </div>
+                            </div>
+                            <!-- X (Twitter) -->
+                            <div>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                        <svg class="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865l8.415 11.633z"/></svg>
+                                    </div>
+                                    <input type="text" id="siswa-dikbangspes-x" class="bg-input border border-main text-main text-sm rounded-lg block w-full p-2.5 pl-10" placeholder="X (Twitter)">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="md:col-span-2">
+                        <label for="siswa-dikbangspes-alamat" class="block mb-1 text-sm font-medium text-subtle">Alamat</label>
+                        <textarea id="siswa-dikbangspes-alamat" rows="2" class="bg-input border border-main text-main text-sm rounded-lg block w-full p-2.5"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="pt-4 flex justify-end space-x-4">
+                <!-- 
+                  MODIFIKASI DI SINI:
+                  Menambahkan data-dismiss="modal" pada tombol 'Batal'
+                -->
+                <button type="button" data-dismiss="modal" class="btn-cancel-siswa py-2 px-4 rounded-lg bg-gray-300 text-gray-800 hover:bg-gray-400 font-semibold">Batal</button>
+                <button type="submit" class="py-2 px-4 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold">Simpan</button>
+            </div>
+        </form>
+    </div>
+</div>
+

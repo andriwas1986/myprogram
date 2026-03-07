@@ -1,0 +1,83 @@
+<div id="siswa-detail-modal" class="modal fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center hidden p-4 z-50">
+    <div class="bg-card rounded-lg shadow-xl w-full max-w-4xl">
+        <div class="p-6 border-b border-main flex justify-between items-center">
+            <h3 class="text-2xl font-bold text-main">Detail Siswa</h3>
+            <button type="button" data-dismiss="modal" class="btn-cancel-modal text-gray-400 hover:text-gray-600 text-3xl leading-none">&times;</button>
+        </div>
+        <div class="p-6 max-h-[80vh] overflow-y-auto">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="flex flex-col items-center">
+                    <img id="detail-foto-siswa" src="https://placehold.co/200x250/e2e8f0/4a5568?text=Foto+Siswa" alt="Foto Siswa" class="w-40 h-52 object-cover rounded-lg border-2 border-main mb-4">
+                    <p class="text-lg font-semibold text-main" id="detail-nama-lengkap"></p>
+                    <p class="text-sm text-subtle" id="detail-nosis"></p>
+                </div>
+                <div class="md:col-span-2">
+                    <h4 class="text-xl font-bold text-main mb-4">Informasi Pribadi</h4>
+                    <dl class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 text-sm">
+                        
+                        <div class="flex flex-col">
+                            <dt class="font-semibold text-subtle">Kategori</dt>
+                            <dd class="text-main" id="detail-kategori-pendidikan"></dd>
+                        </div>
+                        
+                        <div class="flex flex-col">
+                            <dt class="font-semibold text-subtle">NRP / NIK</dt>
+                            <dd class="text-main" id="detail-nrp-nik"></dd>
+                        </div>
+
+                        <div class="flex flex-col">
+                            <dt class="font-semibold text-subtle">Pangkat</dt>
+                            <dd class="text-main" id="detail-pangkat"></dd>
+                        </div>
+
+                        <div class="flex flex-col">
+                            <dt class="font-semibold text-subtle">Jabatan</dt>
+                            <dd class="text-main" id="detail-jabatan"></dd>
+                        </div>
+                        
+                        <div class="flex flex-col">
+                            <dt class="font-semibold text-subtle">Pendidikan Terakhir</dt>
+                            <dd class="text-main" id="detail-pendidikan-terakhir"></dd>
+                        </div>
+
+                        <div class="flex flex-col">
+                            <dt class="font-semibold text-subtle">Tempat, Tgl Lahir</dt>
+                            <dd class="text-main" id="detail-ttl"></dd>
+                        </div>
+                        <div class="flex flex-col">
+                            <dt class="font-semibold text-subtle">Asal Pengiriman</dt>
+                            <dd class="text-main"id="detail-asal-polda"></dd>
+                        </div>
+                        <div class="flex flex-col">
+                            <dt class="font-semibold text-subtle">Email</dt>
+                            <dd class="text-main" id="detail-email"></dd>
+                        </div>
+                        <div class="flex flex-col">
+                            <dt class="font-semibold text-subtle">Agama</dt>
+                            <dd class="text-main" id="detail-agama"></dd>
+                        </div>
+                        <div class="flex flex-col">
+                            <dt class="font-semibold text-subtle">Gol. Darah</dt>
+                            <dd class="text-main" id="detail-goldar"></dd>
+                        </div>
+                        <div class="flex flex-col md:col-span-2">
+                            <dt class="font-semibold text-subtle">Telepon</dt>
+                            <dd class="text-main" id="detail-telepon"></dd>
+                        </div>
+                        <div class="flex flex-col md:col-span-2">
+                            <dt class="font-semibold text-subtle">Alamat</dt>
+                            <dd class="text-main" id="detail-alamat"></dd>
+                        </div>
+                    </dl>
+
+                    <h4 class="text-xl font-bold text-main mt-6 mb-4">Media Sosial</h4>
+                    <div id="detail-medsos-container" class="flex items-center space-x-4">
+                        </div>
+                </div>
+            </div>
+        </div>
+        <div class="p-6 border-t border-main flex justify-end">
+             <button type="button" data-dismiss="modal" class="btn-cancel-modal py-2 px-6 rounded-lg bg-gray-300 text-gray-800 hover:bg-gray-400 font-semibold">Tutup</button>
+        </div>
+    </div>
+</div>

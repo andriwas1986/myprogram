@@ -1,0 +1,38 @@
+<div id="danton-detail-modal" class="modal fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center hidden p-4 z-50">
+    <div class="bg-card rounded-lg shadow-xl w-full max-w-4xl">
+        <div class="p-6 border-b border-main flex justify-between items-center">
+            <h3 class="text-2xl font-bold text-main">Detail Biodata Danton/Pengasuh</h3>
+            
+            <!-- [PERBAIKAN]: Tombol Silang (X) ditambahkan data-dismiss="modal" -->
+            <button type="button" class="btn-close-danton-detail text-gray-400 hover:text-gray-600 text-3xl leading-none" data-dismiss="modal">&times;</button>
+        
+        </div>
+        <div class="p-8 max-h-[80vh] overflow-y-auto">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="flex flex-col items-center">
+                    <img id="detail-danton-foto-preview" src="https://placehold.co/200x250/e2e8f0/4a5568?text=Foto+Danton" alt="Foto Danton" class="w-40 h-52 object-cover rounded-lg border-2 border-main">
+                </div>
+                <div class="md:col-span-2">
+                    <table class="w-full text-left">
+                        <tbody>
+                            <tr class="border-b border-tertiary"><td class="py-3 px-4 w-1/3 text-subtle font-medium">Nama Lengkap</td><td id="detail-danton-nama" class="py-3 px-4 text-main font-semibold"></td></tr>
+                            <tr class="border-b border-tertiary"><td class="py-3 px-4 text-subtle font-medium">NRP</td><td id="detail-danton-nrp" class="py-3 px-4 text-main"></td></tr>
+                            <tr class="border-b border-tertiary"><td class="py-3 px-4 text-subtle font-medium">Pangkat / Golongan</td><td id="detail-danton-pangkat" class="py-3 px-4 text-main"></td></tr>
+                            <tr class="border-b border-tertiary"><td class="py-3 px-4 text-subtle font-medium">Jabatan</td><td id="detail-danton-jabatan" class="py-3 px-4 text-main"></td></tr>
+                            
+                            <!-- [PERBAIKAN]: Diubah dari 'Email' menjadi 'Kontak' agar sama -->
+                            <tr>
+                                <td class="py-3 px-4 text-subtle font-medium">Kontak</td>
+                                <td class="py-3 px-4 text-main">
+                                    <span id="detail-danton-telepon"></span>
+                                    <br>
+                                    <span id="detail-danton-email" class="text-sm"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

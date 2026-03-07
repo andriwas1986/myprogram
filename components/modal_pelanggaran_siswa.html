@@ -1,0 +1,85 @@
+<div id="pelanggaran-modal" class="modal fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center hidden p-4 z-50">
+    <div class="bg-card rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] flex flex-col">
+        <div class="p-6 border-b border-main flex justify-between items-center">
+            <h3 id="pelanggaran-modal-title" class="text-xl font-bold text-main">Tambah Catatan Pelanggaran</h3>
+            <!-- 
+              MODIFIKASI DI SINI:
+              Menambahkan data-dismiss="modal" pada tombol 'X'
+            -->
+            <button type="button" data-dismiss="modal" class="btn-cancel-pelanggaran text-gray-400 hover:text-gray-600 text-3xl leading-none">&times;</button>
+        </div>
+        
+        <form id="pelanggaran-form" class="overflow-y-auto">
+            <div class="p-6">
+                <input type="hidden" id="pelanggaran-id">
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Kolom Kiri: Info Siswa & Pelanggaran -->
+                    <div class="space-y-4">
+                        <div>
+                            <label for="pelanggaran-siswa-id" class="block mb-2 text-sm font-medium text-subtle">Siswa/Serdik</label>
+                            <select id="pelanggaran-siswa-id" class="bg-input border border-main text-main text-sm rounded-lg block w-full p-2.5" required>
+                                <option value="">-- Pilih Siswa --</option>
+                            </select>
+                        </div>
+
+                        <div class="bg-tertiary p-3 rounded-lg text-sm space-y-1">
+                            <p><strong>Pangkat:</strong> <span id="info-pangkat">...</span></p>
+                            <p><strong>NRP/Nosis:</strong> <span id="info-nrp-nosis">...</span></p>
+                            <p><strong>Kelas:</strong> <span id="info-kelas">...</span></p>
+                        </div>
+
+                        <div>
+                            <label for="pelanggaran-tanggal" class="block mb-2 text-sm font-medium text-subtle">Tanggal Kejadian</label>
+                            <input type="date" id="pelanggaran-tanggal" class="bg-input border border-main text-main text-sm rounded-lg block w-full p-2.5" required>
+                        </div>
+                        <div>
+                            <label for="pelanggaran-jenis" class="block mb-2 text-sm font-medium text-subtle">Jenis Pelanggaran</label>
+                            <input type="text" id="pelanggaran-jenis" class="bg-input border border-main text-main text-sm rounded-lg block w-full p-2.5" placeholder="Contoh: Terlambat apel" required>
+                        </div>
+                        <div>
+                            <label for="pelanggaran-kategori" class="block mb-2 text-sm font-medium text-subtle">Kategori</label>
+                            <select id="pelanggaran-kategori" class="bg-input border border-main text-main text-sm rounded-lg block w-full p-2.5">
+                                <option>Ringan</option>
+                                <option>Sedang</option>
+                                <option>Berat</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Kolom Kanan: Detail & Tindakan -->
+                    <div class="space-y-4">
+                         <div>
+                            <label for="pelanggaran-uraian" class="block mb-2 text-sm font-medium text-subtle">Uraian Singkat Kejadian</label>
+                            <textarea id="pelanggaran-uraian" rows="3" class="bg-input border border-main text-main text-sm rounded-lg block w-full p-2.5" placeholder="Jelaskan secara singkat kronologi kejadian"></textarea>
+                        </div>
+                         <div>
+                            <label for="pelanggaran-tindakan" class="block mb-2 text-sm font-medium text-subtle">Sanksi / Tindakan yang Diberikan</label>
+                            <input type="text" id="pelanggaran-tindakan" class="bg-input border border-main text-main text-sm rounded-lg block w-full p-2.5" placeholder="Contoh: Push up 20x">
+                        </div>
+                        <div>
+                            <label for="pelanggaran-pembina" class="block mb-2 text-sm font-medium text-subtle">Dicatat oleh Instruktur/Pembina</label>
+                            <input type="text" id="pelanggaran-pembina" class="bg-input border border-main text-main text-sm rounded-lg block w-full p-2.5" placeholder="Nama Instruktur">
+                        </div>
+                        
+                        <!-- Input Foto -->
+                        <div>
+                            <label for="pelanggaran-foto" class="block mb-1 text-sm font-medium text-subtle">Dokumentasi (Foto)</label>
+                            <img id="pelanggaran-foto-preview" src="https://placehold.co/400x200/374151/9ca3af?text=Pratinjau+Foto" alt="Pratinjau Foto" class="w-full h-32 object-contain rounded-lg border border-main mb-2 bg-tertiary">
+                            <input type="file" id="pelanggaran-foto" class="bg-input border border-main text-main text-sm rounded-lg block w-full" accept="image/*">
+                            <p class="text-xs text-subtle mt-1">Upload Foto Dokumentasi (jpg/PNG.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-end gap-4 mt-8 p-6 border-t border-main">
+                <!-- 
+                  MODIFIKASI DI SINI:
+                  Menambahkan data-dismiss="modal" pada tombol 'Batal'
+                -->
+                <button type="button" data-dismiss="modal" class="btn-cancel-pelanggaran py-2 px-4 rounded-lg bg-gray-600 text-white hover:bg-gray-700">Batal</button>
+                <button type="submit" class="py-2 px-4 rounded-lg bg-blue-600 hover:bg-blue-700 text-white">Simpan</button>
+            </div>
+        </form>
+    </div>
+</div>

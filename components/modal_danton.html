@@ -1,0 +1,44 @@
+<div id="danton-modal" class="modal fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center hidden p-4 z-50">
+    <div class="bg-card rounded-lg shadow-xl w-full max-w-lg">
+        
+        <div class="p-6 border-b border-main flex justify-between items-center">
+            <h3 id="danton-modal-title" class="text-2xl font-bold text-main">Tambah Danton/Pengasuh</h3>
+            
+            <button type="button" class="btn-cancel-danton text-gray-400 hover:text-gray-600 text-3xl leading-none" data-dismiss="modal">&times;</button>
+        </div>
+        
+        <form id="danton-form" class="max-h-[80vh] overflow-y-auto">
+            
+            <div class="p-6 space-y-4">
+                <p class="text-sm text-subtle">Lengkapi data penugasan Danton/Pengasuh di bawah ini.</p>
+                
+                <div>
+                    <label for="danton-education-select" class="block mb-1 text-sm font-medium text-subtle">Pilih Pendidikan (Aktif)</label>
+                    <select id="danton-education-select" class="bg-input border-main text-main text-sm rounded-lg block w-full p-2.5" required>
+                        <option value="">-- Pilih Pendidikan --</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="gadik-select" class="block mb-1 text-sm font-medium text-subtle">Pilih Gadik</label>
+                    <select id="gadik-select" class="bg-input border-main text-main text-sm rounded-lg block w-full p-2.5" required disabled>
+                        <option value="">-- Pilih Pendidikan Terlebih Dahulu --</option>
+                    </select>
+                    <p class="text-xs text-subtle mt-1 italic">*Hanya menampilkan Gadik yang belum ditugaskan di pendidikan yang dipilih.</p>
+                </div>
+
+            </div>
+
+            <div class="p-6 border-t border-main flex justify-end space-x-4">
+                
+                <button type="button" class="btn-cancel-danton py-2 px-4 rounded-lg bg-gray-300 text-gray-800 hover:bg-gray-400 transition duration-150" data-dismiss="modal">
+                    Batal
+                </button>
+                
+                <button type="submit" id="btn-save-danton" class="py-2 px-4 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition duration-150">
+                    Tugaskan
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

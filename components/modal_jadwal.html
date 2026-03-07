@@ -1,0 +1,62 @@
+<div id="jadwal-modal" class="modal fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center hidden p-4 z-50">
+    <div class="bg-card rounded-lg shadow-xl w-full max-w-lg">
+        <div class="p-6 border-b border-main flex justify-between items-center">
+            <h3 id="jadwal-modal-title" class="text-2xl font-bold text-main">Tambah Jadwal Baru</h3>
+            
+            <button type="button" class="btn-cancel-jadwal text-gray-400 hover:text-gray-600 text-3xl leading-none" data-dismiss="modal">&times;</button>
+        </div>
+        <form id="jadwal-form" class="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
+            <input type="hidden" id="jadwal-id">
+            
+            <div>
+                <label for="jadwal-kategori" class="block mb-1 text-sm font-medium text-subtle">Kategori Pendidikan</label>
+                <select id="jadwal-kategori" class="bg-input border border-main text-main text-sm rounded-lg block w-full p-2.5" required></select>
+            </div>
+            
+            <div>
+                <label for="jadwal-kelas" class="block mb-1 text-sm font-medium text-subtle">Kelas</label>
+                <select id="jadwal-kelas" class="bg-input border border-main text-main text-sm rounded-lg block w-full p-2.5" required>
+                    <option value="">Pilih Kategori Dulu</option>
+                </select>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label for="jadwal-hari" class="block mb-1 text-sm font-medium text-subtle">Hari</label>
+                    <select id="jadwal-hari" class="bg-input border border-main text-main text-sm rounded-lg block w-full p-2.5" required>
+                        <option value="Senin">Senin</option>
+                        <option value="Selasa">Selasa</option>
+                        <option value="Rabu">Rabu</option>
+                        <option value="Kamis">Kamis</option>
+                        <option value="Jumat">Jumat</option>
+                        <option value="Sabtu">Sabtu</option>
+                        <option value="Minggu">Minggu</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="jadwal-jam" class="block mb-1 text-sm font-medium text-subtle">Jam (JJ:MM - JJ:MM)</label>
+                    <input type="text" id="jadwal-jam" class="bg-input border border-main text-main text-sm rounded-lg block w-full p-2.5" placeholder="Contoh: 08:00 - 09:30" required>
+                </div>
+            </div>
+
+            <div>
+                <label for="jadwal-mapel" class="block mb-1 text-sm font-medium text-subtle">Mata Pelajaran</label>
+                <select id="jadwal-mapel" class="bg-input border border-main text-main text-sm rounded-lg block w-full p-2.5" required>
+                    <option value="">Pilih Kategori Dulu</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="jadwal-gadik" class="block mb-1 text-sm font-medium text-subtle">Gadik (Tenaga Pendidik)</label>
+                <select id="jadwal-gadik" class="bg-input border border-main text-main text-sm rounded-lg block w-full p-2.5" required></select>
+            </div>
+
+            <div class="pt-4 flex justify-end space-x-4">
+                
+                <button type="button" class="btn-cancel-jadwal py-2 px-4 rounded-lg bg-gray-300 text-gray-800 hover:bg-gray-400 font-semibold" data-dismiss="modal">Batal</button>
+                
+                <button type="submit" id="btn-save-jadwal" class="py-2 px-4 rounded-lg bg-blue-600 text-white hover:bg-blue-700 font-semibold">Simpan</button>
+            </div>
+        </form>
+    </div>
+</div>

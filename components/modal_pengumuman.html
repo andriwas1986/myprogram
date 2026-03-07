@@ -1,0 +1,40 @@
+<div id="pengumuman-modal" class="modal fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center hidden p-4 z-50">
+    <div class="bg-card rounded-lg shadow-xl w-full max-w-2xl">
+        <div class="p-6 border-b border-main flex justify-between items-center">
+            <h3 id="pengumuman-modal-title" class="text-2xl font-bold text-main">Buat Pengumuman Baru</h3>
+            
+            <!-- [PERBAIKAN 1]: Tambahkan data-dismiss="modal" -->
+            <button type="button" class="btn-cancel-pengumuman text-gray-400 hover:text-gray-600 text-3xl leading-none" data-dismiss="modal">&times;</button>
+        </div>
+        <form id="pengumuman-form" class="p-6 space-y-4">
+            <input type="hidden" id="pengumuman-id" name="pengumuman-id">
+            <div>
+                <label for="pengumuman-judul" class="block mb-1 text-sm font-medium text-subtle">Judul Pengumuman</label>
+                <input type="text" id="pengumuman-judul" name="pengumuman-judul" class="bg-input border border-main text-main text-sm rounded-lg block w-full p-2.5" required>
+            </div>
+            <div>
+                <label for="pengumuman-isi" class="block mb-1 text-sm font-medium text-subtle">Isi Pengumuman</label>
+                <textarea id="pengumuman-isi" name="pengumuman-isi" rows="6" class="bg-input border border-main text-main text-sm rounded-lg block w-full p-2.5" required></textarea>
+            </div>
+             <div>
+                <label for="pengumuman-status" class="block mb-1 text-sm font-medium text-subtle">Status</label>
+                <select id="pengumuman-status" name="pengumuman-status" class="bg-input border border-main text-main text-sm rounded-lg block w-full p-2.5">
+                    <option value="published">Publish</option>
+                    <option value="draft">Draft</option>
+                </select>
+            </div>
+            <div class="pt-4 flex justify-end space-x-4">
+                
+                <!-- [PERBAIKAN 2]: Tambahkan data-dismiss="modal" -->
+                <button type="button" class="btn-cancel-pengumuman py-2 px-4 rounded-lg bg-gray-300 text-gray-800 hover:bg-gray-400" data-dismiss="modal">
+                    Batal
+                </button>
+                
+                <!-- [PERBAIKAN 3]: Ganti bg-main menjadi warna yang pasti terlihat (biru) -->
+                <button type="submit" id="btn-save-pengumuman" class="py-2 px-4 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition duration-150">
+                    Simpan
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

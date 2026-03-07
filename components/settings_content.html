@@ -1,0 +1,542 @@
+<div id="settings-section" class="p-4 sm:p-6">
+    <h1 class="text-2xl sm:text-3xl font-bold text-main mb-6">Pengaturan Sistem</h1>
+
+    <div class="mb-6 border-b border-main flex space-x-1 sm:space-x-4 overflow-x-auto">
+        <button data-tab="transcript" class="setting-tab active-tab whitespace-nowrap"><i class="fas fa-print mr-2"></i>Transkrip</button>
+        <button data-tab="petikan" class="setting-tab inactive-tab whitespace-nowrap"><i class="fas fa-file-signature mr-2"></i>Petikan SK</button>
+        <button data-tab="elibrary" class="setting-tab inactive-tab whitespace-nowrap"><i class="fas fa-book mr-2"></i>E-Library</button>
+        <button data-tab="recaptcha" class="setting-tab inactive-tab whitespace-nowrap"><i class="fas fa-shield-alt mr-2"></i>Verifikasi</button>
+    </div>
+
+    <div id="tab-content-transcript" class="setting-tab-content">
+        <form id="settings-transcript-form">
+            <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+
+                <div class="bg-secondary p-5 rounded-xl shadow-lg border border-main">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 pb-4 border-b border-main">
+                        <h3 class="text-xl font-bold text-main mb-3 sm:mb-0">
+                            Pengaturan Cetak Transkrip
+                        </h3>
+                        <button type="submit" class="btn-primary w-full sm:w-auto">
+                            <i class="fas fa-save mr-2"></i>Simpan Perubahan
+                        </button>
+                    </div>
+                    
+                    <div class="space-y-2" id="transcript-settings-accordions">
+
+                        <div class="accordion-item border border-main rounded-lg">
+                            <div class="accordion-header flex justify-between items-center p-4 cursor-pointer hover:bg-tertiary">
+                                <div class="flex items-center">
+                                    <i class="fas fa-file-alt fa-fw mr-3 text-blue-500"></i>
+                                    <span class="font-semibold text-main">Umum & Kertas</span>
+                                </div>
+                                <i class="fas fa-chevron-down accordion-arrow transition-transform"></i>
+                            </div>
+                            <div class="accordion-content hidden p-4 border-t border-main space-y-4">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label for="transcript-template" class="label-style">Template Cetak</label>
+                                        <select id="transcript-template" class="input-field">
+                                            <option value="klasik">Klasik (Format Resmi)</option>
+                                            <option value="modern">Modern</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label for="transcript-paper-size" class="label-style">Ukuran Kertas</label>
+                                        <select id="transcript-paper-size" class="input-field">
+                                            <option value="a4">A4</option>
+                                            <option value="folio">Folio/F4</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label for="ts-font-family" class="label-style">Jenis Font</label>
+                                        <select id="ts-font-family" class="input-field">
+                                            <option>Calibri</option>
+                                            <option>Times New Roman</option>
+                                            <option>Arial</option>
+                                            <option>Verdana</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label for="ts-body-font-size" class="label-style">Ukuran Font Body (pt)</label>
+                                        <input type="number" id="ts-body-font-size" class="input-field" value="10">
+                                    </div>
+                                </div>
+                                <fieldset class="border border-main p-3 rounded-md">
+                                    <legend class="px-2 font-medium text-main">Margin Halaman (cm)</legend>
+                                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                        <div><label for="ts-margin-top" class="label-style">Atas</label><input type="number" step="0.1" id="ts-margin-top" class="input-field" value="1.3"></div>
+                                        <div><label for="ts-margin-bottom" class="label-style">Bawah</label><input type="number" step="0.1" id="ts-margin-bottom" class="input-field" value="2.54"></div>
+                                        <div><label for="ts-margin-left" class="label-style">Kiri</label><input type="number" step="0.1" id="ts-margin-left" class="input-field" value="1.9"></div>
+                                        <div><label for="ts-margin-right" class="label-style">Kanan</label><input type="number" step="0.1" id="ts-margin-right" class="input-field" value="1.9"></div>
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item border border-main rounded-lg">
+                            <div class="accordion-header flex justify-between items-center p-4 cursor-pointer hover:bg-tertiary">
+                                <div class="flex items-center">
+                                    <i class="fas fa-heading fa-fw mr-3 text-green-500"></i>
+                                    <span class="font-semibold text-main">Kop Surat</span>
+                                </div>
+                                <i class="fas fa-chevron-down accordion-arrow transition-transform"></i>
+                            </div>
+                            <div class="accordion-content hidden p-4 border-t border-main space-y-4">
+                               <div><label for="ts-logo-url" class="label-style">URL Logo</label><input type="text" id="ts-logo-url" class="input-field"></div>
+                                <div><label for="ts-header-line1" class="label-style">Baris 1</label><input type="text" id="ts-header-line1" class="input-field"></div>
+                                <div><label for="ts-header-line2" class="label-style">Baris 2</label><input type="text" id="ts-header-line2" class="input-field"></div>
+                                <div class="flex items-center space-x-4">
+                                    <div class="flex-grow"><label for="ts-header-line-width" class="label-style">Lebar Garis Bawah (%)</label><input type="number" step="0.01" id="ts-header-line-width" class="input-field"></div>
+                                    <div class="pt-6">
+                                        <label class="flex items-center space-x-2 cursor-pointer">
+                                            <input type="checkbox" id="ts-header-line-show" class="form-checkbox">
+                                            <span class="text-sm font-medium text-main">Tampilkan</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion-item border border-main rounded-lg">
+                            <div class="accordion-header flex justify-between items-center p-4 cursor-pointer hover:bg-tertiary">
+                                <div class="flex items-center">
+                                    <i class="fas fa-user-graduate fa-fw mr-3 text-purple-500"></i>
+                                    <span class="font-semibold text-main">Judul & Info Siswa</span>
+                                </div>
+                                <i class="fas fa-chevron-down accordion-arrow transition-transform"></i>
+                            </div>
+                            <div class="accordion-content hidden p-4 border-t border-main space-y-4">
+                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                     <div><label for="ts-main-title-size" class="label-style">Ukuran Judul Utama (pt)</label><input type="number" id="ts-main-title-size" class="input-field"></div>
+                                    <div><label for="ts-sub-title-size" class="label-style">Ukuran Sub Judul (pt)</label><input type="number" id="ts-sub-title-size" class="input-field"></div>
+                                 </div>
+                                 <fieldset class="border border-main p-3 rounded-md">
+                                    <legend class="px-2 font-medium text-main">Posisi Blok Info Siswa (px)</legend>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div><label for="ts-info-block-top" class="label-style">Geser Atas/Bawah</label><input type="number" id="ts-info-block-top" class="input-field"></div>
+                                        <div><label for="ts-info-block-left" class="label-style">Geser Kiri/Kanan</label><input type="number" id="ts-info-block-left" class="input-field"></div>
+                                    </div>
+                                 </fieldset>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item border border-main rounded-lg">
+                            <div class="accordion-header flex justify-between items-center p-4 cursor-pointer hover:bg-tertiary">
+                                <div class="flex items-center">
+                                    <i class="fas fa-table fa-fw mr-3 text-yellow-500"></i>
+                                    <span class="font-semibold text-main">Tabel Nilai</span>
+                                </div>
+                                <i class="fas fa-chevron-down accordion-arrow transition-transform"></i>
+                            </div>
+                            <div class="accordion-content hidden p-4 border-t border-main space-y-4">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div><label for="ts-table-header-bg" class="label-style">Warna Latar Header</label><input type="color" id="ts-table-header-bg" class="input-field h-10"></div>
+                                    <div><label for="ts-table-header-text" class="label-style">Warna Teks Header</label><input type="color" id="ts-table-header-text" class="input-field h-10"></div>
+                                     <div><label for="ts-table-header-size" class="label-style">Ukuran Font Header (pt)</label><input type="number" id="ts-table-header-size" class="input-field"></div>
+                                    <div><label for="ts-table-body-size" class="label-style">Ukuran Font Body (pt)</label><input type="number" id="ts-table-body-size" class="input-field"></div>
+                                </div>
+                                <div><label for="ts-table-row-padding" class="label-style">Padding Baris (pt)</label><input type="number" id="ts-table-row-padding" class="input-field"></div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item border border-main rounded-lg">
+                            <div class="accordion-header flex justify-between items-center p-4 cursor-pointer hover:bg-tertiary">
+                                <div class="flex items-center">
+                                    <i class="fas fa-signature fa-fw mr-3 text-red-500"></i>
+                                    <span class="font-semibold text-main">Penanda Tangan</span>
+                                </div>
+                                <i class="fas fa-chevron-down accordion-arrow transition-transform"></i>
+                            </div>
+                            <div class="accordion-content hidden p-4 border-t border-main space-y-4">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                                    <fieldset class="border border-main p-3 rounded-md space-y-4">
+                                        <legend class="px-2 font-medium text-main">Penanda Tangan 1 (Lampiran I - Kiri)</legend>
+                                        <div><label for="ts-signer1-name" class="label-style">Nama</label><input type="text" id="ts-signer1-name" class="input-field"></div>
+                                        <div><label for="ts-signer1-id" class="label-style">ID (NRP/NIP)</label><input type="text" id="ts-signer1-id" class="input-field"></div>
+                                        <div><label for="ts-signer1-title" class="label-style">Jabatan (pisahkan dengan | )</label><input type="text" id="ts-signer1-title" class="input-field"></div>
+                                        <div><label for="ts-signer1-line-width" class="label-style">Lebar Garis Nama (px)</label><input type="number" step="0.01" id="ts-signer1-line-width" class="input-field" placeholder="Kosongkan untuk auto"></div>
+                                        <div class="grid grid-cols-2 gap-4">
+                                            <div><label for="ts-signer1-top" class="label-style">Geser Atas/Bawah (px)</label><input type="number" id="ts-signer1-top" class="input-field"></div>
+                                            <div><label for="ts-signer1-left" class="label-style">Geser Kiri/Kanan (px)</label><input type="number" id="ts-signer1-left" class="input-field"></div>
+                                        </div>
+                                    </fieldset>
+
+                                    <fieldset class="border border-main p-3 rounded-md space-y-4">
+                                        <legend class="px-2 font-medium text-main">Penanda Tangan 2 (Lampiran I - Kanan)</legend>
+                                        <div><label for="ts-signer2-name" class="label-style">Nama</label><input type="text" id="ts-signer2-name" class="input-field"></div>
+                                        <div><label for="ts-signer2-id" class="label-style">ID (NRP/NIP)</label><input type="text" id="ts-signer2-id" class="input-field"></div>
+                                        <div><label for="ts-signer2-title" class="label-style">Jabatan (pisahkan dengan | )</label><input type="text" id="ts-signer2-title" class="input-field"></div>
+                                         <div><label for="ts-signer2-line-width" class="label-style">Lebar Garis Nama (px)</label><input type="number" step="0.01" id="ts-signer2-line-width" class="input-field" placeholder="Kosongkan untuk auto"></div>
+                                        <div class="grid grid-cols-2 gap-4">
+                                            <div><label for="ts-signer2-top" class="label-style">Geser Atas/Bawah (px)</label><input type="number" id="ts-signer2-top" class="input-field"></div>
+                                            <div><label for="ts-signer2-left" class="label-style">Geser Kiri/Kanan (px)</label><input type="number" id="ts-signer2-left" class="input-field"></div>
+                                        </div>
+                                    </fieldset>
+
+                                    <fieldset class="border border-main p-3 rounded-md space-y-4 md:col-span-2">
+                                        <legend class="px-2 font-medium text-main">Penanda Tangan Lampiran II (Kanan)</legend>
+                                        <div><label for="ts-signerL2-name" class="label-style">Nama</label><input type="text" id="ts-signerL2-name" class="input-field" placeholder="Kosongkan jika sama dgn Penanda Tangan 2"></div>
+                                        <div><label for="ts-signerL2-id" class="label-style">ID (NRP/NIP)</label><input type="text" id="ts-signerL2-id" class="input-field"></div>
+                                        <div><label for="ts-signerL2-title" class="label-style">Jabatan (pisahkan dengan | )</label><input type="text" id="ts-signerL2-title" class="input-field"></div>
+                                         <div><label for="ts-signerL2-line-width" class="label-style">Lebar Garis Nama (px)</label><input type="number" step="0.01" id="ts-signerL2-line-width" class="input-field" placeholder="Kosongkan untuk auto"></div>
+                                        <div class="grid grid-cols-2 gap-4">
+                                            <div><label for="ts-signerL2-top" class="label-style">Geser Atas/Bawah (px)</label><input type="number" id="ts-signerL2-top" class="input-field"></div>
+                                            <div><label for="ts-signerL2-left" class="label-style">Geser Kiri/Kanan (px)</label><input type="number" id="ts-signerL2-left" class="input-field"></div>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="bg-secondary p-4 rounded-xl shadow-lg border border-main">
+                    <h3 class="text-xl font-bold text-main mb-4 text-center">Pratinjau</h3>
+                    <div id="transcript-preview-wrapper" class="bg-gray-400 p-2 sm:p-4 rounded-lg overflow-auto">
+                        <div id="transcript-preview" class="transition-all duration-300">
+                            </div>
+                    </div>
+                </div>
+
+            </div>
+        </form>
+    </div>
+
+    <div id="tab-content-petikan" class="setting-tab-content hidden">
+        <form id="settings-petikan-form">
+            <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+
+                <div class="bg-secondary p-5 rounded-xl shadow-lg border border-main">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 pb-4 border-b border-main">
+                        <h3 class="text-xl font-bold text-main mb-3 sm:mb-0">
+                            Pengaturan Cetak Petikan
+                        </h3>
+                        <button type="submit" class="btn-primary w-full sm:w-auto">
+                            <i class="fas fa-save mr-2"></i>Simpan Perubahan
+                        </button>
+                    </div>
+
+                    <div class="space-y-2" id="petikan-settings-accordions">
+                        
+                        <div class="accordion-item border border-main rounded-lg">
+                            <div class="accordion-header flex justify-between items-center p-4 cursor-pointer hover:bg-tertiary">
+                                <span class="font-semibold text-main"><i class="fas fa-file-alt mr-2 text-blue-500"></i>Umum & Kertas</span>
+                                <i class="fas fa-chevron-down accordion-arrow transition-transform"></i>
+                            </div>
+                            <div class="accordion-content hidden p-4 border-t border-main space-y-4">
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="label-style">Ukuran Kertas</label>
+                                        <select id="pt-paper-size" class="input-field">
+                                            <option value="f4">F4 (Folio)</option>
+                                            <option value="a4">A4</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="label-style">Font</label>
+                                        <select id="pt-font-family" class="input-field">
+                                            <option value="Arial Narrow">Arial Narrow</option>
+                                            <option value="Arial">Arial</option>
+                                            <option value="Times New Roman">Times New Roman</option>
+                                            <option value="Calibri">Calibri</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="label-style">Size (pt)</label>
+                                        <input type="number" id="pt-font-size" class="input-field" value="11">
+                                    </div>
+                                </div>
+                                <fieldset class="border border-main p-3 rounded-md">
+                                    <legend class="px-2 font-medium text-main">Margin (cm)</legend>
+                                    <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+                                        <input type="number" step="0.1" id="pt-margin-top" class="input-field" placeholder="Top">
+                                        <input type="number" step="0.1" id="pt-margin-bottom" class="input-field" placeholder="Btm">
+                                        <input type="number" step="0.1" id="pt-margin-left" class="input-field" placeholder="Left">
+                                        <input type="number" step="0.1" id="pt-margin-right" class="input-field" placeholder="Right">
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item border border-main rounded-lg">
+                            <div class="accordion-header flex justify-between items-center p-4 cursor-pointer hover:bg-tertiary">
+                                <span class="font-semibold text-main"><i class="fas fa-heading mr-2 text-green-500"></i>Kop & Judul SK</span>
+                                <i class="fas fa-chevron-down accordion-arrow transition-transform"></i>
+                            </div>
+                            <div class="accordion-content hidden p-4 border-t border-main space-y-4">
+                                <div><label class="label-style">URL Logo</label><input type="text" id="pt-logo-url" class="input-field" placeholder="https://..."></div>
+                                
+                                <fieldset class="border border-main p-3 rounded-md bg-gray-50">
+                                    <legend class="px-2 font-medium text-main text-xs uppercase">Posisi & Ukuran Logo</legend>
+                                    <div class="grid grid-cols-3 gap-2">
+                                        <div>
+                                            <label class="text-xs text-subtle block mb-1">Tinggi (px)</label>
+                                            <input type="number" id="pt-logo-height" class="input-field text-sm" value="60">
+                                        </div>
+                                        <div>
+                                            <label class="text-xs text-subtle block mb-1">Geser Vertikal</label>
+                                            <input type="number" id="pt-logo-top" class="input-field text-sm" value="0" placeholder="+/-">
+                                        </div>
+                                        <div>
+                                            <label class="text-xs text-subtle block mb-1">Geser Horizontal</label>
+                                            <input type="number" id="pt-logo-left" class="input-field text-sm" value="0" placeholder="+/-">
+                                        </div>
+                                    </div>
+                                </fieldset>
+
+                                <div><label class="label-style">Baris 1</label><input type="text" id="pt-header-line1" class="input-field"></div>
+                                <div><label class="label-style">Baris 2</label><input type="text" id="pt-header-line2" class="input-field"></div>
+                                
+                                <div class="mt-2">
+                                    <label class="block mb-1 text-xs font-medium text-subtle">Geser Baris 2 (cm)</label>
+                                    <div class="flex items-center">
+                                        <input type="number" step="0.1" id="pt-header-line2-indent" class="bg-input border border-main text-main text-xs rounded-lg block w-full p-2" placeholder="0">
+                                    </div>
+                                    <p class="text-[10px] text-gray-500 mt-1">*Positif (+) geser kanan, Negatif (-) geser kiri.</p>
+                                </div>
+                                
+                                <div class="grid grid-cols-2 gap-4 items-end">
+                                    <div><label class="label-style">Lebar Garis Bawah (%)</label><input type="number" id="pt-header-line-width" class="input-field" value="100"></div>
+                                    <div class="pb-2">
+                                        <label class="flex items-center space-x-2 cursor-pointer">
+                                            <input type="checkbox" id="pt-header-line-show" class="form-checkbox">
+                                            <span class="text-sm font-medium">Tampilkan Garis</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="flex items-center space-x-2 cursor-pointer">
+                                        <input type="checkbox" id="pt-show-logo" class="form-checkbox">
+                                        <span class="text-sm font-medium">Tampilkan Logo (Tengah)</span>
+                                    </label>
+                                </div>
+                                
+                                <div class="pt-2 border-t border-main mt-2">
+                                    <label class="label-style">Jabatan pada Judul SK (Header)</label>
+                                    <input type="text" id="pt-jabatan-sk" class="input-field" placeholder="Contoh: KEPALA PUSAT PENDIDIKAN POLISI PERAIRAN">
+                                    <p class="text-xs text-subtle mt-1">Muncul di: "KEPUTUSAN ..." (Header Tengah)</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item border border-main rounded-lg">
+                            <div class="accordion-header flex justify-between items-center p-4 cursor-pointer hover:bg-tertiary">
+                                <span class="font-semibold text-main"><i class="fas fa-signature mr-2 text-purple-500"></i>Penanda Tangan</span>
+                                <i class="fas fa-chevron-down accordion-arrow transition-transform"></i>
+                            </div>
+                            <div class="accordion-content hidden p-4 border-t border-main space-y-4">
+                                <div>
+                                    <label class="label-style">Kota Penetapan</label>
+                                    <input type="text" id="pt-kota" class="input-field" value="Jakarta">
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                                    
+                                    <div class="space-y-4">
+                                        
+                                        <fieldset class="border border-main p-3 rounded-md bg-yellow-50">
+                                            <legend class="px-1 text-sm font-bold text-yellow-700">1. Posisi Tanggal "Ditetapkan di..."</legend>
+                                            <div class="grid grid-cols-2 gap-2">
+                                                <div>
+                                                    <label class="text-[10px]">Geser Kiri/Kanan (px)</label>
+                                                    <input type="number" id="pt-date-left" class="input-field text-xs" placeholder="0">
+                                                </div>
+                                                <div>
+                                                    <label class="text-[10px]">Geser Atas/Bawah (px)</label>
+                                                    <input type="number" id="pt-date-top" class="input-field text-xs" placeholder="0">
+                                                </div>
+                                            </div>
+                                        </fieldset>
+
+                                        <fieldset class="border border-main p-3 rounded-md bg-blue-50">
+                                            <legend class="px-1 text-sm font-bold text-blue-600">2. Posisi & Data Pejabat (Atas)</legend>
+                                            
+                                            <div class="mb-3 bg-white p-2 rounded border border-gray-200">
+                                                <div class="text-[10px] font-bold text-gray-600 mb-1">Geser Blok Pejabat (px)</div>
+                                                <div class="grid grid-cols-2 gap-2">
+                                                    <div><label class="text-[9px]">Kiri/Kanan</label><input type="number" id="pt-signer1-block-left" class="input-field text-xs" placeholder="0"></div>
+                                                    <div><label class="text-[9px]">Atas/Bawah</label><input type="number" id="pt-signer1-block-top" class="input-field text-xs" placeholder="0"></div>
+                                                </div>
+                                            </div>
+
+                                            <div class="mb-2">
+                                                <label class="label-style">Jabatan</label>
+                                                <input type="text" id="pt-jabatan-ttd" class="input-field" placeholder="e.g. KEPALA PUSAT...">
+                                            </div>
+
+                                            <div class="mb-3 bg-white p-2 rounded border border-gray-200">
+                                                <div class="text-[10px] font-bold text-gray-600 mb-1">Posisi tulisan "ttd" (Relatif)</div>
+                                                <div class="grid grid-cols-2 gap-2">
+                                                    <div><label class="text-[9px]">Kiri/Kanan</label><input type="number" id="pt-ttd-left" class="input-field text-xs" placeholder="0"></div>
+                                                    <div><label class="text-[9px]">Atas/Bawah</label><input type="number" id="pt-ttd-top" class="input-field text-xs" placeholder="0"></div>
+                                                </div>
+                                            </div>
+
+                                            <div class="mb-2">
+                                                <label class="label-style">Nama Pejabat</label>
+                                                <input type="text" id="pt-signer1-name" class="input-field" placeholder="Nama Lengkap">
+                                            </div>
+                                            
+                                            <div class="grid grid-cols-2 gap-2 bg-white p-2 rounded border border-gray-200 mb-2">
+                                                <div class="col-span-2 text-[10px] font-bold text-gray-600">Garis Bawah Nama (1px)</div>
+                                                <div>
+                                                    <label class="text-[9px]">Panjang (px)</label>
+                                                    <input type="number" id="pt-signer1-line-width" class="input-field text-xs" placeholder="Auto">
+                                                </div>
+                                                <div>
+                                                    <label class="text-[9px]">Geser (px)</label>
+                                                    <input type="number" id="pt-signer1-line-left" class="input-field text-xs" placeholder="+/-">
+                                                </div>
+                                            </div>
+
+                                            <div>
+                                                <label class="label-style">NRP/NIP</label>
+                                                <input type="text" id="pt-signer1-id" class="input-field" placeholder="NRP/NIP">
+                                            </div>
+                                            <input type="hidden" id="pt-signer1-title"> 
+                                        </fieldset>
+                                    </div>
+                                    
+                                    <div class="space-y-4">
+                                        <fieldset class="border border-main p-3 rounded-md bg-green-50">
+                                            <legend class="px-1 text-sm font-bold text-green-600">3. Pejabat Petikan (Bawah)</legend>
+                                            
+                                            <div class="mb-3 bg-white p-2 rounded border border-gray-200">
+                                                <div class="text-[10px] font-bold text-gray-600 mb-1">Geser Blok Pejabat (px)</div>
+                                                <div>
+                                                    <label class="text-[9px]">Kiri/Kanan</label>
+                                                    <input type="number" id="pt-signer2-block-left" class="input-field text-xs" placeholder="0">
+                                                </div>
+                                            </div>
+
+                                            <div class="space-y-2">
+                                                <label class="label-style">Jabatan Pelaksana (a.n.)</label>
+                                                <input type="text" id="pt-signer2-title" class="input-field" placeholder="e.g. KABAGDIKLAT">
+
+                                                <label class="label-style">Nama</label>
+                                                <input type="text" id="pt-signer2-name" class="input-field" placeholder="Nama Pejabat">
+                                                
+                                                <div class="grid grid-cols-2 gap-2 bg-white p-2 rounded border border-gray-200">
+                                                    <div class="col-span-2 text-[10px] font-bold text-gray-600">Garis Bawah Nama (1px)</div>
+                                                    <div>
+                                                        <label class="text-[9px]">Panjang (px)</label>
+                                                        <input type="number" id="pt-signer2-line-width" class="input-field text-xs" placeholder="Auto">
+                                                    </div>
+                                                    <div>
+                                                        <label class="text-[9px]">Geser (px)</label>
+                                                        <input type="number" id="pt-signer2-line-left" class="input-field text-xs" placeholder="+/-">
+                                                    </div>
+                                                </div>
+
+                                                <label class="label-style">Pangkat / NRP</label>
+                                                <input type="text" id="pt-signer2-id" class="input-field" placeholder="NRP/NIP">
+                                            </div>
+                                        </fieldset>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="bg-secondary p-4 rounded-xl shadow-lg border border-main">
+                    <h3 class="text-xl font-bold text-main mb-4 text-center">Pratinjau Dokumen</h3>
+                    <div id="petikan-preview-wrapper" class="bg-gray-400 p-2 sm:p-4 rounded-lg overflow-auto h-[700px]">
+                        <div id="petikan-preview" class="transition-all duration-300 origin-top bg-white shadow-lg mx-auto"></div>
+                    </div>
+                </div>
+
+            </div>
+        </form>
+    </div>
+
+    <div id="tab-content-elibrary" class="setting-tab-content hidden">
+        <form id="settings-elibrary-form" class="max-w-2xl mx-auto">
+            <div class="bg-secondary p-6 rounded-xl shadow-lg border border-main">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 pb-4 border-b border-main">
+                    <h3 class="text-xl font-bold text-main mb-3 sm:mb-0">
+                        Pengaturan E-Library (Google Drive)
+                    </h3>
+                    <button type="submit" class="btn-primary w-full sm:w-auto">
+                        <i class="fas fa-save mr-2"></i>Simpan & Muat Ulang
+                    </button>
+                </div>
+                <div class="space-y-4">
+                    <div>
+                        <label for="elibrary-api-key" class="label-style">API Key Google</label>
+                        <input type="password" id="elibrary-api-key" class="input-field" placeholder="Masukkan API Key Anda">
+                    </div>
+                    <div>
+                        <label for="elibrary-folder-id" class="label-style">Folder ID Google Drive</label>
+                        <input type="text" id="elibrary-folder-id" class="input-field" placeholder="Masukkan ID Folder utama">
+                    </div>
+                    <p class="text-xs text-subtle mt-4">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        Perubahan pada pengaturan ini memerlukan muat ulang halaman agar dapat diterapkan.
+                    </p>
+                </div>
+            </div>
+        </form>
+    </div>
+    
+    <div id="tab-content-recaptcha" class="setting-tab-content hidden">
+        <form id="settings-recaptcha-form" class="max-w-2xl mx-auto">
+             <div class="bg-secondary p-6 rounded-xl shadow-lg border border-main">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 pb-4 border-b border-main">
+                    <h3 class="text-xl font-bold text-main mb-3 sm:mb-0">
+                        Pengaturan Verifikasi Login
+                    </h3>
+                    <button type="submit" class="btn-primary w-full sm:w-auto">
+                        <i class="fas fa-save mr-2"></i>Simpan Pengaturan
+                    </button>
+                </div>
+                
+                <div class="space-y-4">
+                    <label class="label-style">Metode Verifikasi</label>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <div class="flex-1 p-3 rounded-lg bg-tertiary border border-main has-[:checked]:border-blue-500 has-[:checked]:bg-blue-900/10">
+                            <input type="radio" id="verification-method-none" name="verification_method" value="none" class="form-radio">
+                            <label for="verification-method-none" class="ml-2 text-main font-semibold">Tidak Aktif</label>
+                        </div>
+                        <div class="flex-1 p-3 rounded-lg bg-tertiary border border-main has-[:checked]:border-blue-500 has-[:checked]:bg-blue-900/10">
+                            <input type="radio" id="verification-method-recaptcha" name="verification_method" value="recaptcha" class="form-radio">
+                            <label for="verification-method-recaptcha" class="ml-2 text-main font-semibold">Google reCAPTCHA v3</label>
+                        </div>
+                         <div class="flex-1 p-3 rounded-lg bg-tertiary border border-main has-[:checked]:border-blue-500 has-[:checked]:bg-blue-900/10">
+                            <input type="radio" id="verification-method-cloudflare" name="verification_method" value="cloudflare" class="form-radio">
+                            <label for="verification-method-cloudflare" class="ml-2 text-main font-semibold">Cloudflare Turnstile</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="recaptcha-keys-container" class="space-y-4 pt-4 border-t border-main mt-4 hidden">
+                    <h4 class="font-semibold text-main">Pengaturan Google reCAPTCHA</h4>
+                    <div>
+                        <label for="recaptcha-site-key" class="label-style">Site Key</label>
+                        <input type="text" id="recaptcha-site-key" class="input-field" placeholder="Masukkan Site Key Google">
+                    </div>
+                    <div>
+                        <label for="recaptcha-secret-key" class="label-style">Secret Key</label>
+                        <input type="password" id="recaptcha-secret-key" class="input-field" placeholder="Masukkan Secret Key Google">
+                    </div>
+                </div>
+                
+                <div id="cloudflare-keys-container" class="space-y-4 pt-4 border-t border-main mt-4 hidden">
+                    <h4 class="font-semibold text-main">Pengaturan Cloudflare Turnstile</h4>
+                    <div>
+                        <label for="cloudflare-site-key" class="label-style">Site Key</label>
+                        <input type="text" id="cloudflare-site-key" class="input-field" placeholder="Masukkan Site Key Cloudflare">
+                    </div>
+                    <div>
+                        <label for="cloudflare-secret-key" class="label-style">Secret Key</label>
+                        <input type="password" id="cloudflare-secret-key" class="input-field" placeholder="Masukkan Secret Key Cloudflare">
+                    </div>
+                </div>
+
+            </div>
+        </form>
+    </div>
+</div>
