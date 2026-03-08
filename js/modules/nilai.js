@@ -36,6 +36,13 @@ let nilaiJasmaniTableBody, searchJasmaniInput, jasmaniModal, jasmaniForm;
 let akademikCurrentPage = 1;
 const AKADEMIK_ROWS_PER_PAGE = 10;
 
+let jasmaniCurrentPage = 1;
+const JASMANI_ROWS_PER_PAGE = 10;
+
+// [BARU] State Pagination Kepribadian
+let kepribadianCurrentPage = 1;
+const KEPRIBADIAN_ROWS_PER_PAGE = 10;
+
 const formatDate = (dateString) => {
     if (!dateString || !/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
         return '-';
@@ -303,7 +310,6 @@ const renderAkademikPagination = (totalItems, totalPages) => {
     }
 };
 
-// [BARU] Fungsi Menghitung Semua Peringkat Sekaligus 
 const refreshAkademikRanks = async (filters) => {
     const { kategori, detail, tahun } = filters;
     const groupStudents = localStudents.filter(s => 
@@ -320,7 +326,6 @@ const refreshAkademikRanks = async (filters) => {
 
     const studentsWithScores = await Promise.all(allScoresPromises);
 
-    // Sort descending by score
     studentsWithScores.sort((a, b) => b.totalNilai - a.totalNilai);
 
     let lastScore = -1;
@@ -349,7 +354,6 @@ const renderNilaiAkademikSiswaTable = async () => {
         const tahunAjaranData = localTahunAjaran.find(ta => ta.tahun === parseInt(tahun) && ta.pendidikan.some(p => p.jenis === kategori && p.detail === detail));
         const studentCount = localStudents.filter(s => s.kategori === kategori && s.detailPendidikan === detail && s.tahunAjaran === parseInt(tahun)).length;
         
-        // [UPDATE] Membuat container badge biru dengan teks putih
         subtitleAkademik.innerHTML = `
             <div class="inline-block bg-blue-600 text-white text-sm px-4 py-2 rounded-md font-medium shadow mt-2">
                 Jumlah Siswa : ${studentCount} &nbsp; | &nbsp;
@@ -370,11 +374,9 @@ const renderNilaiAkademikSiswaTable = async () => {
         (searchNilaiSiswaInput.value ? s.nama.toLowerCase().includes(searchNilaiSiswaInput.value.toLowerCase()) || (s.nosis && String(s.nosis).includes(searchNilaiSiswaInput.value)) : true)
     );
 
-    // [BARU] Ambil nilai dari dropdown sort
     const sortSelect = document.getElementById('sort-nilai-akademik-select');
     const sortValue = sortSelect ? sortSelect.value : 'nosis_asc';
 
-    // [BARU] Terapkan Sorting
     filteredSiswa.sort((a, b) => {
         if (sortValue === 'nosis_asc') {
             return String(a.nosis || '').localeCompare(String(b.nosis || ''));
@@ -563,7 +565,6 @@ const handleNilaiAkademikSubmit = async (e) => {
         alert('Nilai berhasil disimpan!');
         closeModal('input-nilai-modal');
         
-        // [UPDATE] Hitung ulang peringkat sebelum render
         showLoading('Memperbarui peringkat...');
         await refreshAkademikRanks(selectedNilaiFilters);
         await renderNilaiAkademikSiswaTable();
@@ -850,7 +851,6 @@ const importNilaiFromExcel = (type) => {
                 alert(`Berhasil mengimpor dan memproses ${processedCount} dari ${dataRows.length} baris data nilai! Data akan diperbarui secara otomatis.`);
 
                 if (type === 'akademik' && typeof renderNilaiAkademikSiswaTable === 'function') {
-                    // [UPDATE] Hitung ulang Peringkat setelah Impor
                     showLoading('Memperbarui peringkat...');
                     await refreshAkademikRanks(selectedNilaiFilters);
                     await renderNilaiAkademikSiswaTable();
@@ -1065,6 +1065,49 @@ const generateWeeklyHeaders = (startDateStr, endDateStr) => {
     return { monthHeaders, weekHeaders, totalWeeks };
 };
 
+// [BARU] Fungsi render pagination Kepribadian
+const renderKepribadianPagination = (totalItems, totalPages) => {
+    const paginationContainer = document.getElementById('nilai-kepribadian-pagination');
+    if (!paginationContainer) return;
+
+    if (totalItems === 0) {
+        paginationContainer.innerHTML = '';
+        return;
+    }
+    
+    if (totalPages <= 1) {
+        paginationContainer.innerHTML = `<span class="text-sm text-subtle">Menampilkan ${totalItems} dari ${totalItems} siswa</span>`;
+        return;
+    };
+
+    const startItem = (kepribadianCurrentPage - 1) * KEPRIBADIAN_ROWS_PER_PAGE + 1;
+    const endItem = Math.min(startItem + KEPRIBADIAN_ROWS_PER_PAGE - 1, totalItems);
+
+    let paginationHTML = `
+        <span class="text-sm text-subtle">
+            Menampilkan ${startItem} - ${endItem} dari ${totalItems} siswa
+        </span>
+        <div class="inline-flex mt-2 xs:mt-0">
+            <button id="prev-kepribadian-page" class="flex items-center justify-center px-3 h-8 text-sm font-medium text-main bg-tertiary rounded-l hover:bg-main disabled:opacity-50 disabled:cursor-not-allowed">
+                Sebelumnya
+            </button>
+            <button id="next-kepribadian-page" class="flex items-center justify-center px-3 h-8 text-sm font-medium text-main bg-tertiary rounded-r border-0 border-l border-main hover:bg-main disabled:opacity-50 disabled:cursor-not-allowed">
+                Selanjutnya
+            </button>
+        </div>
+    `;
+    paginationContainer.innerHTML = paginationHTML;
+
+    const prevButton = document.getElementById('prev-kepribadian-page');
+    const nextButton = document.getElementById('next-kepribadian-page');
+
+    if (kepribadianCurrentPage === 1) {
+        prevButton.disabled = true;
+    }
+    if (kepribadianCurrentPage >= totalPages) {
+        nextButton.disabled = true;
+    }
+};
 
 const renderNilaiKepribadianSiswaTable = () => {
     if (!nilaiKepribadianTableBody) return;
@@ -1073,6 +1116,11 @@ const renderNilaiKepribadianSiswaTable = () => {
     const searchTerm = searchKepribadianInput.value.toLowerCase();
     const isActive = selectedKepribadianFilters.active === 'true';
     
+    // [BARU] Ambil nilai filter tambahan
+    const filterBatalyon = document.getElementById('filter-kepribadian-batalyon');
+    const filterKompi = document.getElementById('filter-kepribadian-kompi');
+    const filterPeleton = document.getElementById('filter-kepribadian-peleton');
+
     const tahunAjaranData = localTahunAjaran.find(ta => ta.tahun === parseInt(tahun) && ta.pendidikan.some(p => p.jenis === kategori && p.detail === detail));
     
     let displayTitle = detail;
@@ -1085,10 +1133,12 @@ const renderNilaiKepribadianSiswaTable = () => {
     if (subtitleKepribadian) {
         const studentCount = localStudents.filter(s => s.kategori === kategori && s.detailPendidikan === detail && s.tahunAjaran === parseInt(tahun)).length;
         subtitleKepribadian.innerHTML = `
-            Jumlah Siswa : ${studentCount} &nbsp; | &nbsp;
-            Tanggal Mulai Dik : ${formatDate(tahunAjaranData?.tanggalMulai)} &nbsp; | &nbsp;
-            Tanggal Selesai Dik : ${formatDate(tahunAjaranData?.tanggalBerakhir)}
-            ${!isActive ? '&nbsp; <span class="text-red-500 font-bold">(ARSIP - View Only)</span>' : ''}
+            <div class="inline-block bg-blue-600 text-white text-sm px-4 py-2 rounded-md font-medium shadow mt-2">
+                Jumlah Siswa : ${studentCount} &nbsp; | &nbsp;
+                Tanggal Mulai Dik : ${formatDate(tahunAjaranData?.tanggalMulai)} &nbsp; | &nbsp;
+                Tanggal Selesai Dik : ${formatDate(tahunAjaranData?.tanggalBerakhir)}
+                ${!isActive ? '&nbsp; <span class="text-red-300 font-bold">(ARSIP - View Only)</span>' : ''}
+            </div>
         `;
     }
 
@@ -1096,9 +1146,75 @@ const renderNilaiKepribadianSiswaTable = () => {
         s.kategori === kategori &&
         s.detailPendidikan === detail &&
         s.tahunAjaran === parseInt(tahun) &&
+        (filterBatalyon && filterBatalyon.value ? s.batalyon === filterBatalyon.value : true) &&
+        (filterKompi && filterKompi.value ? s.kompi === filterKompi.value : true) &&
+        (filterPeleton && filterPeleton.value ? s.peleton === filterPeleton.value : true) &&
         (searchTerm ? s.nama.toLowerCase().includes(searchTerm) || (s.nosis && String(s.nosis).includes(searchTerm)) : true)
     ); 
     
+    let rankedSiswa = [];
+
+    // [UPDATE] Hitung Rank untuk kedua jenis kategori pendidikan
+    if (kategori === 'Dikbangspes' || kategori === 'DIKBANGUM SEKOLAH BINTARA POLISI') { 
+        rankedSiswa = filteredSiswa.map(siswa => {
+            const nilaiList = siswa.nilaiKepribadian || [];
+            const validNilaiList = nilaiList.filter(n => n !== null && n !== undefined && !isNaN(n));
+            const nilaiInstruktur = validNilaiList.length > 0 ? validNilaiList[validNilaiList.length - 1] : 0;
+            const nilaiSosiometri = siswa.nilaiSosiometri || 0;
+            const nilaiAkhir = (nilaiInstruktur * 0.7) + (nilaiSosiometri * 0.3);
+            return { ...siswa, nilaiAkhir, nilaiInstruktur, nilaiSosiometri };
+        }).sort((a, b) => b.nilaiAkhir - a.nilaiAkhir); 
+    } else {
+        rankedSiswa = filteredSiswa.map(siswa => {
+            const nilaiList = siswa.nilaiKepribadian || [];
+            const total = nilaiList.reduce((a, b) => a + b, 0);
+            const rata2 = nilaiList.length > 0 ? (total / nilaiList.length) : 0;
+            return { ...siswa, rata2 };
+        }).sort((a, b) => b.rata2 - a.rata2); 
+    }
+
+    let lastScore = -1;
+    let rank = 0;
+    let rankCounter = 0;
+    rankedSiswa.forEach((siswa) => {
+        rankCounter++;
+        let scoreToCompare = (kategori === 'Dikbangspes' || kategori === 'DIKBANGUM SEKOLAH BINTARA POLISI') ? siswa.nilaiAkhir : siswa.rata2;
+        if (scoreToCompare !== lastScore) {
+            rank = rankCounter;
+        }
+        siswa.rank = rank;
+        lastScore = scoreToCompare;
+    });
+
+    // [BARU] Ambil Sort Select
+    const sortKepribadianSelect = document.getElementById('sort-nilai-kepribadian-select');
+    const sortValue = sortKepribadianSelect ? sortKepribadianSelect.value : 'nosis_asc';
+
+    // [BARU] Sorting Data
+    rankedSiswa.sort((a, b) => {
+        if (sortValue === 'nosis_asc') {
+            return String(a.nosis || '').localeCompare(String(b.nosis || ''));
+        } else if (sortValue === 'nosis_desc') {
+            return String(b.nosis || '').localeCompare(String(a.nosis || ''));
+        } else if (sortValue === 'nama_asc') {
+            return String(a.nama || '').localeCompare(String(b.nama || ''));
+        } else if (sortValue === 'nama_desc') {
+            return String(b.nama || '').localeCompare(String(a.nama || ''));
+        } else if (sortValue === 'rank_asc') {
+            return (a.rank || 999999) - (b.rank || 999999);
+        }
+        return 0;
+    });
+
+    // [BARU] Paginasi Data
+    const totalItems = rankedSiswa.length;
+    const totalPages = Math.ceil(totalItems / KEPRIBADIAN_ROWS_PER_PAGE);
+    kepribadianCurrentPage = Math.min(Math.max(1, kepribadianCurrentPage), totalPages || 1);
+
+    const startIndex = (kepribadianCurrentPage - 1) * KEPRIBADIAN_ROWS_PER_PAGE;
+    const endIndex = startIndex + KEPRIBADIAN_ROWS_PER_PAGE;
+    const paginatedSiswa = rankedSiswa.slice(startIndex, endIndex);
+
     const tableHead = document.getElementById('nilai-kepribadian-table-head');
     nilaiKepribadianTableBody.innerHTML = '';
 
@@ -1120,36 +1236,15 @@ const renderNilaiKepribadianSiswaTable = () => {
             </tr>
         `;
 
-        if (filteredSiswa.length === 0) {
+        if (totalItems === 0) {
             nilaiKepribadianTableBody.innerHTML = `<tr><td colspan="${6 + totalWeeks}" class="text-center p-4">Tidak ada data siswa yang cocok.</td></tr>`;
+            renderKepribadianPagination(0, 1);
             return;
         }
 
-        const rankedSiswa = filteredSiswa.map(siswa => {
+        paginatedSiswa.forEach((siswa, index) => {
             const nilaiList = siswa.nilaiKepribadian || [];
-            const validNilaiList = nilaiList.filter(n => n !== null && n !== undefined && !isNaN(n));
-            const nilaiInstruktur = validNilaiList.length > 0 ? validNilaiList[validNilaiList.length - 1] : 0;
-            const nilaiSosiometri = siswa.nilaiSosiometri || 0;
-            const nilaiAkhir = (nilaiInstruktur * 0.7) + (nilaiSosiometri * 0.3);
-            return { ...siswa, nilaiAkhir, nilaiInstruktur, nilaiSosiometri };
-        }).sort((a, b) => b.nilaiAkhir - a.nilaiAkhir); 
-
-        let lastScore = -1;
-        let rank = 0;
-        let rankCounter = 0;
-        rankedSiswa.forEach((siswa) => {
-            rankCounter++;
-            if (siswa.nilaiAkhir !== lastScore) {
-                rank = rankCounter;
-            }
-            siswa.rank = rank;
-            lastScore = siswa.nilaiAkhir;
-        });
-        
-        const finalSiswaList = rankedSiswa.sort((a, b) => String(a.nosis || '').localeCompare(String(b.nosis || '')));
-
-        finalSiswaList.forEach((siswa, index) => {
-            const nilaiList = siswa.nilaiKepribadian || [];
+            const originalIndex = startIndex + index + 1;
             
             let weeklyScoresHtml = '';
             for (let i = 0; i < totalWeeks; i++) {
@@ -1174,7 +1269,7 @@ const renderNilaiKepribadianSiswaTable = () => {
             const sosiometriTitle = isActive ? 'Klik untuk input/edit nilai sosiometri' : 'View Only';
 
             tr.innerHTML = `
-                <td class="p-3 text-center sticky left-0 bg-card z-0">${index + 1}</td>
+                <td class="p-3 text-center sticky left-0 bg-card z-0">${originalIndex}</td>
                 <td class="p-3 font-medium sticky left-12 bg-card z-0">${siswa.nama}</td>
                 ${weeklyScoresHtml}
                 <td class="p-3 text-center font-semibold">${siswa.nilaiInstruktur.toFixed(2)}</td>
@@ -1192,7 +1287,7 @@ const renderNilaiKepribadianSiswaTable = () => {
     } else { 
         tableHead.innerHTML = `
              <tr>
-                <th class="p-3">No</th>
+                <th class="p-3 text-center w-12">No</th>
                 <th class="p-3">Nama Lengkap</th>
                 <th class="p-3">Nosis</th>
                 <th class="p-3">Daftar Nilai</th>
@@ -1202,34 +1297,15 @@ const renderNilaiKepribadianSiswaTable = () => {
             </tr>
         `;
 
-        if (filteredSiswa.length === 0) {
+        if (totalItems === 0) {
             nilaiKepribadianTableBody.innerHTML = `<tr><td colspan="7" class="text-center p-4">Tidak ada data siswa yang cocok.</td></tr>`;
+            renderKepribadianPagination(0, 1);
             return;
         }
-        
-        const rankedSiswa = filteredSiswa.map(siswa => {
+
+        paginatedSiswa.forEach((siswa, index) => {
             const nilaiList = siswa.nilaiKepribadian || [];
-            const total = nilaiList.reduce((a, b) => a + b, 0);
-            const rata2 = nilaiList.length > 0 ? (total / nilaiList.length) : 0;
-            return { ...siswa, rata2 };
-        }).sort((a, b) => b.rata2 - a.rata2); 
-
-        let lastScore = -1;
-        let rank = 0;
-        let rankCounter = 0;
-        rankedSiswa.forEach((siswa) => {
-            rankCounter++;
-            if (siswa.rata2 !== lastScore) {
-                rank = rankCounter;
-            }
-            siswa.rank = rank;
-            lastScore = siswa.rata2;
-        });
-
-        const finalSiswaList = rankedSiswa.sort((a, b) => String(a.nosis || '').localeCompare(String(b.nosis || '')));
-
-        finalSiswaList.forEach((siswa, index) => {
-            const nilaiList = siswa.nilaiKepribadian || [];
+            const originalIndex = startIndex + index + 1;
             
             const nilaiHtml = nilaiList.map((nilai, i) => {
                 const pillClass = isActive ? 'score-pill' : 'px-2 py-1 bg-gray-100 rounded text-gray-600 cursor-default inline-block mr-1 mb-1';
@@ -1250,7 +1326,7 @@ const renderNilaiKepribadianSiswaTable = () => {
                 : '';
 
             tr.innerHTML = `
-                <td class="p-3">${index + 1}</td>
+                <td class="p-3 text-center">${originalIndex}</td>
                 <td class="p-3 font-medium">${siswa.nama}</td>
                 <td class="p-3">${siswa.nosis}</td>
                 <td class="p-3 flex flex-wrap items-center gap-1">${nilaiHtml || "Belum ada"}</td>
@@ -1263,6 +1339,8 @@ const renderNilaiKepribadianSiswaTable = () => {
             nilaiKepribadianTableBody.appendChild(tr);
         });
     }
+    // Eksekusi render UI pagination
+    renderKepribadianPagination(totalItems, totalPages);
 };
 
 const renderJasmaniMainView = () => {
@@ -1350,12 +1428,59 @@ const renderJasmaniMainView = () => {
     renderCategoryTable('DIKBANGUM SEKOLAH BINTARA POLISI', 'nilai-jasmani-dikbangum-sekolah-bintara-polisi-table-body');
 };
 
+const renderJasmaniPagination = (totalItems, totalPages) => {
+    const paginationContainer = document.getElementById('nilai-jasmani-pagination');
+    if (!paginationContainer) return;
+
+    if (totalItems === 0) {
+        paginationContainer.innerHTML = '';
+        return;
+    }
+    
+    if (totalPages <= 1) {
+        paginationContainer.innerHTML = `<span class="text-sm text-subtle">Menampilkan ${totalItems} dari ${totalItems} siswa</span>`;
+        return;
+    };
+
+    const startItem = (jasmaniCurrentPage - 1) * JASMANI_ROWS_PER_PAGE + 1;
+    const endItem = Math.min(startItem + JASMANI_ROWS_PER_PAGE - 1, totalItems);
+
+    let paginationHTML = `
+        <span class="text-sm text-subtle">
+            Menampilkan ${startItem} - ${endItem} dari ${totalItems} siswa
+        </span>
+        <div class="inline-flex mt-2 xs:mt-0">
+            <button id="prev-jasmani-page" class="flex items-center justify-center px-3 h-8 text-sm font-medium text-main bg-tertiary rounded-l hover:bg-main disabled:opacity-50 disabled:cursor-not-allowed">
+                Sebelumnya
+            </button>
+            <button id="next-jasmani-page" class="flex items-center justify-center px-3 h-8 text-sm font-medium text-main bg-tertiary rounded-r border-0 border-l border-main hover:bg-main disabled:opacity-50 disabled:cursor-not-allowed">
+                Selanjutnya
+            </button>
+        </div>
+    `;
+    paginationContainer.innerHTML = paginationHTML;
+
+    const prevButton = document.getElementById('prev-jasmani-page');
+    const nextButton = document.getElementById('next-jasmani-page');
+
+    if (jasmaniCurrentPage === 1) {
+        prevButton.disabled = true;
+    }
+    if (jasmaniCurrentPage >= totalPages) {
+        nextButton.disabled = true;
+    }
+};
+
 const renderNilaiJasmaniSiswaTable = () => {
     if (!nilaiJasmaniTableBody) return;
 
     const { kategori, detail, tahun } = selectedJasmaniFilters;
     const searchTerm = searchJasmaniInput.value.toLowerCase();
     const isActive = selectedJasmaniFilters.active === 'true';
+
+    const filterBatalyon = document.getElementById('filter-jasmani-batalyon');
+    const filterKompi = document.getElementById('filter-jasmani-kompi');
+    const filterPeleton = document.getElementById('filter-jasmani-peleton');
 
     let displayTitle = detail;
     if(detail === '-' || !detail) displayTitle = kategori;
@@ -1367,11 +1492,14 @@ const renderNilaiJasmaniSiswaTable = () => {
     if (subtitleJasmani) {
         const tahunAjaranData = localTahunAjaran.find(ta => ta.tahun === parseInt(tahun) && ta.pendidikan.some(p => p.jenis === kategori && p.detail === detail));
         const studentCount = localStudents.filter(s => s.kategori === kategori && s.detailPendidikan === detail && s.tahunAjaran === parseInt(tahun)).length;
+        
         subtitleJasmani.innerHTML = `
-            Jumlah Siswa : ${studentCount} &nbsp; | &nbsp;
-            Tanggal Mulai Dik : ${formatDate(tahunAjaranData?.tanggalMulai)} &nbsp; | &nbsp;
-            Tanggal Selesai Dik : ${formatDate(tahunAjaranData?.tanggalBerakhir)}
-            ${!isActive ? '&nbsp; <span class="text-red-500 font-bold">(ARSIP - View Only)</span>' : ''}
+            <div class="inline-block bg-blue-600 text-white text-sm px-4 py-2 rounded-md font-medium shadow mt-2">
+                Jumlah Siswa : ${studentCount} &nbsp; | &nbsp;
+                Tanggal Mulai Dik : ${formatDate(tahunAjaranData?.tanggalMulai)} &nbsp; | &nbsp;
+                Tanggal Selesai Dik : ${formatDate(tahunAjaranData?.tanggalBerakhir)}
+                ${!isActive ? '&nbsp; <span class="text-red-300 font-bold">(ARSIP - View Only)</span>' : ''}
+            </div>
         `;
     }
 
@@ -1379,24 +1507,75 @@ const renderNilaiJasmaniSiswaTable = () => {
         s.kategori === kategori &&
         s.detailPendidikan === detail &&
         s.tahunAjaran === parseInt(tahun) &&
+        (filterBatalyon && filterBatalyon.value ? s.batalyon === filterBatalyon.value : true) &&
+        (filterKompi && filterKompi.value ? s.kompi === filterKompi.value : true) &&
+        (filterPeleton && filterPeleton.value ? s.peleton === filterPeleton.value : true) &&
         (searchTerm ? s.nama.toLowerCase().includes(searchTerm) || (s.nosis && String(s.nosis).includes(searchTerm)) : true)
-    ).sort((a, b) => String(a.nosis || '').localeCompare(String(b.nosis || '')));
+    );
+
+    const rankedSiswa = filteredSiswa.map(siswa => {
+        const nilaiList = siswa.nilaiJasmani || [];
+        const total = nilaiList.reduce((a, b) => a + b, 0);
+        const rata2 = nilaiList.length > 0 ? (total / nilaiList.length) : 0;
+        return { ...siswa, rata2_jasmani: rata2 };
+    }).sort((a, b) => b.rata2_jasmani - a.rata2_jasmani); 
+
+    let lastScore = -1;
+    let rank = 0;
+    let rankCounter = 0;
+    rankedSiswa.forEach((siswa) => {
+        rankCounter++;
+        if (siswa.rata2_jasmani !== lastScore) {
+            rank = rankCounter;
+        }
+        siswa.rank_jasmani = rank;
+        lastScore = siswa.rata2_jasmani;
+    });
+
+    const sortJasmaniSelect = document.getElementById('sort-nilai-jasmani-select');
+    const sortValue = sortJasmaniSelect ? sortJasmaniSelect.value : 'nosis_asc';
+
+    rankedSiswa.sort((a, b) => {
+        if (sortValue === 'nosis_asc') {
+            return String(a.nosis || '').localeCompare(String(b.nosis || ''));
+        } else if (sortValue === 'nosis_desc') {
+            return String(b.nosis || '').localeCompare(String(a.nosis || ''));
+        } else if (sortValue === 'nama_asc') {
+            return String(a.nama || '').localeCompare(String(b.nama || ''));
+        } else if (sortValue === 'nama_desc') {
+            return String(b.nama || '').localeCompare(String(a.nama || ''));
+        } else if (sortValue === 'rank_asc') {
+            const rankA = a.rank_jasmani || 999999;
+            const rankB = b.rank_jasmani || 999999;
+            return rankA - rankB; 
+        }
+        return 0;
+    });
+
+    const totalItems = rankedSiswa.length;
+    const totalPages = Math.ceil(totalItems / JASMANI_ROWS_PER_PAGE);
+    jasmaniCurrentPage = Math.min(Math.max(1, jasmaniCurrentPage), totalPages || 1);
+
+    const startIndex = (jasmaniCurrentPage - 1) * JASMANI_ROWS_PER_PAGE;
+    const endIndex = startIndex + JASMANI_ROWS_PER_PAGE;
+    const paginatedSiswa = rankedSiswa.slice(startIndex, endIndex);
 
     nilaiJasmaniTableBody.innerHTML = '';
-    if (filteredSiswa.length === 0) {
-        nilaiJasmaniTableBody.innerHTML = `<tr><td colspan="7" class="text-center p-4">Tidak ada data siswa yang cocok.</td></tr>`;
+    if (totalItems === 0) {
+        nilaiJasmaniTableBody.innerHTML = `<tr><td colspan="7" class="text-center p-4 text-subtle">Tidak ada data siswa yang cocok.</td></tr>`;
+        renderJasmaniPagination(0, 1);
         return;
     }
 
-    filteredSiswa.forEach((siswa, index) => {
+    paginatedSiswa.forEach((siswa, index) => {
         const nilaiList = siswa.nilaiJasmani || [];
+        const originalIndex = startIndex + index + 1; 
         
         const nilaiHtml = nilaiList.map((nilai, i) => {
             const pillClass = isActive ? 'score-pill' : 'px-2 py-1 bg-gray-100 rounded text-gray-600 cursor-default inline-block mr-1 mb-1';
             const deleteBtn = isActive ? `<button class="score-delete-btn" data-siswa-id="${siswa.id}" data-index="${i}" title="Hapus nilai">&times;</button>` : '';
             const title = isActive ? 'Klik untuk edit' : 'View Only';
 
-            // [UPDATE] Tampilkan desimal jika ada
             const displayNilai = (nilai % 1 !== 0) ? parseFloat(nilai).toFixed(2) : nilai;
 
             return `<span class="${pillClass}" data-siswa-id="${siswa.id}" data-index="${i}" title="${title}">
@@ -1413,17 +1592,20 @@ const renderNilaiJasmaniSiswaTable = () => {
             : '';
 
         tr.innerHTML = `
-            <td class="p-3">${index + 1}</td>
+            <td class="p-3 text-center">${originalIndex}</td>
             <td class="p-3 font-medium">${siswa.nama}</td>
-            <td class="p-3">${siswa.nosis}</td>
-            <td class="p-3">${siswa.kategori}</td>
-            <td class="p-3 flex flex-wrap items-center gap-1">${nilaiHtml || "Belum ada"}</td>
+            <td class="p-3 text-center">${siswa.nosis}</td>
+            <td class="p-3 text-center">${siswa.kategori}</td>
+            <td class="p-3 flex flex-wrap justify-center items-center gap-1">${nilaiHtml || "Belum ada"}</td>
+            <td class="p-3 text-center font-bold text-blue-600">${siswa.rank_jasmani}</td>
             <td class="p-3 text-center">
                 ${inputBtn}
             </td>
         `;
         nilaiJasmaniTableBody.appendChild(tr);
     });
+
+    renderJasmaniPagination(totalItems, totalPages);
 };
 
 const openKepribadianModal = (id, nama) => {
@@ -1439,7 +1621,6 @@ const openJasmaniModal = (id, nama, kategori) => {
     document.getElementById("jasmani-siswa-nama").value = nama;
     document.getElementById("jasmani-siswa-kategori").value = kategori;
     
-    // [UPDATE] Izinkan input desimal di modal
     const inputNilai = document.getElementById("jasmani-form").querySelector('input[type="number"]');
     if(inputNilai) inputNilai.step = "0.01";
 
@@ -1451,7 +1632,6 @@ const handleSimpleScoreSubmit = async (e, field, modalId) => {
     const id = e.target.querySelector('input[type="hidden"]').value;
     const nilaiInput = e.target.querySelector('input[type="number"]');
     
-    // [UPDATE] Parse sebagai Float dan handle koma
     const nilai = parseFloat(nilaiInput.value.replace(',', '.'));
 
     if (isNaN(nilai) || nilai < 0 || nilai > 100) {
@@ -1506,7 +1686,7 @@ const handleDikbangspesScoreUpdate = async (siswaId, index, oldScore) => {
     if (newScoreStr.trim() === '') {
         await updateDikbangspesScore(siswaId, index, null);
     } else {
-        const newScore = parseFloat(newScoreStr.replace(',', '.')); // Ganti koma dengan titik
+        const newScore = parseFloat(newScoreStr.replace(',', '.')); 
         if (!isNaN(newScore) && newScore >= 0 && newScore <= 100) {
             const roundedScore = parseFloat(newScore.toFixed(2));
             await updateDikbangspesScore(siswaId, index, roundedScore);
@@ -1599,7 +1779,7 @@ export const initNilaiModule = async (studentsData, mapelsData, taData) => {
             listAkademikView = document.getElementById('nilai-akademik-list-view');
             backButtonAkademik = document.getElementById('btn-back-nilai-akademik');
             titleAkademik = document.getElementById('nilai-akademik-view-title');
-            subtitleAkademik = document.getElementById('nilai-akademik-subtitle'); // <--- UBAH JADI SEPERTI INI
+            subtitleAkademik = document.getElementById('nilai-akademik-subtitle'); 
 
             const containerAkademik = document.getElementById('nilai-akademik-view-container');
 
@@ -1638,7 +1818,6 @@ export const initNilaiModule = async (studentsData, mapelsData, taData) => {
                         titleAkademik.textContent = `INPUT NILAI AKADEMIK: ${displayDetail.toUpperCase()} (TA ${selectedNilaiFilters.tahun})`;
                         akademikCurrentPage = 1;
                         
-                        // [UPDATE] Hitung peringkat saat tombol grup diklik
                         showLoading('Memuat data dan menghitung peringkat...');
                         await refreshAkademikRanks(selectedNilaiFilters);
                         hideLoading();
@@ -1661,7 +1840,6 @@ export const initNilaiModule = async (studentsData, mapelsData, taData) => {
                     titleAkademik.textContent = 'Manajemen Nilai Akademik';
                     if (subtitleAkademik) subtitleAkademik.innerHTML = '';
                     
-                    // Reset text filter
                     const searchInput = document.getElementById('search-nilai-siswa-input');
                     if (searchInput) searchInput.value = '';
                 });
@@ -1671,7 +1849,7 @@ export const initNilaiModule = async (studentsData, mapelsData, taData) => {
             listKepribadianView = document.getElementById('nilai-kepribadian-list-view');
             backButtonKepribadian = document.getElementById('btn-back-nilai-kepribadian');
             titleKepribadian = document.getElementById('nilai-kepribadian-view-title');
-            subtitleKepribadian = document.getElementById('nilai-kepribadian-view-subtitle');
+            subtitleKepribadian = document.getElementById('nilai-kepribadian-subtitle');
             const containerKepribadian = document.getElementById('nilai-kepribadian-view-container');
 
             if (containerKepribadian) {
@@ -1703,6 +1881,12 @@ export const initNilaiModule = async (studentsData, mapelsData, taData) => {
                         mainKepribadianView.classList.add('hidden');
                         listKepribadianView.classList.remove('hidden');
                         backButtonKepribadian.classList.remove('hidden');
+                        
+                        let displayDetail = selectedKepribadianFilters.detail;
+                        if(displayDetail === '-' || !displayDetail) displayDetail = selectedKepribadianFilters.kategori;
+
+                        titleKepribadian.textContent = `INPUT NILAI MENTAL KEPRIBADIAN: ${displayDetail.toUpperCase()} (TA ${selectedKepribadianFilters.tahun})`;
+                        kepribadianCurrentPage = 1; // Reset halaman
                         renderNilaiKepribadianSiswaTable();
                     } else if (simpleBtn && simpleBtn.dataset.scoreType === 'kepribadian') {
                          const { id, nama } = simpleBtn.dataset;
@@ -1759,6 +1943,9 @@ export const initNilaiModule = async (studentsData, mapelsData, taData) => {
                     backButtonKepribadian.classList.add('hidden');
                     titleKepribadian.textContent = 'Manajemen Nilai Mental Kepribadian';
                     if (subtitleKepribadian) subtitleKepribadian.innerHTML = '';
+                    
+                    const searchInput = document.getElementById('search-kepribadian-input');
+                    if (searchInput) searchInput.value = '';
                 });
             }
 
@@ -1766,7 +1953,7 @@ export const initNilaiModule = async (studentsData, mapelsData, taData) => {
             listJasmaniView = document.getElementById('nilai-jasmani-list-view');
             backButtonJasmani = document.getElementById('btn-back-nilai-jasmani');
             titleJasmani = document.getElementById('nilai-jasmani-view-title');
-            subtitleJasmani = document.getElementById('nilai-jasmani-view-subtitle');
+            subtitleJasmani = document.getElementById('nilai-jasmani-subtitle'); 
             const containerJasmani = document.getElementById('nilai-jasmani-view-container');
 
             if (containerJasmani) {
@@ -1786,6 +1973,7 @@ export const initNilaiModule = async (studentsData, mapelsData, taData) => {
                         if(displayDetail === '-' || !displayDetail) displayDetail = selectedJasmaniFilters.kategori;
 
                         titleJasmani.textContent = `INPUT NILAI JASMANI: ${displayDetail.toUpperCase()} (TA ${selectedJasmaniFilters.tahun})`;
+                        jasmaniCurrentPage = 1; 
                         renderNilaiJasmaniSiswaTable();
                     } else if (simpleBtn && simpleBtn.dataset.scoreType === 'jasmani') {
                          const { id, nama, kategori } = simpleBtn.dataset;
@@ -1805,7 +1993,6 @@ export const initNilaiModule = async (studentsData, mapelsData, taData) => {
                         const newScoreStr = prompt('Masukkan nilai baru:', oldScore);
 
                         if (newScoreStr) {
-                            // [UPDATE] Parse Float & Handle Koma
                             const newScore = parseFloat(newScoreStr.replace(',', '.'));
                             
                             if (!isNaN(newScore) && newScore >= 0 && newScore <= 100) {
@@ -1826,6 +2013,9 @@ export const initNilaiModule = async (studentsData, mapelsData, taData) => {
                     backButtonJasmani.classList.add('hidden');
                     titleJasmani.textContent = 'Input Nilai Jasmani';
                     if (subtitleJasmani) subtitleJasmani.innerHTML = '';
+                    
+                    const searchInput = document.getElementById('search-jasmani-input');
+                    if (searchInput) searchInput.value = '';
                 });
             }
 
@@ -1843,7 +2033,6 @@ export const initNilaiModule = async (studentsData, mapelsData, taData) => {
                 });
             });
 
-            // [BARU] Event Listener untuk Dropdown Sort Akademik
             const sortAkademikSelect = document.getElementById('sort-nilai-akademik-select');
             if (sortAkademikSelect) {
                 sortAkademikSelect.addEventListener('change', () => {
@@ -1871,19 +2060,95 @@ export const initNilaiModule = async (studentsData, mapelsData, taData) => {
                 });
             }
 
+            // ==========================================
+            // EVENT LISTENER KEPRIBADIAN (Search & Filters)
+            // ==========================================
             nilaiKepribadianTableBody = document.getElementById('nilai-kepribadian-table-body');
             searchKepribadianInput = document.getElementById('search-kepribadian-input');
             kepribadianModal = document.getElementById('kepribadian-modal');
             kepribadianForm = document.getElementById('kepribadian-form');
-            if(searchKepribadianInput) searchKepribadianInput.addEventListener('input', renderNilaiKepribadianSiswaTable);
             if(kepribadianForm) kepribadianForm.addEventListener("submit", (e) => handleSimpleScoreSubmit(e, 'nilaiKepribadian', 'kepribadian-modal'));
             
+            const filterKepribadianBatalyonEl = document.getElementById('filter-kepribadian-batalyon');
+            const filterKepribadianKompiEl = document.getElementById('filter-kepribadian-kompi');
+            const filterKepribadianPeletonEl = document.getElementById('filter-kepribadian-peleton');
+            const sortKepribadianSelect = document.getElementById('sort-nilai-kepribadian-select');
+
+            [searchKepribadianInput, filterKepribadianBatalyonEl, filterKepribadianKompiEl, filterKepribadianPeletonEl].forEach(el => {
+                if(el) el.addEventListener('input', () => {
+                    kepribadianCurrentPage = 1;
+                    renderNilaiKepribadianSiswaTable();
+                });
+            });
+
+            if (sortKepribadianSelect) {
+                sortKepribadianSelect.addEventListener('change', () => {
+                    kepribadianCurrentPage = 1;
+                    renderNilaiKepribadianSiswaTable();
+                });
+            }
+
+            const kepribadianPaginationContainer = document.getElementById('nilai-kepribadian-pagination');
+            if (kepribadianPaginationContainer) {
+                kepribadianPaginationContainer.addEventListener('click', e => {
+                    const prevBtn = e.target.closest('#prev-kepribadian-page');
+                    const nextBtn = e.target.closest('#next-kepribadian-page');
+
+                    if (prevBtn && !prevBtn.disabled) {
+                        kepribadianCurrentPage--;
+                        renderNilaiKepribadianSiswaTable();
+                    }
+                    if (nextBtn && !nextBtn.disabled) {
+                        kepribadianCurrentPage++;
+                        renderNilaiKepribadianSiswaTable();
+                    }
+                });
+            }
+
+            // ==========================================
+            // EVENT LISTENER JASMANI (Search & Filters)
+            // ==========================================
             nilaiJasmaniTableBody = document.getElementById('nilai-jasmani-table-body');
             searchJasmaniInput = document.getElementById('search-jasmani-input');
             jasmaniModal = document.getElementById('jasmani-modal');
             jasmaniForm = document.getElementById('jasmani-form');
-            if(searchJasmaniInput) searchJasmaniInput.addEventListener('input', renderNilaiJasmaniSiswaTable);
             if(jasmaniForm) jasmaniForm.addEventListener("submit", (e) => handleSimpleScoreSubmit(e, 'nilaiJasmani', 'jasmani-modal'));
+            
+            const filterJasmaniBatalyonEl = document.getElementById('filter-jasmani-batalyon');
+            const filterJasmaniKompiEl = document.getElementById('filter-jasmani-kompi');
+            const filterJasmaniPeletonEl = document.getElementById('filter-jasmani-peleton');
+            const sortJasmaniSelect = document.getElementById('sort-nilai-jasmani-select');
+            
+            [searchJasmaniInput, filterJasmaniBatalyonEl, filterJasmaniKompiEl, filterJasmaniPeletonEl].forEach(el => {
+                if(el) el.addEventListener('input', () => {
+                    jasmaniCurrentPage = 1;
+                    renderNilaiJasmaniSiswaTable();
+                });
+            });
+
+            if (sortJasmaniSelect) {
+                sortJasmaniSelect.addEventListener('change', () => {
+                    jasmaniCurrentPage = 1;
+                    renderNilaiJasmaniSiswaTable();
+                });
+            }
+
+            const jasmaniPaginationContainer = document.getElementById('nilai-jasmani-pagination');
+            if (jasmaniPaginationContainer) {
+                jasmaniPaginationContainer.addEventListener('click', e => {
+                    const prevBtn = e.target.closest('#prev-jasmani-page');
+                    const nextBtn = e.target.closest('#next-jasmani-page');
+
+                    if (prevBtn && !prevBtn.disabled) {
+                        jasmaniCurrentPage--;
+                        renderNilaiJasmaniSiswaTable();
+                    }
+                    if (nextBtn && !nextBtn.disabled) {
+                        jasmaniCurrentPage++;
+                        renderNilaiJasmaniSiswaTable();
+                    }
+                });
+            }
             
             document.querySelectorAll('.btn-export-excel').forEach(btn => {
                 btn.addEventListener('click', () => exportNilaiToExcel(btn.dataset.type));
@@ -1900,7 +2165,6 @@ export const initNilaiModule = async (studentsData, mapelsData, taData) => {
         renderJasmaniMainView();
 
         if (listAkademikView && !listAkademikView.classList.contains('hidden')) {
-            // Kita bungkus pemanggilan ini agar rank terbaru dihitung ulang kalau di-refresh
             showLoading('Memuat...');
             refreshAkademikRanks(selectedNilaiFilters).then(() => {
                 hideLoading();

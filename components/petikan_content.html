@@ -4,11 +4,11 @@
             <button id="btn-back-petikan" class="text-blue-500 hover:underline mb-2 hidden flex items-center transition-colors">
                 <i class="fas fa-arrow-left mr-2"></i> Kembali
             </button>
-            <h2 id="petikan-view-title" class="text-2xl font-bold text-main">PETIKAN KEPUTUSAN KAPUSDIK POLAIR</h2>
+            <h2 id="petikan-view-title" class="text-2xl font-bold text-main">Petikan Keputusan Kapusdik Polair</h2>
             <div id="petikan-view-subtitle" class="text-sm text-subtle mt-1">
                 Kelola dan cetak Petikan Keputusan Kelulusan Siswa.
             </div>
-            <div id="petikan-view-info" class="text-sm text-main mt-2 font-semibold border-t border-dashed border-gray-300 pt-2 hidden">
+            <div id="petikan-view-info" class="inline-block bg-blue-600 text-white text-sm px-4 py-2 rounded-md font-medium shadow mt-3 hidden">
             </div>
         </div>
 
@@ -17,6 +17,16 @@
                 <i class="fas fa-cog mr-2"></i> Pengaturan SKEP
             </button>
         </div>
+    </div>
+    
+    <div class="mb-4">
+         <p class="text-xs text-subtle mt-1 bg-blue-50 p-2 rounded border border-blue-100 text-blue-800">
+             <strong>Metode Penilaian Nilai Akhir:</strong><br>
+             Nilai akhir dihitung dari tiga komponen penilaian 4+4+2= 10 dengan bobot 40% Akademik, 40% Mental, dan 20% Jasmani. Perhitungan dilakukan secara proporsional berdasarkan total bobot penilaian.
+             <br>
+             <i class="opacity-80">*Rumus:
+Nilai Akhir = (Akademik × 40%) + (Mental × 40%) + (Jasmani × 20%) = 100%</i>
+         </p>
     </div>
 
     <div id="petikan-view-container">
@@ -34,7 +44,7 @@
                                     <th class="p-3 w-12 text-center">NO</th>
                                     <th class="p-3">KATEGORI PENDIDIKAN</th>
                                     <th class="p-3 text-center">STATUS</th>
-                                    <th class="p-3 text-center">AKSI</th>
+                                    <th class="p-3 text-center w-28">AKSI</th>
                                 </tr>
                             </thead>
                             <tbody id="list-diktuk-tamtama"></tbody>
@@ -51,7 +61,7 @@
                                    <th class="p-3 w-12 text-center">NO</th>
                                    <th class="p-3">KATEGORI PENDIDIKAN</th>
                                    <th class="p-3 text-center">STATUS</th>
-                                   <th class="p-3 text-center">AKSI</th>
+                                   <th class="p-3 text-center w-28">AKSI</th>
                                </tr>
                            </thead>
                             <tbody id="list-diktuk-bintara"></tbody>
@@ -68,7 +78,7 @@
                                     <th class="p-3 w-12 text-center">NO</th>
                                     <th class="p-3">KATEGORI PENDIDIKAN</th>
                                     <th class="p-3 text-center">STATUS</th>
-                                    <th class="p-3 text-center">AKSI</th>
+                                    <th class="p-3 text-center w-28">AKSI</th>
                                 </tr>
                             </thead>
                             <tbody id="list-dikbangspes"></tbody>
@@ -85,7 +95,7 @@
                                     <th class="p-3 w-12 text-center">NO</th>
                                     <th class="p-3">KATEGORI PENDIDIKAN</th>
                                     <th class="p-3 text-center">STATUS</th>
-                                    <th class="p-3 text-center">AKSI</th>
+                                    <th class="p-3 text-center w-28">AKSI</th>
                                 </tr>
                             </thead>
                             <tbody id="list-dikbagum-sbp"></tbody>
@@ -96,18 +106,29 @@
         </div>
 
         <div id="petikan-detail-view" class="hidden">
-            <div class="flex flex-col md:flex-row justify-between items-center mb-4 gap-4 bg-tertiary p-4 rounded-lg border border-main">
-                <div class="w-full md:w-1/2 relative">
-                     <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                        <i class="fas fa-search text-subtle"></i>
+            <div class="flex flex-wrap items-center justify-between gap-4 mb-4 bg-tertiary p-4 rounded-lg border border-main">
+                <div class="flex flex-wrap items-center gap-4 flex-grow">
+                     <div class="relative w-full max-w-xs">
+                         <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                            <i class="fas fa-search text-subtle"></i>
+                        </div>
+                        <input type="text" id="petikan-search" class="bg-input border border-main text-main text-sm rounded-lg block w-full pl-10 p-2.5" placeholder="Cari Nama atau NOSIS...">
                     </div>
-                    <input type="text" id="petikan-search" class="bg-input border border-main text-main text-sm rounded-lg block w-full pl-10 p-2.5" placeholder="Cari Nama Siswa atau NOSIS...">
+    <select id="sort-petikan-select" class="bg-input border-main text-main text-sm rounded-lg p-2.5 w-auto">
+                        <option value="nosis_asc">Urut Nosis (Awal - Akhir)</option>
+                        <option value="nosis_desc">Urut Nosis (Akhir - Awal)</option>
+                        <option value="nama_asc">Urut Nama (A - Z)</option>
+                        <option value="nama_desc">Urut Nama (Z - A)</option>
+                        <option value="rank_asc">Urut Peringkat (1 - Terakhir)</option>
+                    </select>
                 </div>
                 
                 <div class="flex items-center gap-2">
-                    <div class="text-sm text-subtle mr-2" id="petikan-total-data">Total Siswa: 0</div>
+                    <button id="btn-export-excel-petikan" class="bg-green-600 text-white py-2 px-3 rounded-lg hover:bg-green-700 text-sm flex items-center shadow transition-colors">
+                        <i class="fas fa-file-excel mr-2"></i> Export Excel
+                    </button>
                     <button id="btn-print-all-petikan" class="bg-blue-600 text-white py-2 px-3 rounded-lg hover:bg-blue-700 text-sm flex items-center shadow transition-colors">
-                        <i class="fas fa-print mr-2"></i> Cetak Semua
+                        <i class="fas fa-print mr-2"></i> Cetak Semua (Sesuai Filter)
                     </button>
                 </div>
             </div>
@@ -116,16 +137,16 @@
                 <table class="w-full text-sm text-left text-main">
                     <thead class="text-xs text-subtle uppercase bg-tertiary border-b border-main">
                         <tr>
-                            <th class="p-3 text-center w-12">NO</th>
+                            <th class="p-3 text-center">No Urut SK</th>
                             <th class="p-3">NAMA LENGKAP</th>
                             <th class="p-3 text-center">NOSIS</th>
-                            <th class="p-3 text-center">PANGKAT/NRP</th>
                             <th class="p-3 text-center">NOMOR KEP</th>
                             <th class="p-3 text-center text-blue-700">N. AKADEMIK</th>
                             <th class="p-3 text-center text-green-700">N. MENTAL</th>
                             <th class="p-3 text-center text-red-700">N. JASMANI</th>
                             <th class="p-3 text-center font-bold">NILAI AKHIR</th>
-                            <th class="p-3 text-center w-32">AKSI (CETAK)</th>
+                            <th class="p-3 text-center text-green-600 font-bold">PERINGKAT</th>
+                            <th class="p-3 text-center w-28">AKSI (CETAK)</th>
                         </tr>
                     </thead>
                     <tbody id="petikan-table-body" class="bg-main divide-y divide-main">

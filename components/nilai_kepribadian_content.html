@@ -5,9 +5,7 @@
                 &larr; Kembali
             </button>
             <h2 id="nilai-kepribadian-view-title" class="text-2xl font-bold text-main">Manajemen Nilai Mental Kepribadian</h2>
-            <p id="nilai-kepribadian-view-subtitle" class="text-sm text-subtle mt-1"></p>
-            
-            <p class="text-xs text-subtle mt-1 bg-blue-50 p-2 rounded border border-blue-100 text-blue-800">
+            <p id="nilai-kepribadian-subtitle" class="text-sm text-subtle mt-1"></p> <p class="text-xs text-subtle mt-1 bg-blue-50 p-2 rounded border border-blue-100 text-blue-800">
                 <strong>Metode Penilaian Dikbangspes & DIKBANGUM SEKOLAH BINTARA POLISI:</strong><br>
                 NILAI AKHIR = (Nilai Instruktur Minggu Terakhir × 70%) + (Nilai Sosiometri × 30%).
                 <br>
@@ -93,7 +91,37 @@
 
         <div id="nilai-kepribadian-list-view" class="hidden">
             <div class="flex flex-wrap items-center justify-between gap-4 mb-4 p-4 bg-tertiary rounded-lg">
-                <input type="text" id="search-kepribadian-input" placeholder="Cari siswa..." class="bg-input border-main text-main text-sm rounded-lg p-2.5 flex-grow max-w-md">
+                <div class="flex flex-wrap items-center gap-4">
+                    <input type="text" id="search-kepribadian-input" placeholder="Cari nama atau nosis..." class="bg-input border-main text-main text-sm rounded-lg p-2.5 w-48">
+                    
+                    <select id="filter-kepribadian-batalyon" class="bg-input border-main text-main text-sm rounded-lg p-2.5 w-auto">
+                        <option value="">Semua Batalyon</option>
+                        <option value="I">I</option>
+                        <option value="II">II</option>
+                    </select>
+                    <select id="filter-kepribadian-kompi" class="bg-input border-main text-main text-sm rounded-lg p-2.5 w-auto">
+                        <option value="">Semua Kompi</option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="D">D</option>
+                    </select>
+                    <select id="filter-kepribadian-peleton" class="bg-input border-main text-main text-sm rounded-lg p-2.5 w-auto">
+                        <option value="">Semua Peleton</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                    </select>
+
+                    <select id="sort-nilai-kepribadian-select" class="bg-input border-main text-main text-sm rounded-lg p-2.5 w-auto">
+                        <option value="nosis_asc">Urut Nosis (Awal - Akhir)</option>
+                        <option value="nosis_desc">Urut Nosis (Akhir - Awal)</option>
+                        <option value="nama_asc">Urut Nama (A - Z)</option>
+                        <option value="nama_desc">Urut Nama (Z - A)</option>
+                        <option value="rank_asc">Urut Peringkat (1 - Terakhir)</option>
+                    </select>
+                </div>
                 <div class="flex items-center gap-2">
                     <button class="btn-import-excel bg-green-600 text-white text-xs py-2 px-3 rounded-md hover:bg-green-700" data-type="kepribadian"><i class="fas fa-file-excel mr-1"></i> Impor</button>
                     <button class="btn-export-excel bg-blue-600 text-white text-xs py-2 px-3 rounded-md hover:bg-blue-700" data-type="kepribadian"><i class="fas fa-file-export mr-1"></i> Ekspor</button>
@@ -103,17 +131,11 @@
             <div class="overflow-x-auto">
                 <table class="w-full text-sm text-left">
                     <thead id="nilai-kepribadian-table-head" class="text-xs text-subtle uppercase bg-tertiary">
-                        <tr>
-                            <th class="p-3 text-center">No</th>
-                            <th class="p-3 text-center">Nosis</th>
-                            <th class="p-3">Nama Lengkap</th>
-                            <th class="p-3 text-center">Rata-Rata</th>
-                            <th class="p-3 text-center">Aksi</th>
-                        </tr>
-                    </thead>
+                        </thead>
                     <tbody id="nilai-kepribadian-table-body"></tbody>
                 </table>
             </div>
+            <div id="nilai-kepribadian-pagination" class="flex justify-between items-center mt-4 px-4 pb-4"></div>
         </div>
     </div>
 </div>

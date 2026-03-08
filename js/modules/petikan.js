@@ -39,7 +39,7 @@ let petikanTableBody, searchPetikanInput, paginationContainer;
 let backButtonPetikan, titlePetikan, subtitlePetikan, petikanViewInfo;
 
 // ==========================================================
-// ===            FUNGSI INIT & LIFECYCLE                 ===
+// ===             FUNGSI INIT & LIFECYCLE                ===
 // ==========================================================
 
 export const initPetikanModule = (taData, studentsData, settingsData, mapelsData) => {
@@ -103,19 +103,27 @@ const setupEventListeners = () => {
         });
     }
 
-    if (searchPetikanInput) {
-        searchPetikanInput.addEventListener('input', () => {
-            petikanCurrentPage = 1; 
-            renderPetikanSiswaListView();
-        });
-    }
+    // Listener untuk Search, Filter Dropdowns, dan Sort
+    const filterBatalyonEl = document.getElementById('filter-petikan-batalyon');
+    const filterKompiEl = document.getElementById('filter-petikan-kompi');
+    const filterPeletonEl = document.getElementById('filter-petikan-peleton');
+    const sortPetikanSelect = document.getElementById('sort-petikan-select');
+
+    [searchPetikanInput, filterBatalyonEl, filterKompiEl, filterPeletonEl, sortPetikanSelect].forEach(el => {
+        if(el) {
+            el.addEventListener('input', () => {
+                petikanCurrentPage = 1; 
+                renderPetikanSiswaListView();
+            });
+        }
+    });
 
     document.getElementById('btn-petikan-settings')?.addEventListener('click', openSettingsModal);
-    
-    // [FIX] Update ID Form menjadi 'settings-petikan-form' sesuai HTML terbaru
     document.getElementById('settings-petikan-form')?.addEventListener('submit', saveSKSettings);
     
+    // Listener untuk tombol Cetak & Export Excel
     document.getElementById('btn-print-all-petikan')?.addEventListener('click', handlePrintAllPetikan);
+    document.getElementById('btn-export-excel-petikan')?.addEventListener('click', exportPetikanToExcel);
 
     const container = document.getElementById('petikan-view-container');
     if (container) {
@@ -253,7 +261,7 @@ const calculateRankingAndScores = async (studentsGroup) => {
 
         return {
             ...siswa,
-            nilaiAkademik: rerataAkademik,      
+            nilaiAkademik: rerataAkademik,     
             nilaiKepribadian: rerataKepribadian,
             nilaiJasmani: rerataJasmani, 
             finalScore: finalScore,
@@ -274,7 +282,7 @@ const calculateRankingAndScores = async (studentsGroup) => {
     // [LANGKAH 2] URUTKAN BERDASARKAN NILAI (DESC) UNTUK RANKING
     processedData.sort((a, b) => b.finalScore - a.finalScore);
 
-    // Beri Ranking
+    // Beri Ranking (Berdasarkan Nilai Akhir)
     processedData.forEach((siswa, index) => {
         siswa.ranking = index + 1;
     });
@@ -386,11 +394,13 @@ const renderPetikanMainView = () => {
             const row = document.createElement('tr'); 
             row.className = 'border-b border-main hover:bg-tertiary transition-colors'; 
             
+            // [UPDATE] Warna solid tua, tanpa gradasi/border terang, dengan teks putih
             const statusBadge = p.isActive 
-                ? `<span class="bg-green-100 text-green-800 text-xs font-bold px-2.5 py-0.5 rounded border border-green-400">AKTIF</span>`
-                : `<span class="bg-red-100 text-red-800 text-xs font-bold px-2.5 py-0.5 rounded border border-red-400">ARSIP</span>`;
+                ? `<span class="bg-green-700 text-white text-xs font-bold px-3 py-1 rounded">AKTIF</span>`
+                : `<span class="bg-red-700 text-white text-xs font-bold px-3 py-1 rounded">ARSIP</span>`;
 
-            const btnClass = p.isActive ? 'bg-blue-600 hover:bg-blue-700' : 'bg-gray-500 hover:bg-gray-600';
+            // [UPDATE] Tombol Kelola (Biru Tua) dan Lihat (Abu-abu Tua)
+            const btnClass = p.isActive ? 'bg-blue-700 hover:bg-blue-800' : 'bg-gray-600 hover:bg-gray-700';
             const btnText = p.isActive ? 'Kelola' : 'Lihat';
             
             let detailClean = (p.detail || '').toString().trim();
@@ -448,15 +458,39 @@ const renderPetikanSiswaListView = () => {
     if (!petikanTableBody) return; 
     petikanTableBody.innerHTML = ''; 
     
-    const searchTerm = searchPetikanInput.value.toLowerCase(); 
+    const searchTerm = searchPetikanInput ? searchPetikanInput.value.toLowerCase() : ''; 
     
+    // Ambil filter batalyon dkk
+    const filterBatalyon = document.getElementById('filter-petikan-batalyon')?.value;
+    const filterKompi = document.getElementById('filter-petikan-kompi')?.value;
+    const filterPeleton = document.getElementById('filter-petikan-peleton')?.value;
+    
+    // Filter Data
     let filteredSiswa = calculatedStudentList.filter(s => 
-        (searchTerm ? (s.nama && s.nama.toLowerCase().includes(searchTerm)) || (s.nosis && s.nosis.includes(searchTerm)) : true) 
+        (searchTerm ? (s.nama && s.nama.toLowerCase().includes(searchTerm)) || (s.nosis && s.nosis.includes(searchTerm)) : true) &&
+        (filterBatalyon ? s.batalyon === filterBatalyon : true) &&
+        (filterKompi ? s.kompi === filterKompi : true) &&
+        (filterPeleton ? s.peleton === filterPeleton : true)
     ); 
-    
-    filteredSiswa.sort((a, b) => { 
-        return a.cleanNosis.localeCompare(b.cleanNosis, undefined, { numeric: true, sensitivity: 'base' }); 
-    }); 
+
+    // Ambil opsi Sortir
+    const sortValue = document.getElementById('sort-petikan-select')?.value || 'nosis_asc';
+
+    // Sortir Data
+    filteredSiswa.sort((a, b) => {
+        if (sortValue === 'nosis_asc') {
+            return a.cleanNosis.localeCompare(b.cleanNosis, undefined, { numeric: true, sensitivity: 'base' });
+        } else if (sortValue === 'nosis_desc') {
+            return b.cleanNosis.localeCompare(a.cleanNosis, undefined, { numeric: true, sensitivity: 'base' });
+        } else if (sortValue === 'nama_asc') {
+            return String(a.nama || '').localeCompare(String(b.nama || ''));
+        } else if (sortValue === 'nama_desc') {
+            return String(b.nama || '').localeCompare(String(a.nama || ''));
+        } else if (sortValue === 'rank_asc') {
+            return (a.ranking || 999999) - (b.ranking || 999999);
+        }
+        return 0;
+    });
     
     const totalItems = filteredSiswa.length; 
     const totalPages = Math.ceil(totalItems / PETIKAN_ROWS_PER_PAGE); 
@@ -465,7 +499,7 @@ const renderPetikanSiswaListView = () => {
     const paginatedSiswa = filteredSiswa.slice(startIndex, startIndex + PETIKAN_ROWS_PER_PAGE); 
     
     if (paginatedSiswa.length === 0) { 
-        petikanTableBody.innerHTML = `<tr><td colspan="7" class="text-center p-8 text-subtle italic">Tidak ada data siswa ditemukan.</td></tr>`; 
+        petikanTableBody.innerHTML = `<tr><td colspan="10" class="text-center p-8 text-subtle italic">Tidak ada data siswa ditemukan.</td></tr>`; 
         renderPetikanPagination(0, 0); 
         return; 
     } 
@@ -492,12 +526,12 @@ const renderPetikanSiswaListView = () => {
             <td class="p-3 text-center text-subtle font-bold">${noUrutTabel}</td> 
             <td class="p-3 font-semibold text-main uppercase">${s.nama}</td> 
             <td class="p-3 text-center text-subtle font-bold">${s.nosis || '-'}</td> 
-            <td class="p-3 text-center text-subtle uppercase">${s.pangkat || '-'} / ${s.nrp || '-'}</td> 
             <td class="p-3 text-center text-subtle">${nomorKep}</td> 
             <td class="p-3 text-center text-subtle font-semibold text-blue-700">${nilaiAkademik}</td> 
             <td class="p-3 text-center text-subtle font-semibold text-green-700">${nilaiKepribadian}</td> 
             <td class="p-3 text-center text-subtle font-semibold text-red-700">${nilaiJasmaniDisplay}</td> 
             <td class="p-3 text-center text-subtle font-bold text-lg">${nilaiAkhir}</td> 
+            <td class="p-3 text-center text-green-600 font-bold text-lg">${s.ranking || '-'}</td> 
             <td class="p-3 text-center"> 
                 <button class="bg-purple-600 text-white text-xs py-1.5 px-3 rounded hover:bg-purple-700 btn-print-petikan transition-colors flex items-center justify-center mx-auto shadow" data-id="${s.id}"> 
                     <i class="fas fa-print mr-1.5"></i> Cetak 
@@ -509,14 +543,70 @@ const renderPetikanSiswaListView = () => {
     renderPetikanPagination(totalPages, totalItems); 
 };
 
-const renderPetikanPagination = (totalPages, totalItems) => { if (!paginationContainer) return; if (totalItems === 0) { paginationContainer.innerHTML = ''; return; } const startItem = (petikanCurrentPage - 1) * PETIKAN_ROWS_PER_PAGE + 1; const endItem = Math.min(startItem + PETIKAN_ROWS_PER_PAGE - 1, totalItems); let paginationHTML = ` <span class="text-sm text-subtle"> Menampilkan ${startItem} - ${endItem} dari ${totalItems} data (Urut NOSIS) </span> `; if (totalPages > 1) { paginationHTML += ` <div class="inline-flex mt-2 xs:mt-0"> <button id="prev-petikan-page" class="flex items-center justify-center px-3 h-8 text-sm font-medium text-main bg-tertiary rounded-l hover:bg-main disabled:opacity-50 disabled:cursor-not-allowed border border-main"> Sebelumnya </button> <button id="next-petikan-page" class="flex items-center justify-center px-3 h-8 text-sm font-medium text-main bg-tertiary rounded-r border-t border-b border-r border-main hover:bg-main disabled:opacity-50 disabled:cursor-not-allowed"> Selanjutnya </button> </div> `; } paginationContainer.innerHTML = paginationHTML; const prevButton = document.getElementById('prev-petikan-page'); const nextButton = document.getElementById('next-petikan-page'); if (prevButton) { prevButton.disabled = (petikanCurrentPage === 1); prevButton.addEventListener('click', () => { if (petikanCurrentPage > 1) { petikanCurrentPage--; renderPetikanSiswaListView(); } }); } if (nextButton) { nextButton.disabled = (petikanCurrentPage >= totalPages); nextButton.addEventListener('click', () => { if (petikanCurrentPage < totalPages) { petikanCurrentPage++; renderPetikanSiswaListView(); } }); } };
-const loadSKSettings = async () => { const { taId, jenis, detail } = selectedPetikanFilters; const settingsId = `${taId}_${jenis.replace(/\s/g, '_')}_${detail.replace(/\s/g, '_')}`; try { const settingsCollectionPath = getCollectionRef('petikan_settings').path; const settingsDocRef = doc(db, settingsCollectionPath, settingsId); const snapshot = await getDoc(settingsDocRef); if (snapshot.exists()) { currentSKSettings = snapshot.data(); } else { currentSKSettings = { noKep: '', tglKep: '' }; } } catch (error) { console.error("Error loading settings:", error); } };
-const openSettingsModal = () => { if (!selectedPetikanFilters.jenis) return; document.getElementById('set-no-kep').value = currentSKSettings.noKep || ''; document.getElementById('set-tgl-kep').value = currentSKSettings.tglKep || ''; openModal('petikan-settings-modal'); };
+const renderPetikanPagination = (totalPages, totalItems) => { 
+    if (!paginationContainer) return; 
+    if (totalItems === 0) { paginationContainer.innerHTML = ''; return; } 
+    const startItem = (petikanCurrentPage - 1) * PETIKAN_ROWS_PER_PAGE + 1; 
+    const endItem = Math.min(startItem + PETIKAN_ROWS_PER_PAGE - 1, totalItems); 
+    
+    let paginationHTML = ` 
+        <span class="text-sm text-subtle"> 
+            Menampilkan ${startItem} - ${endItem} dari ${totalItems} data 
+        </span> 
+    `; 
+    
+    if (totalPages > 1) { 
+        paginationHTML += ` 
+            <div class="inline-flex mt-2 xs:mt-0"> 
+                <button id="prev-petikan-page" class="flex items-center justify-center px-3 h-8 text-sm font-medium text-main bg-tertiary rounded-l hover:bg-main disabled:opacity-50 disabled:cursor-not-allowed border border-main"> 
+                    Sebelumnya 
+                </button> 
+                <button id="next-petikan-page" class="flex items-center justify-center px-3 h-8 text-sm font-medium text-main bg-tertiary rounded-r border-t border-b border-r border-main hover:bg-main disabled:opacity-50 disabled:cursor-not-allowed"> 
+                    Selanjutnya 
+                </button> 
+            </div> 
+        `; 
+    } 
+    
+    paginationContainer.innerHTML = paginationHTML; 
+    
+    const prevButton = document.getElementById('prev-petikan-page'); 
+    const nextButton = document.getElementById('next-petikan-page'); 
+    
+    if (prevButton) { 
+        prevButton.disabled = (petikanCurrentPage === 1); 
+        prevButton.addEventListener('click', () => { 
+            if (petikanCurrentPage > 1) { petikanCurrentPage--; renderPetikanSiswaListView(); } 
+        }); 
+    } 
+    if (nextButton) { 
+        nextButton.disabled = (petikanCurrentPage >= totalPages); 
+        nextButton.addEventListener('click', () => { 
+            if (petikanCurrentPage < totalPages) { petikanCurrentPage++; renderPetikanSiswaListView(); } 
+        }); 
+    } 
+};
+
+const loadSKSettings = async () => { 
+    const { taId, jenis, detail } = selectedPetikanFilters; 
+    const settingsId = `${taId}_${jenis.replace(/\s/g, '_')}_${detail.replace(/\s/g, '_')}`; 
+    try { 
+        const settingsCollectionPath = getCollectionRef('petikan_settings').path; 
+        const settingsDocRef = doc(db, settingsCollectionPath, settingsId); 
+        const snapshot = await getDoc(settingsDocRef); 
+        if (snapshot.exists()) { currentSKSettings = snapshot.data(); } 
+        else { currentSKSettings = { noKep: '', tglKep: '' }; } 
+    } catch (error) { console.error("Error loading settings:", error); } 
+};
+
+const openSettingsModal = () => { 
+    if (!selectedPetikanFilters.jenis) return; 
+    document.getElementById('set-no-kep').value = currentSKSettings.noKep || ''; 
+    document.getElementById('set-tgl-kep').value = currentSKSettings.tglKep || ''; 
+    openModal('petikan-settings-modal'); 
+};
 
 const saveSKSettings = async (e) => { 
-    // Jangan preventDefault di sini jika settings_petikan.js juga menangani event yang sama
-    // atau jika Anda ingin keduanya berjalan.
-    // Namun untuk amannya kita bisa prevent default agar tidak refresh halaman.
     if(e) e.preventDefault();
     
     showLoading('Menyimpan Data SK...'); 
@@ -545,12 +635,153 @@ const saveSKSettings = async (e) => {
     hideLoading(); 
 };
 
+// ==========================================================
+// ===               LOGIKA EXPORT EXCEL                  ===
+// ==========================================================
+
+const exportPetikanToExcel = () => {
+    const { jenis, detail, tahun } = selectedPetikanFilters;
+    
+    const searchTerm = searchPetikanInput ? searchPetikanInput.value.toLowerCase() : '';
+    const filterBatalyon = document.getElementById('filter-petikan-batalyon')?.value;
+    const filterKompi = document.getElementById('filter-petikan-kompi')?.value;
+    const filterPeleton = document.getElementById('filter-petikan-peleton')?.value;
+    const sortValue = document.getElementById('sort-petikan-select')?.value || 'nosis_asc';
+
+    let filteredStudents = calculatedStudentList.filter(s =>
+        (searchTerm ? (s.nama && s.nama.toLowerCase().includes(searchTerm)) || (s.nosis && s.nosis.includes(searchTerm)) : true) &&
+        (filterBatalyon ? s.batalyon === filterBatalyon : true) &&
+        (filterKompi ? s.kompi === filterKompi : true) &&
+        (filterPeleton ? s.peleton === filterPeleton : true)
+    );
+
+    if (filteredStudents.length === 0) {
+        alert('Tidak ada data siswa untuk diekspor.');
+        return;
+    }
+
+    // Urutkan data sesuai dropdown di layar
+    filteredStudents.sort((a, b) => {
+        if (sortValue === 'nosis_asc') {
+            return a.cleanNosis.localeCompare(b.cleanNosis, undefined, { numeric: true, sensitivity: 'base' });
+        } else if (sortValue === 'nosis_desc') {
+            return b.cleanNosis.localeCompare(a.cleanNosis, undefined, { numeric: true, sensitivity: 'base' });
+        } else if (sortValue === 'nama_asc') {
+            return String(a.nama || '').localeCompare(String(b.nama || ''));
+        } else if (sortValue === 'nama_desc') {
+            return String(b.nama || '').localeCompare(String(a.nama || ''));
+        } else if (sortValue === 'rank_asc') {
+            return (a.ranking || 999999) - (b.ranking || 999999);
+        }
+        return 0;
+    });
+
+    showLoading('Mempersiapkan data ekspor...');
+    
+    try {
+        // 1. SIAPKAN KOP TEKS (Bisa disesuaikan teksnya)
+        const kop1 = ["KEPOLISIAN NEGARA REPUBLIK INDONESIA"];
+        const kop2 = ["LEMBAGA PENDIDIKAN DAN PELATIHAN POLRI"];
+        const kop3 = ["PUSAT PENDIDIKAN KEPOLISIAN PERAIRAN"];
+
+        // 2. SIAPKAN JUDUL DOKUMEN
+        let detailClean = (detail || '').toString().trim();
+        if (detailClean === '-') detailClean = '';
+        const judulText = `REKAPITULASI PETIKAN KELULUSAN ${jenis.toUpperCase()} ${detailClean.toUpperCase()} TA ${tahun}`;
+
+        // 3. HEADER TABEL
+        const headerTabel = [
+            "No Urut SK", "Nama Lengkap", "Nosis", "Nomor Kep/SK",
+            "N. Akademik", "N. Mental", "N. Jasmani", "Nilai Akhir", "Peringkat"
+        ];
+
+        // 4. MAPPING DATA SISWA
+        const dataRows = filteredStudents.map(s => {
+            const noUrutTabel = s.nomorUrutSkep || '-';
+            const nomorKep = currentSKSettings.noKep || '-'; 
+            const nilaiAkhir = s.finalScore.toFixed(2); 
+            const nilaiAkademik = s.nilaiAkademik.toFixed(2);
+            const nilaiKepribadian = s.nilaiKepribadian.toFixed(2);
+            
+            let nilaiJasmaniDisplay = '-';
+            const katLower = (s.kategori || '').toLowerCase();
+            const isDikbangspesOnly = katLower.includes('dikbangspes');
+
+            if (!isDikbangspesOnly) {
+                 nilaiJasmaniDisplay = (s.nilaiJasmani !== undefined && s.nilaiJasmani !== null) ? s.nilaiJasmani.toFixed(2) : '0.00';
+            }
+
+            return [
+                noUrutTabel,
+                s.nama.toUpperCase(),
+                s.nosis || '-',
+                nomorKep,
+                parseFloat(nilaiAkademik),
+                parseFloat(nilaiKepribadian),
+                isDikbangspesOnly ? '-' : parseFloat(nilaiJasmaniDisplay),
+                parseFloat(nilaiAkhir),
+                s.ranking || '-'
+            ];
+        });
+
+        // 5. GABUNGKAN KOP, JUDUL, HEADER, DAN DATA JADI ARRAY OF ARRAYS
+        const wsData = [
+            kop1,
+            kop2,
+            kop3,
+            [], // Baris kosong untuk jarak
+            [judulText],
+            [], // Baris kosong untuk jarak
+            headerTabel,
+            ...dataRows
+        ];
+
+        // Konversi ke worksheet
+        const worksheet = XLSX.utils.aoa_to_sheet(wsData);
+
+        // 6. ATUR LEBAR KOLOM (Supaya Simetris & Nama Tidak Terpotong)
+        worksheet['!cols'] = [
+            { wch: 12 },  // A: No Urut SK
+            { wch: 35 },  // B: Nama Lengkap (Lebar)
+            { wch: 15 },  // C: Nosis
+            { wch: 25 },  // D: Nomor Kep
+            { wch: 12 },  // E: Akademik
+            { wch: 12 },  // F: Mental
+            { wch: 12 },  // G: Jasmani
+            { wch: 12 },  // H: Nilai Akhir
+            { wch: 10 }   // I: Peringkat
+        ];
+
+        // 7. MERGE CELLS UNTUK KOP & JUDUL AGAR RAPI
+        // c: 0 = Kolom A, c: 8 = Kolom I
+        worksheet['!merges'] = [
+            { s: { r: 0, c: 0 }, e: { r: 0, c: 3 } }, // Merge KOP baris 1 (Kolom A s/d D)
+            { s: { r: 1, c: 0 }, e: { r: 1, c: 3 } }, // Merge KOP baris 2
+            { s: { r: 2, c: 0 }, e: { r: 2, c: 3 } }, // Merge KOP baris 3
+            { s: { r: 4, c: 0 }, e: { r: 4, c: 8 } }  // Merge Judul di Tengah (Kolom A s/d I)
+        ];
+
+        // 8. BUAT FILE EXCEL
+        const fileName = `Rekap_Petikan_${jenis}${detailClean ? '_' + detailClean : ''}_TA${tahun}.xlsx`.replace(/\s+/g, '_');
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, `Rekap Petikan`);
+        XLSX.writeFile(workbook, fileName);
+
+    } catch (error) {
+        console.error('Gagal mengekspor ke Excel:', error);
+        alert('Gagal membuat file Excel.');
+    } finally {
+        hideLoading();
+    }
+};
+
+
+// ==========================================================
 // --- LOGIKA CETAK (DIPERBAIKI UNTUK CETAK RAPAT ATAS) ---
+// ==========================================================
 const checkSettingsBeforePrint = () => {
     if (!currentSKSettings || !currentSKSettings.noKep || !currentSKSettings.tglKep) { alert('Data SK (Nomor Kep & Tanggal) belum lengkap.'); return false; }
     const ps = globalSettings.petikan_settings || {};
-    // Validasi opsional
-    // if (!ps.signer2Name || !ps.signer2Id) { alert('Data Pejabat Penandatangan belum diatur di Settings.'); return false; }
     return true;
 };
 
@@ -566,15 +797,10 @@ const preparePrintData = () => {
     const ps = globalSettings.petikan_settings || {};
 
     return {
-        // Data SK Lokal
         noKep: currentSKSettings.noKep,
         tglKep: formatDateIndo(currentSKSettings.tglKep),
-        
-        // Data TA
         tglMulai: currentTA?.tanggalMulai ? formatDateIndo(currentTA.tanggalMulai) : '...',
         tglSelesai: currentTA?.tanggalBerakhir ? formatDateIndo(currentTA.tanggalBerakhir) : '...',
-        
-        // Data Global (Signer)
         signer2Name: ps.signer2Name,
         signer2Id: ps.signer2Id,
         signer2Title: ps.signer2Title,
@@ -669,8 +895,6 @@ const handlePrintSinglePetikan = (studentId) => {
     if (!student) return;
 
     const totalStudents = calculatedStudentList.length;
-
-    // Gunakan nomor urut SKEP yang sudah distempel di awal
     const fixedNomorUrut = student.nomorUrutSkep; 
 
     const studentData = {
@@ -690,7 +914,6 @@ const handlePrintSinglePetikan = (studentId) => {
         nilaiJasmani: (student.nilaiJasmani !== undefined && student.nilaiJasmani !== null) ? student.nilaiJasmani.toFixed(2) : '-', 
         nilaiAkhir: student.finalScore.toFixed(2), 
         
-        // PASTIKAN INI DIKIRIM KE TEMPLATE
         nomorUrut: fixedNomorUrut,
         noUrut: fixedNomorUrut,
         
@@ -706,28 +929,45 @@ const handlePrintAllPetikan = () => {
     if (!checkSettingsBeforePrint()) return;
     
     const settings = globalSettings.petikan_settings || {};
-    const searchTerm = searchPetikanInput.value.toLowerCase();
     
+    const searchTerm = searchPetikanInput ? searchPetikanInput.value.toLowerCase() : '';
+    const filterBatalyon = document.getElementById('filter-petikan-batalyon')?.value;
+    const filterKompi = document.getElementById('filter-petikan-kompi')?.value;
+    const filterPeleton = document.getElementById('filter-petikan-peleton')?.value;
+    const sortValue = document.getElementById('sort-petikan-select')?.value || 'nosis_asc';
+
     let filteredStudents = calculatedStudentList.filter(s =>
-        (searchTerm ? (s.nama && s.nama.toLowerCase().includes(searchTerm)) || (s.nosis && s.nosis.includes(searchTerm)) : true)
+        (searchTerm ? (s.nama && s.nama.toLowerCase().includes(searchTerm)) || (s.nosis && s.nosis.includes(searchTerm)) : true) &&
+        (filterBatalyon ? s.batalyon === filterBatalyon : true) &&
+        (filterKompi ? s.kompi === filterKompi : true) &&
+        (filterPeleton ? s.peleton === filterPeleton : true)
     );
 
-    if (filteredStudents.length === 0) { alert('Tidak ada siswa.'); return; }
-    if (!confirm(`Cetak ${filteredStudents.length} Petikan (Urut NOSIS)?`)) return;
+    if (filteredStudents.length === 0) { alert('Tidak ada siswa sesuai filter.'); return; }
+    if (!confirm(`Cetak ${filteredStudents.length} Petikan?`)) return;
     
     showLoading('Menyiapkan dokumen...');
     
-    // Sortir output cetakan berdasarkan NOSIS
     filteredStudents.sort((a, b) => {
-        return a.cleanNosis.localeCompare(b.cleanNosis, undefined, { numeric: true, sensitivity: 'base' });
+        if (sortValue === 'nosis_asc') {
+            return a.cleanNosis.localeCompare(b.cleanNosis, undefined, { numeric: true, sensitivity: 'base' });
+        } else if (sortValue === 'nosis_desc') {
+            return b.cleanNosis.localeCompare(a.cleanNosis, undefined, { numeric: true, sensitivity: 'base' });
+        } else if (sortValue === 'nama_asc') {
+            return String(a.nama || '').localeCompare(String(b.nama || ''));
+        } else if (sortValue === 'nama_desc') {
+            return String(b.nama || '').localeCompare(String(a.nama || ''));
+        } else if (sortValue === 'rank_asc') {
+            return (a.ranking || 999999) - (b.ranking || 999999);
+        }
+        return 0;
     });
 
-    const totalStudents = calculatedStudentList.length; // Total satu angkatan
+    const totalStudents = calculatedStudentList.length; 
 
     let combinedHTML = '';
     
     filteredStudents.forEach(student => {
-         // Ambil nomor urut yang sudah distempel
          const fixedNomorUrut = student.nomorUrutSkep; 
 
          const studentData = {
@@ -747,7 +987,6 @@ const handlePrintAllPetikan = () => {
             nilaiJasmani: (student.nilaiJasmani !== undefined && student.nilaiJasmani !== null) ? student.nilaiJasmani.toFixed(2) : '-',
             nilaiAkhir: student.finalScore.toFixed(2), 
             
-            // PASTIKAN INI DIKIRIM KE TEMPLATE
             nomorUrut: fixedNomorUrut,
             noUrut: fixedNomorUrut,
             
