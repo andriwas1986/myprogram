@@ -1,0 +1,153 @@
+<div class="bg-card p-6 rounded-lg shadow-md">
+    <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+        <div id="nominatif-header">
+            <button id="btn-back-nominatif" class="bg-slate-700 text-white py-2 px-4 rounded-lg hover:bg-slate-800 text-sm font-bold uppercase tracking-wide flex items-center shadow-md transition-colors mb-4 hidden">
+                <i class="fas fa-arrow-left mr-2"></i> Kembali
+            </button>
+            <h2 id="nominatif-view-title" class="text-2xl font-extrabold text-main">DAFTAR NOMINATIF SISWA</h2>
+            <div id="nominatif-view-subtitle" class="text-sm text-subtle mt-1">
+                Daftar nominatif siswa beserta peringkat kelulusan.
+            </div>
+            <div id="nominatif-view-info" class="inline-block bg-blue-600 text-white text-sm px-4 py-2 rounded-md font-medium shadow mt-3 hidden">
+            </div>
+        </div>
+    </div>
+
+    <div id="nominatif-view-container">
+        
+        <div id="nominatif-main-view">
+            <p class="text-subtle mb-4 font-medium">Pilih pendidikan aktif di bawah ini:</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="text-lg font-bold text-main mb-2">A. DIKTUK TAMTAMA</h3>
+                    <div class="overflow-x-auto border border-main rounded-lg shadow-sm">
+                        <table class="w-full text-sm text-left">
+                            <thead class="text-xs text-subtle uppercase bg-tertiary border-b border-main">
+                                <tr>
+                                    <th class="p-3 w-12 text-center font-bold">NO</th>
+                                    <th class="p-3 font-bold">KATEGORI PENDIDIKAN</th>
+                                    <th class="p-3 text-center font-bold">STATUS</th>
+                                    <th class="p-3 text-center w-28 font-bold">AKSI</th>
+                                </tr>
+                            </thead>
+                            <tbody id="list-nom-diktuk-tamtama"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div>
+                     <h3 class="text-lg font-bold text-main mb-2">B. DIKTUK BINTARA</h3>
+                    <div class="overflow-x-auto border border-main rounded-lg shadow-sm">
+                        <table class="w-full text-sm text-left">
+                           <thead class="text-xs text-subtle uppercase bg-tertiary border-b border-main">
+                               <tr>
+                                   <th class="p-3 w-12 text-center font-bold">NO</th>
+                                   <th class="p-3 font-bold">KATEGORI PENDIDIKAN</th>
+                                   <th class="p-3 text-center font-bold">STATUS</th>
+                                   <th class="p-3 text-center w-28 font-bold">AKSI</th>
+                               </tr>
+                           </thead>
+                            <tbody id="list-nom-diktuk-bintara"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-bold text-main mb-2">C. DIKBANGSPES</h3>
+                    <div class="overflow-x-auto border border-main rounded-lg shadow-sm">
+                        <table class="w-full text-sm text-left">
+                            <thead class="text-xs text-subtle uppercase bg-tertiary border-b border-main">
+                                <tr>
+                                    <th class="p-3 w-12 text-center font-bold">NO</th>
+                                    <th class="p-3 font-bold">KATEGORI PENDIDIKAN</th>
+                                    <th class="p-3 text-center font-bold">STATUS</th>
+                                    <th class="p-3 text-center w-28 font-bold">AKSI</th>
+                                </tr>
+                            </thead>
+                            <tbody id="list-nom-dikbangspes"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-bold text-main mb-2">D. DIKBANGUM SEKOLAH BINTARA POLISI</h3>
+                    <div class="overflow-x-auto border border-main rounded-lg shadow-sm">
+                        <table class="w-full text-sm text-left">
+                            <thead class="text-xs text-subtle uppercase bg-tertiary border-b border-main">
+                                <tr>
+                                    <th class="p-3 w-12 text-center font-bold">NO</th>
+                                    <th class="p-3 font-bold">KATEGORI PENDIDIKAN</th>
+                                    <th class="p-3 text-center font-bold">STATUS</th>
+                                    <th class="p-3 text-center w-28 font-bold">AKSI</th>
+                                </tr>
+                            </thead>
+                            <tbody id="list-nom-dikbagum-sbp"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="nominatif-detail-view" class="hidden">
+            <div class="flex flex-wrap items-center justify-between gap-4 mb-4 bg-tertiary p-4 rounded-lg border border-main shadow-sm">
+                <div class="flex flex-wrap items-center gap-4 flex-grow">
+                     <div class="relative w-full max-w-xs">
+                         <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                            <i class="fas fa-search text-subtle"></i>
+                        </div>
+                        <input type="text" id="nominatif-search" class="bg-input border border-main text-main text-sm rounded-lg block w-full pl-10 p-2.5 font-medium" placeholder="Cari Nama atau NOSIS...">
+                    </div>
+                    
+                    <select id="filter-nominatif-batalyon" class="bg-input border-main text-main text-sm rounded-lg p-2.5 w-auto font-medium">
+                        <option value="">Semua Batalyon</option>
+                        <option value="I">I</option><option value="II">II</option>
+                    </select>
+                    <select id="filter-nominatif-kompi" class="bg-input border-main text-main text-sm rounded-lg p-2.5 w-auto font-medium">
+                        <option value="">Semua Kompi</option>
+                        <option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option>
+                    </select>
+                    <select id="filter-nominatif-peleton" class="bg-input border-main text-main text-sm rounded-lg p-2.5 w-auto font-medium">
+                        <option value="">Semua Peleton</option>
+                        <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option>
+                    </select>
+
+                    <select id="sort-nominatif-select" class="bg-input border-main text-main text-sm rounded-lg p-2.5 w-auto font-medium">
+                        <option value="rank_asc">Urut Peringkat (1 - Terakhir)</option>
+                        <option value="nosis_asc">Urut Nosis (Awal - Akhir)</option>
+                        <option value="nama_asc">Urut Nama (A - Z)</option>
+                    </select>
+                </div>
+                
+                <div class="flex items-center gap-3">
+                    <button id="btn-export-excel-nominatif" class="bg-green-700 text-white py-2.5 px-5 rounded-lg hover:bg-green-800 text-sm font-bold uppercase tracking-wider flex items-center shadow-md transition-colors">
+                        <i class="fas fa-file-excel mr-2 text-lg"></i> Export Excel
+                    </button>
+                    <button id="btn-print-pdf-nominatif" class="bg-red-700 text-white py-2.5 px-5 rounded-lg hover:bg-red-800 text-sm font-bold uppercase tracking-wider flex items-center shadow-md transition-colors">
+                        <i class="fas fa-file-pdf mr-2 text-lg"></i> Cetak PDF
+                    </button>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto border border-main rounded-lg shadow-md">
+                <table class="w-full text-sm text-left text-main">
+                    <thead class="text-xs text-subtle uppercase bg-tertiary border-b border-main">
+                        <tr>
+                            <th class="p-3 text-center font-bold">NO</th>
+                            <th class="p-3 text-center font-bold">FOTO</th>
+                            <th class="p-3 font-bold">NAMA LENGKAP</th>
+                            <th class="p-3 text-center font-bold">NOSIS</th>
+                            <th class="p-3 text-center font-bold">PANGKAT/NRP</th>
+                            <th class="p-3 text-center font-bold">ASAL PENGIRIMAN</th>
+                            <th class="p-3 text-center text-blue-700 font-extrabold">NILAI AKHIR</th>
+                            <th class="p-3 text-center text-green-600 font-extrabold">PERINGKAT</th>
+                        </tr>
+                    </thead>
+                    <tbody id="nominatif-table-body" class="bg-main divide-y divide-main">
+                        </tbody>
+                </table>
+            </div>
+            <div id="nominatif-pagination" class="flex justify-between items-center mt-5 font-medium"></div>
+        </div>
+    </div>
+</div>

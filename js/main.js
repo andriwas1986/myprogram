@@ -18,7 +18,7 @@ import {
 import { initDashboardModule, reRenderDashboardCharts } from './modules/dashboard.js';
 import { initSiswaModule, openSiswaDetailModalFromData } from './modules/siswa.js';
 import { initKartuSiswaModule } from './modules/kartu_siswa.js';
-import { initIdLemariModule } from './modules/id_lemari.js'; // [BARU] Import ID Lemari
+import { initIdLemariModule } from './modules/id_lemari.js'; 
 import { initGadikModule } from './modules/gadik.js';
 import { initDantonModule } from './modules/danton.js';
 import { initMapelModule } from './modules/mapel.js';
@@ -31,6 +31,8 @@ import { initPreviewSiswaTranskripModule } from './modules/preview_siswa_transkr
 import { setupAdminModuleListeners, renderAdminModule } from './modules/admin.js';
 import { initPanduanModule } from './modules/panduan.js';
 import { initJadwalModule } from './modules/jadwal.js';
+// [BARU] Import module Nominatif
+import { initNominatifModule } from './modules/nominatif.js';
 import { initLmsModule } from './modules/lms.js';
 import { initSettingsModule } from './modules/settings.js';
 import { initPetikanSettingsModule } from './modules/settings_petikan.js'; 
@@ -55,7 +57,7 @@ const loadDashboardComponent = async (role) => {
     let dashboardPath;
     if (role === 'siswa') {
         dashboardPath = './components/dashboard_siswa.html';
-    } else if (role === 'alumni') { // [TAMBAHAN] Handle role alumni pakai dashboard siswa
+    } else if (role === 'alumni') { 
         dashboardPath = './components/dashboard_siswa.html'; 
     } else if (role === 'gadik') {
         dashboardPath = './components/dashboard_gadik.html';
@@ -84,7 +86,7 @@ const loadAppComponents = async () => {
         { container: 'siswa-section', path: './components/siswa_content.html' },
         { container: 'pelanggaran-siswa-section', path: './components/pelanggaran_siswa_content.html' },
         { container: 'kartu-siswa-section', path: './components/kartu_siswa_content.html' },
-        { container: 'id-lemari-section', path: './components/id_lemari_content.html' }, // [BARU] Load Content ID Lemari
+        { container: 'id-lemari-section', path: './components/id_lemari_content.html' }, 
         { container: 'gadik-section', path: './components/gadik_content.html' },
         { container: 'danton-section', path: './components/danton_content.html' },
         { container: 'mapel-section', path: './components/mapel_content.html' },
@@ -96,6 +98,8 @@ const loadAppComponents = async () => {
         { container: 'nilai-jasmani-section', path: './components/nilai_jasmani_content.html' },
         { container: 'transkrip-nilai-section', path: './components/transkrip_nilai_content.html' },
         { container: 'petikan-section', path: './components/petikan_content.html' },
+        // [BARU] Load Content Nominatif
+        { container: 'nominatif-section', path: './components/nominatif_content.html' },
         
         { container: 'lms-section', path: './components/lms_content.html' },
         { container: 'setting-section', path: './components/settings_content.html' },
@@ -104,8 +108,8 @@ const loadAppComponents = async () => {
         { container: 'jadwal-mengajar-section', path: './components/jadwal_content.html' },
         { container: 'panduan-container', path: './components/panduan_content.html' },
         { container: 'profil-section', path: './components/profil_content.html' },
-		{ container: 'sosiometri-section', path: './components/sosiometri_content.html' },
-		{ container: 'e-album-section', path: './components/e_album_content.html' },
+        { container: 'sosiometri-section', path: './components/sosiometri_content.html' },
+        { container: 'e-album-section', path: './components/e_album_content.html' },
         
         // Modals
         { container: 'siswa-detail-modal-container', path: './components/modal_siswa_detail.html' },
@@ -165,19 +169,20 @@ function updateAllModules() {
     initSiswaModule(AppState.students, AppState.tahunAjaran);
     initPelanggaranSiswaModule(AppState);
     initKartuSiswaModule(AppState);
-    initIdLemariModule(AppState.students, AppState.tahunAjaran); // [BARU] Init Module ID Lemari
+    initIdLemariModule(AppState.students, AppState.tahunAjaran); 
     initMapelModule(AppState.mapels, AppState.tahunAjaran, AppState.students);
     initGadikModule(AppState.gadik, AppState.mapels, AppState.tahunAjaran);
     initDantonModule(AppState.danton, AppState.tahunAjaran, AppState.gadik);
     initNilaiModule(AppState.students, AppState.mapels, AppState.tahunAjaran);
     
-    // [UPDATE] Alumni menggunakan modul preview yang sama dengan siswa
     if (currentUser.role === 'siswa' || currentUser.role === 'alumni') {
         initPreviewSiswaTranskripModule(AppState.students, AppState.mapels, AppState.tahunAjaran, AppState.settings);
     } else {
         initTranskripModule(AppState.students, AppState.mapels, AppState.tahunAjaran, AppState.settings);
-        // [UPDATE] Menambahkan AppState.mapels agar Petikan bisa hitung nilai
         initPetikanModule(AppState.tahunAjaran, AppState.students, AppState.settings, AppState.mapels);
+        
+        // [BARU] Inisialisasi Module Nominatif hanya untuk admin/staf
+        initNominatifModule(AppState.tahunAjaran, AppState.students, AppState.settings, AppState.mapels);
     }
     
     initJadwalModule(AppState.tahunAjaran, AppState.schedulePdfs);
@@ -189,9 +194,9 @@ function updateAllModules() {
     initELibraryModule(AppState.settings);
     initAbsensiModule(AppState);
     initPengumumanModule(AppState.announcements);
-	initSosiometriModule(AppState.students);
+    initSosiometriModule(AppState.students);
     initProfilModule(AppState);
-	initEAlbumModule(AppState, openSiswaDetailModalFromData);
+    initEAlbumModule(AppState, openSiswaDetailModalFromData);
     renderAdminModule(AppState.superadmins, AppState.operators, AppState.permissions);
     updateWelcomeMessage();
 }
