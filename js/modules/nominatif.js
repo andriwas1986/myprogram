@@ -1,3 +1,5 @@
+// js/modules/nominatif.js
+
 import { showLoading, hideLoading } from '../ui.js';
 import { getCollectionRef, getAcademicScores } from '../firestore-service.js'; 
 import { getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -70,7 +72,12 @@ const setupEventListeners = () => {
         backButton.addEventListener('click', () => { resetSession(); showMainView(); });
     }
 
-    const filters = ['nominatif-search', 'filter-nominatif-batalyon', 'filter-nominatif-kompi', 'filter-nominatif-peleton', 'sort-nominatif-select'];
+    document.getElementById('btn-setting-kop')?.addEventListener('click', () => {
+        const panel = document.getElementById('kop-settings-panel');
+        if (panel) panel.classList.toggle('hidden');
+    });
+
+    const filters = ['nominatif-search', 'sort-nominatif-select'];
     filters.forEach(id => {
         const el = document.getElementById(id);
         if(el) el.addEventListener(id.includes('search') ? 'input' : 'change', () => {
@@ -121,7 +128,7 @@ const formatDateIndo = (dateStr) => {
     return new Intl.DateTimeFormat('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(dateStr));
 };
 
-// --- LOGIKA HITUNG NILAI & RANKING (Persis seperti Petikan) ---
+// --- LOGIKA HITUNG NILAI & RANKING (PERSIS 100% PETIKAN.JS) ---
 const getNilaiKepribadianCalc = (siswa) => {
     const kat = (siswa.kategori || '').toLowerCase();
     if (kat.includes('dikbangspes') || kat.includes('sekolah bintara polisi')) {
@@ -153,22 +160,40 @@ const calculateRankingAndScores = async (group) => {
         const relMapels = localMapels.filter(m => String(m.tahunAjaran).trim() === String(siswa.tahunAjaran).trim() && String(m.kategori).trim().toLowerCase() === String(siswa.kategori).trim().toLowerCase() && String(m.detailPendidikan).trim().toLowerCase() === String(siswa.detailPendidikan).trim().toLowerCase());
         const scores = relMapels.map(m => acad[m.id] ? parseFloat(acad[m.id]) : 0);
         
-        const rerataAkademik = scores.length > 0 ? scores.reduce((a,b)=>a+b,0)/scores.length : 0;
-        const rerataKep = getNilaiKepribadianCalc(siswa);
-        let rerataJas = 0;
-        const isDikbangspes = (siswa.kategori || '').toLowerCase().includes('dikbangspes');
-        
-        if (!isDikbangspes && Array.isArray(siswa.nilaiJasmani) && siswa.nilaiJasmani.length > 0) {
-            rerataJas = siswa.nilaiJasmani.reduce((a,b)=>a+(parseFloat(b)||0),0)/siswa.nilaiJasmani.length;
+        // Logika Akumulasi (Sama persis dengan Petikan)
+        const totalNilaiAkademik = scores.reduce((a, b) => a + b, 0);
+        const rerataAkademik_raw = scores.length > 0 ? (totalNilaiAkademik / scores.length) : 0;
+        const rerataAkademik = Math.floor(rerataAkademik_raw * 100) / 100;
+        const rerataKepribadian = getNilaiKepribadianCalc(siswa);
+
+        let rerataJasmani = 0;
+        const katLower = (siswa.kategori || '').toLowerCase();
+        const isDikbangspesOnly = katLower.includes('dikbangspes'); 
+
+        if (!isDikbangspesOnly) {
+            const nilaiJasmaniList = siswa.nilaiJasmani || [];
+            if (Array.isArray(nilaiJasmaniList) && nilaiJasmaniList.length > 0) {
+                const totalJasmani = nilaiJasmaniList.reduce((acc, curr) => acc + (parseFloat(curr) || 0), 0);
+                rerataJasmani = totalJasmani / nilaiJasmaniList.length;
+            }
         }
 
-        const finalScore = isDikbangspes ? (rerataAkademik + rerataKep)/2 : ((rerataAkademik*4) + (rerataKep*4) + (rerataJas*2))/10;
+        let finalScore = 0;
+        if (!isDikbangspesOnly) {
+            finalScore = ((rerataAkademik * 4) + (rerataKepribadian * 4) + (rerataJasmani * 2)) / 10;
+        } else {
+            finalScore = (rerataAkademik + rerataKepribadian) / 2;
+        }
 
-        return { ...siswa, finalScore, cleanNosis: siswa.nosis ? String(siswa.nosis).trim().replace(/\D/g, '') : '99999999' };
+        return { ...siswa, finalScore: finalScore, cleanNosis: siswa.nosis ? String(siswa.nosis).trim().replace(/\D/g, '') : '99999999' };
     }));
 
+    // [PERBAIKAN RANKING] Sama Persis Petikan.js (Berdasarkan Nilai Akhir)
     processed.sort((a, b) => b.finalScore - a.finalScore);
-    processed.forEach((s, i) => s.ranking = i + 1);
+    processed.forEach((s, i) => {
+        s.ranking = i + 1;
+    });
+
     return processed;
 };
 
@@ -245,14 +270,10 @@ const renderMainView = () => {
 const renderSiswaList = () => { 
     if (!tableBody) return; tableBody.innerHTML = ''; 
     const search = searchInput ? searchInput.value.toLowerCase() : ''; 
-    const fBat = document.getElementById('filter-nominatif-batalyon')?.value;
-    const fKom = document.getElementById('filter-nominatif-kompi')?.value;
-    const fPel = document.getElementById('filter-nominatif-peleton')?.value;
     const sortVal = document.getElementById('sort-nominatif-select')?.value || 'rank_asc';
 
     let filtered = calculatedStudentList.filter(s => 
-        (search ? (s.nama && s.nama.toLowerCase().includes(search)) || (s.nosis && s.nosis.includes(search)) : true) &&
-        (fBat ? s.batalyon === fBat : true) && (fKom ? s.kompi === fKom : true) && (fPel ? s.peleton === fPel : true)
+        (search ? (s.nama && s.nama.toLowerCase().includes(search)) || (s.nosis && s.nosis.includes(search)) : true)
     ); 
 
     filtered.sort((a, b) => {
@@ -270,22 +291,22 @@ const renderSiswaList = () => {
     const pSiswa = filtered.slice(start, start + ROWS_PER_PAGE); 
     
     if (pSiswa.length === 0) { 
-        tableBody.innerHTML = `<tr><td colspan="8" class="text-center p-8 text-subtle italic">Tidak ada data siswa ditemukan.</td></tr>`; 
+        tableBody.innerHTML = `<tr><td colspan="7" class="text-center p-8 text-subtle italic">Tidak ada data siswa ditemukan.</td></tr>`; 
         renderPagination(0, 0); return; 
     } 
     
     pSiswa.forEach((s, i) => { 
         const fotoHTML = s.fotoUrl ? `<img src="${s.fotoUrl}" class="w-10 h-12 object-cover rounded shadow-sm mx-auto">` : `<div class="w-10 h-12 bg-gray-300 rounded mx-auto flex items-center justify-center text-xs text-gray-500">No Pic</div>`;
-        const polda = s.asalPengiriman || s.polda || '-';
+        const polda = s.asalPengiriman || s.polda || s.asalPolda || '-';
+
         tableBody.innerHTML += ` 
             <tr class="border-b border-main hover:bg-tertiary"> 
                 <td class="p-3 text-center text-subtle font-bold">${start + i + 1}</td> 
                 <td class="p-2 text-center">${fotoHTML}</td>
-                <td class="p-3 font-bold text-main uppercase">${s.nama}</td> 
+                <td class="p-3 font-bold text-main uppercase">${s.nama || '-'}</td> 
                 <td class="p-3 text-center text-subtle font-bold">${s.nosis || '-'}</td> 
                 <td class="p-3 text-center text-subtle font-medium">${s.pangkat || '-'} / ${s.nrp || '-'}</td> 
                 <td class="p-3 text-center text-subtle font-medium uppercase">${polda}</td> 
-                <td class="p-3 text-center text-blue-700 font-extrabold text-lg">${s.finalScore.toFixed(2)}</td> 
                 <td class="p-3 text-center text-green-600 font-extrabold text-xl">${s.ranking || '-'}</td> 
             </tr>`; 
     }); 
@@ -315,14 +336,10 @@ const renderPagination = (tPages, tItems) => {
 
 const getFilteredAndSortedStudents = () => {
     const search = searchInput ? searchInput.value.toLowerCase() : '';
-    const fBat = document.getElementById('filter-nominatif-batalyon')?.value;
-    const fKom = document.getElementById('filter-nominatif-kompi')?.value;
-    const fPel = document.getElementById('filter-nominatif-peleton')?.value;
     const sortVal = document.getElementById('sort-nominatif-select')?.value || 'rank_asc';
 
     let filtered = calculatedStudentList.filter(s => 
-        (search ? (s.nama && s.nama.toLowerCase().includes(search)) || (s.nosis && s.nosis.includes(search)) : true) &&
-        (fBat ? s.batalyon === fBat : true) && (fKom ? s.kompi === fKom : true) && (fPel ? s.peleton === fPel : true)
+        (search ? (s.nama && s.nama.toLowerCase().includes(search)) || (s.nosis && s.nosis.includes(search)) : true)
     ); 
 
     filtered.sort((a, b) => {
@@ -342,26 +359,64 @@ const exportToExcel = () => {
 
     showLoading('Exporting Excel...');
     try {
-        let detailClean = selectedFilters.detail !== '-' ? ` ${selectedFilters.detail.toUpperCase()}` : '';
-        const judul = `DAFTAR NOMINATIF ${selectedFilters.jenis.toUpperCase()}${detailClean} TA ${selectedFilters.tahun}`;
+        const jenis = selectedFilters.jenis || 'UMUM';
+        const detail = selectedFilters.detail;
+        const tahun = selectedFilters.tahun || new Date().getFullYear();
         
-        const header = ["No", "Nama Lengkap", "Nosis", "Pangkat / NRP", "Asal Pengiriman", "Nilai Akhir", "Peringkat", "Foto URL"];
-        const rows = students.map((s, i) => [
-            i + 1, s.nama.toUpperCase(), s.nosis || '-', `${s.pangkat || '-'} / ${s.nrp || '-'}`,
-            (s.asalPengiriman || s.polda || '-').toUpperCase(), parseFloat(s.finalScore.toFixed(2)), s.ranking || '-', s.fotoUrl || 'Tidak ada'
-        ]);
+        let detailClean = (detail && detail !== '-') ? ` ${detail.toUpperCase()}` : '';
+        const judul = `DAFTAR NOMINATIF ${jenis.toUpperCase()}${detailClean} TA ${tahun}`;
+        
+        const header = ["No", "Nama Lengkap", "Nosis", "Pangkat / NRP", "Asal Pengiriman", "Peringkat", "Link Foto URL"];
+        
+        const rows = students.map((s, i) => {
+            const polda = s.asalPengiriman || s.polda || s.asalPolda || '-';
+            
+            // Format Link (Hyperlink) yang bisa diklik di Excel untuk fotoUrl
+            let linkFoto = 'Tidak ada foto';
+            if (s.fotoUrl) {
+                // SheetJS menerima object dengan properti 'l' untuk link
+                linkFoto = { f: `HYPERLINK("${s.fotoUrl}", "Buka Foto")`, v: "Buka Foto" };
+            }
 
-        const wsData = [ ["POLRI"], ["LEMDIKLAT"], ["PUSDIK POLAIR"], [], [judul], [], header, ...rows ];
+            return [
+                i + 1, 
+                (s.nama || '-').toUpperCase(), 
+                s.nosis || '-', 
+                `${s.pangkat || '-'} / ${s.nrp || '-'}`,
+                polda.toUpperCase(), 
+                s.ranking || '-', 
+                linkFoto
+            ];
+        });
+
+        const wsData = [ 
+            ["LEMBAGA PENDIDIKAN DAN PELATIHAN POLRI"], 
+            ["PUSAT PENDIDIKAN KEPOLISIAN PERAIRAN"], 
+            [], 
+            [judul], 
+            [], 
+            header, 
+            ...rows 
+        ];
+        
         const worksheet = XLSX.utils.aoa_to_sheet(wsData);
         
-        worksheet['!cols'] = [{wch: 5}, {wch: 35}, {wch: 15}, {wch: 25}, {wch: 25}, {wch: 12}, {wch: 10}, {wch: 50}];
-        worksheet['!merges'] = [ {s:{r:0,c:0},e:{r:0,c:3}}, {s:{r:1,c:0},e:{r:1,c:3}}, {s:{r:2,c:0},e:{r:2,c:3}}, {s:{r:4,c:0},e:{r:4,c:6}} ];
+        worksheet['!cols'] = [{wch: 5}, {wch: 35}, {wch: 15}, {wch: 25}, {wch: 25}, {wch: 10}, {wch: 35}];
+        worksheet['!merges'] = [ 
+            {s:{r:0,c:0},e:{r:0,c:3}}, 
+            {s:{r:1,c:0},e:{r:1,c:3}}, 
+            {s:{r:3,c:0},e:{r:3,c:6}} 
+        ];
 
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, worksheet, "Nominatif");
-        XLSX.writeFile(wb, `Nominatif_${selectedFilters.jenis}_TA${selectedFilters.tahun}.xlsx`.replace(/\s+/g, '_'));
+        
+        const fileName = `Nominatif_${jenis}${detailClean}_TA${tahun}.xlsx`.replace(/\s+/g, '_');
+        XLSX.writeFile(wb, fileName);
+
     } catch (e) {
-        console.error(e); alert('Gagal Export Excel');
+        console.error(e); 
+        alert('Gagal Export Excel. Pastikan library ter-load.');
     }
     hideLoading();
 };
@@ -370,41 +425,72 @@ const printToPDF = () => {
     const students = getFilteredAndSortedStudents();
     if (students.length === 0) { alert('Tidak ada data siswa.'); return; }
 
-    let detailClean = selectedFilters.detail !== '-' ? ` ${selectedFilters.detail.toUpperCase()}` : '';
-    const title = `DAFTAR NOMINATIF SISWA ${selectedFilters.jenis.toUpperCase()}${detailClean}<br>TAHUN AJARAN ${selectedFilters.tahun}`;
+    const jenis = selectedFilters.jenis || 'UMUM';
+    const detail = selectedFilters.detail;
+    const tahun = selectedFilters.tahun || new Date().getFullYear();
+    
+    // Ambil nilai setting KOP
+    const kopMargin1 = document.getElementById('kop-margin-1')?.value || 0;
+    const kopMargin2 = document.getElementById('kop-margin-2')?.value || 0;
+    const kopLineWidth = document.getElementById('kop-line-width')?.value || 320;
+    const kopLineMargin = document.getElementById('kop-line-margin')?.value || 0;
 
-    let rowsHTML = students.map((s, i) => `
+    let detailClean = (detail && detail !== '-') ? ` ${detail.toUpperCase()}` : '';
+    const title = `DAFTAR NOMINATIF SISWA ${jenis.toUpperCase()}${detailClean}<br>TAHUN AJARAN ${tahun}`;
+
+    // Kolom Nilai Akhir dihapus dari body tabel
+    // [PERBAIKAN] Ukuran foto diubah menjadi lebih besar 65px x 85px (proporsi 3x4 / 4x6)
+    let rowsHTML = students.map((s, i) => {
+        const polda = s.asalPengiriman || s.polda || s.asalPolda || '-';
+        return `
         <tr>
             <td>${i + 1}</td>
-            <td>${s.fotoUrl ? `<img src="${s.fotoUrl}" style="width: 45px; height: 55px; object-fit: cover; border-radius: 4px;">` : 'No Pic'}</td>
-            <td style="text-align: left; padding-left: 10px; font-weight: bold;">${s.nama.toUpperCase()}</td>
+            <td>${s.fotoUrl ? `<img src="${s.fotoUrl}" style="width: 65px; height: 85px; object-fit: cover; border-radius: 4px;">` : '<div style="font-size:10px; color:#888;">No Pic</div>'}</td>
+            <td style="text-align: left; padding-left: 10px; font-weight: bold;">${(s.nama || '-').toUpperCase()}</td>
             <td>${s.nosis || '-'}</td>
             <td>${s.pangkat || '-'} / ${s.nrp || '-'}</td>
-            <td>${(s.asalPengiriman || s.polda || '-').toUpperCase()}</td>
-            <td>${s.finalScore.toFixed(2)}</td>
+            <td>${polda.toUpperCase()}</td>
             <td style="font-weight: bold;">${s.ranking || '-'}</td>
         </tr>
-    `).join('');
+    `}).join('');
 
     const printWindow = window.open('', '_blank');
     printWindow.document.write(`
         <html><head><title>Cetak Nominatif</title>
         <style>
             body { font-family: 'Arial', sans-serif; margin: 20px; color: #000; }
-            .kop { margin-bottom: 20px; font-size: 14px; font-weight: bold; line-height: 1.2; }
-            .title { text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 30px; text-decoration: underline; }
+            .kop-container { margin-bottom: 20px; font-size: 14px; font-weight: bold; line-height: 1.3; }
+            
+            /* [PERBAIKAN] Garis Bawah pada Judul dihapus */
+            .title { text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 30px; }
+            
             table { width: 100%; border-collapse: collapse; font-size: 12px; text-align: center; }
-            th, td { border: 1px solid #000; padding: 6px; }
+            th, td { border: 1px solid #000; padding: 6px; vertical-align: middle; }
             th { background-color: #f2f2f2; text-transform: uppercase; }
             @media print { @page { size: A4 portrait; margin: 10mm; } }
         </style></head><body>
-            <div class="kop">KEPOLISIAN NEGARA REPUBLIK INDONESIA<br>LEMBAGA PENDIDIKAN DAN PELATIHAN<br>PUSAT PENDIDIKAN KEPOLISIAN PERAIRAN</div>
+            
+            <div class="kop-container">
+                <div style="margin-left: ${kopMargin1}px;">LEMBAGA PENDIDIKAN DAN PELATIHAN POLRI</div>
+                <div style="margin-left: ${kopMargin2}px;">PUSAT PENDIDIKAN KEPOLISIAN PERAIRAN</div>
+                <div style="margin-left: ${kopLineMargin}px; width: ${kopLineWidth}px; border-bottom: 2px solid #000; margin-top: 2px;"></div>
+            </div>
+
             <div class="title">${title}</div>
-            <table><thead><tr>
-                <th style="width: 5%;">No</th><th style="width: 10%;">Foto</th><th style="width: 25%;">Nama Lengkap</th>
-                <th style="width: 10%;">Nosis</th><th style="width: 20%;">Pangkat/NRP</th><th style="width: 15%;">Asal Pengiriman</th>
-                <th style="width: 10%;">Nilai Akhir</th><th style="width: 5%;">Rank</th>
-            </tr></thead><tbody>${rowsHTML}</tbody></table>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 5%;">No</th>
+                        <th style="width: 10%;">Foto</th>
+                        <th style="width: 25%;">Nama Lengkap</th>
+                        <th style="width: 15%;">Nosis</th>
+                        <th style="width: 20%;">Pangkat/NRP</th>
+                        <th style="width: 15%;">Asal Pengiriman</th>
+                        <th style="width: 10%;">Rank</th>
+                    </tr>
+                </thead>
+                <tbody>${rowsHTML}</tbody>
+            </table>
         </body></html>
     `);
     printWindow.document.close();

@@ -99,19 +99,6 @@
                         <input type="text" id="nominatif-search" class="bg-input border border-main text-main text-sm rounded-lg block w-full pl-10 p-2.5 font-medium" placeholder="Cari Nama atau NOSIS...">
                     </div>
                     
-                    <select id="filter-nominatif-batalyon" class="bg-input border-main text-main text-sm rounded-lg p-2.5 w-auto font-medium">
-                        <option value="">Semua Batalyon</option>
-                        <option value="I">I</option><option value="II">II</option>
-                    </select>
-                    <select id="filter-nominatif-kompi" class="bg-input border-main text-main text-sm rounded-lg p-2.5 w-auto font-medium">
-                        <option value="">Semua Kompi</option>
-                        <option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option>
-                    </select>
-                    <select id="filter-nominatif-peleton" class="bg-input border-main text-main text-sm rounded-lg p-2.5 w-auto font-medium">
-                        <option value="">Semua Peleton</option>
-                        <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option>
-                    </select>
-
                     <select id="sort-nominatif-select" class="bg-input border-main text-main text-sm rounded-lg p-2.5 w-auto font-medium">
                         <option value="rank_asc">Urut Peringkat (1 - Terakhir)</option>
                         <option value="nosis_asc">Urut Nosis (Awal - Akhir)</option>
@@ -120,13 +107,39 @@
                 </div>
                 
                 <div class="flex items-center gap-3">
-                    <button id="btn-export-excel-nominatif" class="bg-green-700 text-white py-2.5 px-5 rounded-lg hover:bg-green-800 text-sm font-bold uppercase tracking-wider flex items-center shadow-md transition-colors">
-                        <i class="fas fa-file-excel mr-2 text-lg"></i> Export Excel
+                   <button id="btn-setting-kop" class="bg-yellow-600 text-white p-1 rounded-lg hover:bg-yellow-700 flex items-center justify-center shadow-md transition-colors" title="Pengaturan KOP Surat">
+						<i class="fas fa-sliders-h text-lg"></i>
+					</button>
+                    <button id="btn-export-excel-nominatif" class="bg-green-700 text-white py-1 px-5 rounded-lg hover:bg-green-800 text-sm font-bold uppercase tracking-wider flex items-center shadow-md transition-colors">
+                        <i class="fas fa-file-excel mr-2 text-lg"></i> Excel
                     </button>
-                    <button id="btn-print-pdf-nominatif" class="bg-red-700 text-white py-2.5 px-5 rounded-lg hover:bg-red-800 text-sm font-bold uppercase tracking-wider flex items-center shadow-md transition-colors">
+                    <button id="btn-print-pdf-nominatif" class="bg-red-700 text-white py-1 px-5 rounded-lg hover:bg-red-800 text-sm font-bold uppercase tracking-wider flex items-center shadow-md transition-colors">
                         <i class="fas fa-file-pdf mr-2 text-lg"></i> Cetak PDF
                     </button>
                 </div>
+            </div>
+
+            <div id="kop-settings-panel" class="hidden mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg shadow-inner">
+                <h4 class="font-bold text-blue-900 mb-3"><i class="fas fa-print mr-2"></i>Pengaturan Posisi KOP & Garis (PDF)</h4>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
+                    <div>
+                        <label class="block text-blue-800 font-semibold mb-1">Geser Baris 1 (px)</label>
+                        <input type="number" id="kop-margin-1" value="0" class="w-full border border-blue-300 rounded p-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm" placeholder="Contoh: 20">
+                    </div>
+                    <div>
+                        <label class="block text-blue-800 font-semibold mb-1">Geser Baris 2 (px)</label>
+                        <input type="number" id="kop-margin-2" value="0" class="w-full border border-blue-300 rounded p-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm" placeholder="Contoh: 10">
+                    </div>
+                    <div>
+                        <label class="block text-blue-800 font-semibold mb-1">Panjang Garis (px)</label>
+                        <input type="number" id="kop-line-width" value="320" class="w-full border border-blue-300 rounded p-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm" placeholder="Contoh: 300">
+                    </div>
+                    <div>
+                        <label class="block text-blue-800 font-semibold mb-1">Geser Garis (px)</label>
+                        <input type="number" id="kop-line-margin" value="0" class="w-full border border-blue-300 rounded p-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm" placeholder="Contoh: 0">
+                    </div>
+                </div>
+                <p class="text-xs text-blue-700 mt-3 italic">*Angka menggunakan satuan pixel (px). Semakin besar angka 'Geser', maka KOP akan semakin ke Kanan.</p>
             </div>
 
             <div class="overflow-x-auto border border-main rounded-lg shadow-md">
@@ -139,12 +152,11 @@
                             <th class="p-3 text-center font-bold">NOSIS</th>
                             <th class="p-3 text-center font-bold">PANGKAT/NRP</th>
                             <th class="p-3 text-center font-bold">ASAL PENGIRIMAN</th>
-                            <th class="p-3 text-center text-blue-700 font-extrabold">NILAI AKHIR</th>
                             <th class="p-3 text-center text-green-600 font-extrabold">PERINGKAT</th>
                         </tr>
                     </thead>
                     <tbody id="nominatif-table-body" class="bg-main divide-y divide-main">
-                        </tbody>
+                    </tbody>
                 </table>
             </div>
             <div id="nominatif-pagination" class="flex justify-between items-center mt-5 font-medium"></div>
