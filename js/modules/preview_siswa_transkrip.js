@@ -18,10 +18,44 @@ const formatDate = (dateString) => {
     return `${day}-${month}-${year}`;
 };
 
+const terbilang = (n) => {
+    if (n === null || typeof n === 'undefined' || isNaN(n)) return '';
+    const angka = ["", "SATU", "DUA", "TIGA", "EMPAT", "LIMA", "ENAM", "TUJUH", "DELAPAN", "SEMBILAN", "SEPULUH", "SEBELAS"];
+    let num = Math.round(n);
+    if (num < 12) return angka[num];
+    if (num < 20) return terbilang(num - 10) + " BELAS";
+    if (num < 100) return (terbilang(Math.floor(num / 10)) + " PULUH " + terbilang(num % 10)).trim();
+    if (num < 200) return "SERATUS " + terbilang(num - 100);
+    if (num < 1000) return terbilang(Math.floor(num / 100)) + " RATUS " + terbilang(num % 100);
+    if (num < 2000) return "SERIBU " + terbilang(num - 1000);
+    if (num < 1000000) return terbilang(Math.floor(num / 1000)) + " RIBU " + terbilang(num % 1000);
+    return "NILAI TERLALU BESAR";
+};
+
+const terbilangSatuan = (angkaStr) => {
+    const angka = ["NOL", "SATU", "DUA", "TIGA", "EMPAT", "LIMA", "ENAM", "TUJUH", "DELAPAN", "SEMBILAN"];
+    return angkaStr.split('').map(digit => angka[parseInt(digit)]).join(' ');
+};
+
+const terbilangKoma = (n) => {
+    if (n === null || typeof n === 'undefined' || isNaN(n)) return '';
+    const num = parseFloat(n) || 0;
+    const numStr = num.toFixed(2).replace('.', ',');
+    const [bulat, desimal] = numStr.split(','); 
+    let hasil = terbilang(parseInt(bulat)).trim();
+    const desimalInt = parseInt(desimal);
+    
+    if (desimalInt > 0) {
+        hasil += " KOMA " + terbilangSatuan(desimal); 
+    }
+    return hasil.trim();
+};
+
 const getNilaiKepribadianDebug = (siswa) => {
     if (!siswa) return 0;
 
-    if (siswa.kategori === 'Dikbangspes') {
+    // KASUS 1: DIKBANGSPES & SBP (70% Instruktur + 30% Sosiometri)
+    if (siswa.kategori === 'Dikbangspes' || siswa.kategori === 'DIKBANGUM SEKOLAH BINTARA POLISI') {
         const nilaiList = siswa.nilaiKepribadian || [];
         const validNilaiList = nilaiList.filter(n => n !== null && n !== undefined && !isNaN(parseFloat(n)));
         const nilaiInstruktur = validNilaiList.length > 0 ? parseFloat(validNilaiList[validNilaiList.length - 1]) : 0;
@@ -30,6 +64,7 @@ const getNilaiKepribadianDebug = (siswa) => {
         return nilaiAkhir;
     }
 
+    // KASUS 2: DIKTUK (Rata-rata)
     const data = siswa.nilaiKepribadian;
     if (Array.isArray(data)) {
         const validData = data.filter(n => n !== null && n !== undefined && !isNaN(parseFloat(n)));
@@ -61,22 +96,32 @@ const calculateAllStudentRanks = async (studentGroup) => {
         const rerataKepribadian = getNilaiKepribadianDebug(siswa);
 
         let finalScore = 0;
+        let rerataJasmani = 0;
+
         if (siswa.kategori !== 'Dikbangspes') {
             const nilaiJasmaniList = siswa.nilaiJasmani || [];
-            const rerataJasmani = nilaiJasmaniList.length > 0 ? (nilaiJasmaniList.reduce((a, b) => a + b, 0) / nilaiJasmaniList.length) : 0;
-            finalScore = (rerataAkademik + rerataKepribadian + rerataJasmani) / 3;
+            rerataJasmani = nilaiJasmaniList.length > 0 ? (nilaiJasmaniList.reduce((a, b) => a + b, 0) / nilaiJasmaniList.length) : 0;
+            // 40% Akademik + 40% Mental + 20% Jasmani
+            finalScore = ((rerataAkademik * 4) + (rerataKepribadian * 4) + (rerataJasmani * 2)) / 10;
         } else {
-            finalScore = (rerataAkademik + rerataKepribadian) / 2;
+            // 70% Akademik + 30% Mental
+            finalScore = (rerataAkademik * 0.7) + (rerataKepribadian * 0.3);
         }
 
-        return { studentId: siswa.id, finalScore };
+        return { studentId: siswa.id, finalScore, rerataAkademik, rerataKepribadian, rerataJasmani };
     }));
 
     studentScores.sort((a, b) => b.finalScore - a.finalScore);
 
     const ranks = {};
     studentScores.forEach((score, index) => {
-        ranks[score.studentId] = index + 1;
+        ranks[score.studentId] = {
+            rank: index + 1,
+            akademik: score.rerataAkademik,
+            kepribadian: score.rerataKepribadian,
+            jasmani: score.rerataJasmani,
+            akhir: score.finalScore 
+        };
     });
 
     return ranks;
@@ -86,7 +131,6 @@ const downloadTranscriptAsPdf = () => {
     const printableElement = document.getElementById('printable-transcript');
     const siswaId = printableElement?.dataset?.siswaId;
     
-    // [FIX] Gunakan fallback currentUser jika localStudents kosong
     let siswa = localStudents.find(s => s.id === siswaId);
     if (!siswa && currentUser.id === siswaId) {
         siswa = currentUser;
@@ -141,7 +185,6 @@ const openTranskripModal = async (siswaId) => {
 
     showLoading('Memuat data transkrip...');
     
-    // [PERBAIKAN UTAMA] Cari di localStudents dulu, kalau kosong pakai currentUser (Alumni)
     let siswa = localStudents.find(s => s.id === siswaId);
     if (!siswa && currentUser.id === siswaId) {
         console.log("Data siswa tidak ditemukan di daftar global, menggunakan data sesi login (Alumni).");
@@ -156,7 +199,6 @@ const openTranskripModal = async (siswaId) => {
     
     printContainer.dataset.siswaId = siswaId; 
 
-    // Cari teman seangkatan (untuk ranking) - Jika alumni, mungkin list ini kosong, jadi ranking 1/1
     const studentGroup = localStudents.filter(s => 
         s.kategori === siswa.kategori && 
         s.detailPendidikan === siswa.detailPendidikan && 
@@ -167,16 +209,15 @@ const openTranskripModal = async (siswaId) => {
     if (studentGroup.length > 0) {
         ranks = await calculateAllStudentRanks(studentGroup);
     } else {
-        // Jika tidak ada data teman sekelas (mode alumni minimalis), ranking default 1
-        ranks[siswa.id] = 1; 
+        const mockScore = await calculateAllStudentRanks([siswa]);
+        ranks[siswa.id] = mockScore[siswa.id] || { rank: 1, akhir: 0 }; 
     }
     
-    const peringkatSiswa = ranks[siswa.id] || '-';
-    const totalSiswaDiKelas = studentGroup.length || '-';
+    const peringkatSiswa = ranks[siswa.id] ? ranks[siswa.id].rank : '-';
+    const totalSiswaDiKelas = studentGroup.length > 0 ? studentGroup.length : 1;
 
     const academicScores = await getAcademicScores(siswaId);
     
-    // Gunakan mapel dari settings atau global, pastikan ada
     const relevantMapels = localMapels
         .filter(m => m.tahunAjaran === siswa.tahunAjaran && m.kategori === siswa.kategori && m.detailPendidikan === siswa.detailPendidikan)
         .map(mapel => ({ ...mapel, nilai: academicScores[mapel.id] ?? 0 }))
@@ -191,7 +232,15 @@ const openTranskripModal = async (siswaId) => {
 
     const nilaiJasmaniList = siswa.nilaiJasmani || [];
     const rerataJasmani = nilaiJasmaniList.length > 0 ? (nilaiJasmaniList.reduce((a, b) => a + b, 0) / nilaiJasmaniList.length) : 0;
-    const rekap = { totalNilaiAkademik, rerataAkademik, rerataKepribadian, rerataJasmani };
+    
+    let nilaiAkhir = 0;
+    if (siswa.kategori !== 'Dikbangspes') {
+        nilaiAkhir = ((rerataAkademik * 4) + (rerataKepribadian * 4) + (rerataJasmani * 2)) / 10;
+    } else {
+        nilaiAkhir = (rerataAkademik * 0.7) + (rerataKepribadian * 0.3);
+    }
+
+    const rekap = { totalNilaiAkademik, rerataAkademik, rerataKepribadian, rerataJasmani, nilaiAkhir };
 
     const printHTML = generateTranscriptHTML(siswa, relevantMapels, rekap, peringkatSiswa, totalSiswaDiKelas);
     printContainer.innerHTML = printHTML;
@@ -209,7 +258,11 @@ const populateModernTranscriptView = (siswa, mapels, rekap) => {
 
     document.getElementById('modern-transkrip-foto').src = fotoProfil;
     document.getElementById('modern-transkrip-nama').textContent = siswa.nama;
-    document.getElementById('modern-transkrip-kategori').textContent = `${siswa.kategori} ${siswa.detailPendidikan} (TA ${siswa.tahunAjaran})`;
+    
+    let detailPendidikanDisplay = siswa.detailPendidikan;
+    if(detailPendidikanDisplay === '-' || !detailPendidikanDisplay) detailPendidikanDisplay = "";
+    
+    document.getElementById('modern-transkrip-kategori').textContent = `${siswa.kategori} ${detailPendidikanDisplay} (TA ${siswa.tahunAjaran})`;
     document.getElementById('modern-transkrip-nosis').textContent = siswa.nosis || '-';
     document.getElementById('modern-transkrip-nrp').textContent = siswa.nrp || '-';
 
@@ -222,22 +275,31 @@ const populateModernTranscriptView = (siswa, mapels, rekap) => {
 
     const rekapBody = document.getElementById('modern-transkrip-rekap-body');
     let rekapHtml = `
-        <tr class="border-b border-main"><td class="p-3">Kepribadian</td><td class="p-3 text-center font-semibold">${rekap.rerataKepribadian.toFixed(2)}</td></tr>
-        <tr class="border-b border-main"><td class="p-3">Akademis</td><td class="p-3 text-center font-semibold">${rekap.rerataAkademik.toFixed(2)}</td></tr>
+        <tr class="border-b border-main"><td class="p-3">Mental Kepribadian</td><td class="p-3 text-center font-semibold">${rekap.rerataKepribadian.toFixed(2)}</td></tr>
+        <tr class="border-b border-main"><td class="p-3">Akademik</td><td class="p-3 text-center font-semibold">${rekap.rerataAkademik.toFixed(2)}</td></tr>
     `;
+    
     if (siswa.kategori !== 'Dikbangspes') {
-        rekapHtml += `<tr><td class="p-3">Kesamaptaan Jasmani</td><td class="p-3 text-center font-semibold">${rekap.rerataJasmani.toFixed(2)}</td></tr>`;
+        rekapHtml += `<tr><td class="p-3">Kesehatan Jasmani</td><td class="p-3 text-center font-semibold">${rekap.rerataJasmani.toFixed(2)}</td></tr>`;
     }
+    
+    rekapHtml += `
+        <tr class="border-b border-main bg-gray-100 font-bold">
+            <td class="p-3">NILAI AKHIR</td>
+            <td class="p-3 text-center font-bold text-blue-600 text-lg">${rekap.nilaiAkhir.toFixed(2)}</td>
+        </tr>
+    `;
+
     rekapBody.innerHTML = rekapHtml;
 
     const akademikBody = document.getElementById('modern-transkrip-akademik-body');
     if (mapels.length > 0) {
         akademikBody.innerHTML = mapels.map((mapel, index) => `
             <tr class="border-b border-main">
-                <td class="p-3">${index + 1}</td>
+                <td class="p-3 text-center">${index + 1}</td>
                 <td class="p-3">${mapel.nama}</td>
                 <td class="p-3 text-center font-semibold">${mapel.nilai}</td>
-                <td class="p-3">${terbilang(mapel.nilai)}</td>
+                <td class="p-3 text-center">${terbilang(mapel.nilai)}</td>
             </tr>
         `).join('');
     } else {
@@ -246,39 +308,6 @@ const populateModernTranscriptView = (siswa, mapels, rekap) => {
 
     document.getElementById('modern-transkrip-total-nilai').textContent = rekap.totalNilaiAkademik.toFixed(0);
     document.getElementById('modern-transkrip-total-terbilang').textContent = terbilang(rekap.totalNilaiAkademik);
-};
-
-const terbilang = (n) => {
-    if (n === null || typeof n === 'undefined' || isNaN(n)) return '';
-    const angka = ["", "SATU", "DUA", "TIGA", "EMPAT", "LIMA", "ENAM", "TUJUH", "DELAPAN", "SEMBILAN", "SEPULUH", "SEBELAS"];
-    let num = Math.round(n);
-    if (num < 12) return angka[num];
-    if (num < 20) return terbilang(num - 10) + " BELAS";
-    if (num < 100) return (terbilang(Math.floor(num / 10)) + " PULUH " + terbilang(num % 10)).trim();
-    if (num < 200) return "SERATUS " + terbilang(num - 100);
-    if (num < 1000) return terbilang(Math.floor(num / 100)) + " RATUS " + terbilang(num % 100);
-    if (num < 2000) return "SERIBU " + terbilang(num - 1000);
-    if (num < 1000000) return terbilang(Math.floor(num / 1000)) + " RIBU " + terbilang(num % 1000);
-    return "NILAI TERLALU BESAR";
-};
-
-const terbilangSatuan = (angkaStr) => {
-    const angka = ["NOL", "SATU", "DUA", "TIGA", "EMPAT", "LIMA", "ENAM", "TUJUH", "DELAPAN", "SEMBILAN"];
-    return angkaStr.split('').map(digit => angka[parseInt(digit)]).join(' ');
-};
-
-const terbilangKoma = (n) => {
-    if (n === null || typeof n === 'undefined' || isNaN(n)) return '';
-    const num = parseFloat(n) || 0;
-    const numStr = num.toFixed(2).replace('.', ',');
-    const [bulat, desimal] = numStr.split(','); 
-    let hasil = terbilang(parseInt(bulat)).trim();
-    const desimalInt = parseInt(desimal);
-    
-    if (desimalInt > 0) {
-        hasil += " KOMA " + terbilangSatuan(desimal); 
-    }
-    return hasil.trim();
 };
 
 const generateTranscriptHTML = (siswa, mapels, rekap, peringkatSiswa, totalSiswaDiKelas) => {
@@ -302,13 +331,18 @@ const generateTranscriptHTML = (siswa, mapels, rekap, peringkatSiswa, totalSiswa
     const signer2Id = s.signer2Id || '';
     const signer1TitleLines = (s.signer1Title || '').split('|');
     const signer2TitleLines = (s.signer2Title || '').split('|');
-    const signer1TitleHtml = signer1TitleLines.map(line => `<p style="margin: 0;">${line.toUpperCase()}</p>`).join('');
-    const signer2TitleHtml = signer2TitleLines.map(line => `<p style="margin: 0;">${line.toUpperCase()}</p>`).join('');
+    const signer1TitleHtml = signer1TitleLines.map(line => `<p style="margin: 0;">${line}</p>`).join('');
+    const signer2TitleHtml = signer2TitleLines.map(line => `<p style="margin: 0;">${line}</p>`).join('');
+    
     const namaSiswa = (siswa.nama || '...').toUpperCase();
     const noIjazah = siswa.noIjazah || '...';
     const pangkat = (siswa.pangkat || '...').toUpperCase();
     const nrpSiswa = siswa.nrp || '...';
-    const jenisDik_main = `${(siswa.kategori || '...')} ${(siswa.detailPendidikan || '')}`.toUpperCase();
+    
+    let detailPendidikanDisplay = siswa.detailPendidikan;
+    if(detailPendidikanDisplay === '-' || !detailPendidikanDisplay) detailPendidikanDisplay = "";
+    const jenisDik_main = `${(siswa.kategori || '...')} ${detailPendidikanDisplay}`.toUpperCase();
+    
     const jenisDik_ta = `TA.${(siswa.tahunAjaran || '...')}`.toUpperCase();
     const noSeri = siswa.noSeri || '...';
     const peringkat = peringkatSiswa || '...';
@@ -332,7 +366,7 @@ const generateTranscriptHTML = (siswa, mapels, rekap, peringkatSiswa, totalSiswa
     const signerL2Top = s.signerL2Top || signer2Top;
     const signerL2Left = s.signerL2Left || signer2Left;
     const signerL2LineWidth = s.signerL2LineWidth || s.signer2LineWidth;
-    const signerL2TitleHtml = (signerL2Title || '').split('|').map(line => `<p style="margin: 0;">${line.toUpperCase()}</p>`).join('');
+    const signerL2TitleHtml = (signerL2Title || '').split('|').map(line => `<p style="margin: 0;">${line}</p>`).join('');
     const signerL2LineWidthStyle = signerL2LineWidth ? `width: ${s.signerL2LineWidth}px;` : '';
     const signerL2BlockStyle = `width:45%; text-align:center; position: relative; top: ${signerL2Top}px; left: ${signerL2Left}px;`;
 
@@ -381,7 +415,7 @@ const generateTranscriptHTML = (siswa, mapels, rekap, peringkatSiswa, totalSiswa
             <p style="font-weight:bold; text-decoration:underline; font-size: ${mainTitleSize}pt; margin:0;">DAFTAR NILAI AKADEMIK</p>
             <p style="font-size: ${subTitleSize}pt; margin:0;">(TRANSKRIP)</p>
         </div>
-        <p style="margin-top: 0.5rem; margin-bottom: 0.2rem; font-size: 11pt;">NO SERI : ${noSeri}</p>
+        <p style="margin: 0.5rem 0 0.2rem 0; font-size: 11pt;">NO SERI : ${noSeri}</p>
         <table style="width:100%; border-collapse: collapse; font-size:${tableBodySize}pt; text-transform: uppercase;">
           <thead style="display: table-header-group; background-color:${tableHeaderBg}; color:${tableHeaderText}; font-size:${tableHeaderSize}pt; text-align:center; font-weight: bold;">
             <tr style="height: auto;">
@@ -418,35 +452,63 @@ const generateTranscriptHTML = (siswa, mapels, rekap, peringkatSiswa, totalSiswa
             </tr>
           </tfoot>
         </table>
-        <div style="padding-top:2rem; display:flex; justify-content:space-between; font-size:11pt; line-height: 1.2;">
+        <div style="padding-top:2rem; display:flex; justify-content:space-between; font-size:11pt; line-height: 1;">
             <div style="${signer1BlockStyle}">
                 ${signer1TitleHtml}
                 <div style="height:80px;"></div>
                 <div style="display: inline-block; ${signer1LineWidthStyle}">
-                    <p style="margin: 0; font-weight:bold;">${signer1Name}</p>
-                    <div style="border-top: 1pt solid black; margin-top: 2px;"></div>
+                    <p style="margin: 0; font-weight:bold; text-transform: uppercase; padding: 0 4px;">${signer1Name}</p>
+                    <div style="border-top: 1pt solid black; margin-top: 1px; margin-bottom: 1px;"></div>
                 </div>
-                <p style="margin: 0;">${signer1Id}</p>
+                <p style="margin: 0; text-transform: uppercase;">${signer1Id}</p>
             </div>
             <div style="${signer2BlockStyle}">
                 ${signer2TitleHtml}
                 <div style="height:80px;"></div>
                 <div style="display: inline-block; ${signer2LineWidthStyle}">
-                    <p style="margin: 0; font-weight:bold;">${signer2Name}</p>
-                    <div style="border-top: 1pt solid black; margin-top: 2px;"></div>
+                    <p style="margin: 0; font-weight:bold; text-transform: uppercase; padding: 0 10px;">${signer2Name}</p>
+                    <div style="border-top: 1pt solid black; margin-top: 1px; margin-bottom: 1px;"></div>
                 </div>
-                <p style="margin: 0;">${signer2Id}</p>
+                <p style="margin: 0; text-transform: uppercase;">${signer2Id}</p>
             </div>
         </div>
       </div>
     `;
 
     let rekapitulasiBody = `
-        <tr style="height: auto;"><td style="padding: ${tableRowPadding}pt 2pt; text-align:center; border-left: 1pt solid black;">I</td><td style="padding: ${tableRowPadding}pt 2pt; text-align:left; border-left: 1pt solid black;">KEPRIBADIAN</td><td style="padding: ${tableRowPadding}pt 2pt; text-align:center; border-left: 1pt solid black;">${rekap.rerataKepribadian.toFixed(2).replace('.', ',')}</td><td style="padding: ${tableRowPadding}pt 2pt; text-align:left; border-left: 1pt solid black; border-right: 1pt solid black;">${terbilangKoma(rekap.rerataKepribadian).toUpperCase()}</td></tr>
-        <tr style="height: auto;"><td style="padding: ${tableRowPadding}pt 2pt; text-align:center; border-left: 1pt solid black;">II</td><td style="padding: ${tableRowPadding}pt 2pt; text-align:left; border-left: 1pt solid black;">AKADEMIK</td><td style="padding: ${tableRowPadding}pt 2pt; text-align:center; border-left: 1pt solid black;">${rekap.rerataAkademik.toFixed(2).replace('.', ',')}</td><td style="padding: ${tableRowPadding}pt 2pt; text-align:left; border-left: 1pt solid black; border-right: 1pt solid black;">${terbilangKoma(rekap.rerataAkademik).toUpperCase()}</td></tr>
+        <tr style="height: auto;">
+            <td style="padding: ${tableRowPadding}pt 2pt; text-align:center; border: 1pt solid black;">I</td>
+            <td style="padding: ${tableRowPadding}pt 2pt; text-align:left; border: 1pt solid black;">MENTAL KEPRIBADIAN</td>
+            <td style="padding: ${tableRowPadding}pt 2pt; text-align:center; border: 1pt solid black;">${rekap.rerataKepribadian.toFixed(2).replace('.', ',')}</td>
+            <td style="padding: ${tableRowPadding}pt 2pt; text-align:left; border: 1pt solid black;">${terbilangKoma(rekap.rerataKepribadian).toUpperCase()}</td>
+        </tr>
+        <tr style="height: auto;">
+            <td style="padding: ${tableRowPadding}pt 2pt; text-align:center; border: 1pt solid black;">II</td>
+            <td style="padding: ${tableRowPadding}pt 2pt; text-align:left; border: 1pt solid black;">AKADEMIK</td>
+            <td style="padding: ${tableRowPadding}pt 2pt; text-align:center; border: 1pt solid black;">${rekap.rerataAkademik.toFixed(2).replace('.', ',')}</td>
+            <td style="padding: ${tableRowPadding}pt 2pt; text-align:left; border: 1pt solid black;">${terbilangKoma(rekap.rerataAkademik).toUpperCase()}</td>
+        </tr>
     `;
     if (siswa.kategori !== 'Dikbangspes') {
-        rekapitulasiBody += `<tr style="height: auto;"><td style="padding: ${tableRowPadding}pt 2pt; text-align:center; border-left: 1pt solid black;">III</td><td style="padding: ${tableRowPadding}pt 2pt; text-align:left; border-left: 1pt solid black;">KESAMAPTAAN JASMANI</td><td style="padding: ${tableRowPadding}pt 2pt; text-align:center; border-left: 1pt solid black;">${rekap.rerataJasmani.toFixed(2).replace('.', ',')}</td><td style="padding: ${tableRowPadding}pt 2pt; text-align:left; border-left: 1pt solid black; border-right: 1pt solid black;">${terbilangKoma(rekap.rerataJasmani).toUpperCase()}</td></tr>`;
+        rekapitulasiBody += `
+        <tr style="height: auto;">
+            <td style="padding: ${tableRowPadding}pt 2pt; text-align:center; border: 1pt solid black;">III</td>
+            <td style="padding: ${tableRowPadding}pt 2pt; text-align:left; border: 1pt solid black;">KESEHATAN JASMANI</td>
+            <td style="padding: ${tableRowPadding}pt 2pt; text-align:center; border: 1pt solid black;">${rekap.rerataJasmani.toFixed(2).replace('.', ',')}</td>
+            <td style="padding: ${tableRowPadding}pt 2pt; text-align:left; border: 1pt solid black;">${terbilangKoma(rekap.rerataJasmani).toUpperCase()}</td>
+        </tr>
+        <tr style="height: auto; font-weight: bold;">
+            <td colspan="2" style="padding: ${tableRowPadding}pt 2pt; text-align:center; border: 1pt solid black;">NILAI AKHIR</td>
+            <td style="padding: ${tableRowPadding}pt 2pt; text-align:center; border: 1pt solid black;">${rekap.nilaiAkhir.toFixed(2).replace('.', ',')}</td>
+            <td style="padding: ${tableRowPadding}pt 2pt; text-align:left; border: 1pt solid black;">${terbilangKoma(rekap.nilaiAkhir).toUpperCase()}</td>
+        </tr>`;
+    } else {
+        rekapitulasiBody += `
+        <tr style="height: auto; font-weight: bold;">
+            <td colspan="2" style="padding: ${tableRowPadding}pt 2pt; text-align:center; border: 1pt solid black;">NILAI AKHIR</td>
+            <td style="padding: ${tableRowPadding}pt 2pt; text-align:center; border: 1pt solid black;">${rekap.nilaiAkhir.toFixed(2).replace('.', ',')}</td>
+            <td style="padding: ${tableRowPadding}pt 2pt; text-align:left; border: 1pt solid black;">${terbilangKoma(rekap.nilaiAkhir).toUpperCase()}</td>
+        </tr>`;
     }
 
     const lampiran2HTML = `
@@ -483,7 +545,7 @@ const generateTranscriptHTML = (siswa, mapels, rekap, peringkatSiswa, totalSiswa
     <div style="text-align:center; margin-top: 0.7rem;">
       <p style="font-weight:bold; text-decoration:underline; font-size: 12pt; margin:0;">REKAPITULASI NILAI</p>
     </div>
-    <p style="margin-top: 0.5rem; margin-bottom: 0.2rem; font-size: 11pt;">NO SERI : ${noSeri}</p>
+    <p style="margin: 0.5rem 0 0.2rem 0; font-size: 11pt;">NO SERI : ${noSeri}</p>
     <table style="width:100%; border-collapse: collapse; font-size:${tableBodySize}pt; text-transform: uppercase;">
       <thead style="display: table-header-group; background-color:${tableHeaderBg}; color:${tableHeaderText}; font-size:${tableHeaderSize}pt; text-align:center; font-weight:bold;">
         <tr>
@@ -511,15 +573,15 @@ const generateTranscriptHTML = (siswa, mapels, rekap, peringkatSiswa, totalSiswa
         </tr>
       </tbody>
     </table>
-    <div style="padding-top:2rem; display: flex; justify-content: flex-end; font-size:11pt; line-height: 1.2;">
+    <div style="padding-top:2rem; display: flex; justify-content: flex-end; font-size:11pt; line-height: 1;">
         <div style="${signerL2BlockStyle}">
             ${signerL2TitleHtml}
             <div style="height:80px;"></div>
             <div style="display: inline-block; ${signerL2LineWidthStyle}">
-                <p style="margin: 0; font-weight:bold;">${signerL2Name}</p>
-                <div style="border-top: 1pt solid black; margin-top: 2px;"></div>
+                <p style="margin: 0; font-weight:bold; text-transform: uppercase; padding: 0 4px;">${signerL2Name}</p>
+                <div style="border-top: 1pt solid black; margin-top: 1px; margin-bottom: 1px;"></div>
             </div>
-            <p style="margin: 0;">${signerL2Id}</p>
+            <p style="margin: 0; text-transform: uppercase;">${signerL2Id}</p>
         </div>
     </div>
   </div>
@@ -534,7 +596,7 @@ export const initPreviewSiswaTranskripModule = async (studentsData, mapelsData, 
     localTahunAjaran = taData;
     localSettings = settingsData; 
     
-    // [CRITICAL UPDATE] Normalisasi Data Alumni
+    // Normalisasi Data Alumni / Siswa
     let rawUser = JSON.parse(sessionStorage.getItem('loggedInUser')) || {};
     if (rawUser.role === 'alumni' && rawUser.studentData) {
         currentUser = {
@@ -546,13 +608,9 @@ export const initPreviewSiswaTranskripModule = async (studentsData, mapelsData, 
         currentUser = rawUser;
     }
 
-    // [UPDATE] Izinkan role 'alumni'
     if (currentUser.role !== 'siswa' && currentUser.role !== 'alumni') {
         return; 
     }
-    
-    // [FIX] Jangan langsung return jika localStudents kosong (kasus Alumni)
-    // if (!localStudents || localStudents.length === 0) { ... } // HAPUS INI
 
     const section = document.getElementById('transkrip-nilai-section');
     if (section) {
@@ -560,8 +618,8 @@ export const initPreviewSiswaTranskripModule = async (studentsData, mapelsData, 
             window.transkripSiswaInitialized = true; 
             
             try {
+                // Memuat struktur luar pembungkus view siswa
                 let viewFile = './components/transkrip_siswa_view.html'; 
-    
                 const response = await fetch(viewFile);
                 if (!response.ok) throw new Error(`File ${viewFile} not found`);
                 section.innerHTML = await response.text();
@@ -569,21 +627,44 @@ export const initPreviewSiswaTranskripModule = async (studentsData, mapelsData, 
                 const modernViewContainer = section.querySelector('#modern-transcript-view');
                 if (modernViewContainer) {
                     try {
+                        // Memuat komponen detail transkrip
                         const modernRes = await fetch('./components/transkrip_detail_modern.html');
                         if (!modernRes.ok) throw new Error('File transkrip_detail_modern.html not found');
                         modernViewContainer.innerHTML = await modernRes.text();
                         
                         await openTranskripModal(currentUser.id);
 
+                        // --- [PERBAIKAN: MENGHILANGKAN TOMBOL DOWNLOAD PDF MERAH DI ATAS] ---
+                        const downloadBtn = section.querySelector('#btn-download-pdf-view');
+                        if (downloadBtn) {
+                            downloadBtn.remove(); // Hapus tombol merah
+                        }
+
+                        // --- [PERBAIKAN: MENGHILANGKAN TOMBOL CETAK DAN TUTUP DI BAWAH] ---
+                        const btnPrintBottom = modernViewContainer.querySelector('#btn-print-modern') || modernViewContainer.querySelector('#btn-print-transkrip');
+                        if (btnPrintBottom) {
+                            const parentDiv = btnPrintBottom.closest('.flex.justify-end.gap-3.p-6'); // Mengambil container tombol bawah
+                            if (parentDiv) {
+                                parentDiv.remove(); // Hapus seluruh container tombol bawah
+                            } else {
+                                btnPrintBottom.remove();
+                            }
+                        }
+
+                        // Memastikan sisa tombol dengan kata kunci 'Tutup' atau 'Cetak' ikut hilang
+                        const allButtons = modernViewContainer.querySelectorAll('button');
+                        allButtons.forEach(btn => {
+                            const text = btn.innerText.toLowerCase();
+                            if (text.includes('tutup') || text.includes('cetak') || btn.hasAttribute('data-modal-close')) {
+                                btn.remove();
+                            }
+                        });
+                        // -----------------------------------------------------------------
+
                     } catch (err) {
                         console.error("Gagal memuat detail transkrip modern:", err);
                         modernViewContainer.innerHTML = "<p class='text-red-500 p-4'>Gagal memuat preview.</p>";
                     }
-                }
-                
-                const downloadBtn = section.querySelector('#btn-download-pdf-view');
-                if (downloadBtn) {
-                    downloadBtn.addEventListener('click', downloadTranscriptAsPdf);
                 }
 
             } catch (error) {
@@ -597,8 +678,5 @@ export const initPreviewSiswaTranskripModule = async (studentsData, mapelsData, 
     }
 };
 
-// INI FUNGSI UNTUK ADMIN SAJA
-export const initTranskripModule = async (studentsData, mapelsData, taData, settingsData) => {
-    // Fungsi ini dikosongkan karena logikanya sudah dipindah ke file ini
-    // dan file transkrip.js hanya akan berisi logika admin.
-};
+// INI FUNGSI UNTUK ADMIN SAJA (Dikosongkan karena logikanya ada di transkrip.js)
+export const initTranskripModule = async (studentsData, mapelsData, taData, settingsData) => {};

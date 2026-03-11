@@ -10,8 +10,8 @@ let localTahunAjaran = [];
 let localSettings = {}; 
 let currentUser = {};
 let selectedTranskripFilters = {};
-let currentTranskripRanks = {}; // [BARU] Menyimpan data peringkat sementara
-const DEFAULT_LOGO_URL = 'https://upload.wikimedia.org/wikipedia/id/thumb/8/88/Logo_Pataka_Korps_Airud.png/375px-Logo_Pataka_Korps_Airud.png';
+let currentTranskripRanks = {}; // Menyimpan data peringkat & sub-nilai
+const DEFAULT_LOGO_URL = 'https://upload.wikimedia.org/wikipedia/id/8/88/Logo_Pataka_Korps_Airud.png';
 
 // --- ELEMEN DOM ---
 let transkripSiswaTableBody, searchTranskripInput;
@@ -28,7 +28,6 @@ let categoryPageMap = {
     'Dikbangspes': 1,
     'DIKBANGUM SEKOLAH BINTARA POLISI': 1
 };
-
 
 // --- FUNGSI BANTUAN ---
 const formatDate = (dateString) => {
@@ -74,7 +73,7 @@ const terbilangKoma = (n) => {
 const getNilaiKepribadianDebug = (siswa) => {
     if (!siswa) return 0;
 
-    // KASUS 1: DIKBANGSPES & SBP (Mingguan + Sosiometri)
+    // KASUS 1: DIKBANGSPES & SBP
     if (siswa.kategori === 'Dikbangspes' || siswa.kategori === 'DIKBANGUM SEKOLAH BINTARA POLISI') {
         const nilaiList = siswa.nilaiKepribadian || [];
         const validNilaiList = nilaiList.filter(n => n !== null && n !== undefined && !isNaN(parseFloat(n)));
@@ -85,7 +84,7 @@ const getNilaiKepribadianDebug = (siswa) => {
         return (nilaiInstruktur * 0.7) + (nilaiSosiometri * 0.3);
     }
 
-    // KASUS 2: DIKTUK (Rata-rata Array)
+    // KASUS 2: DIKTUK
     const data = siswa.nilaiKepribadian;
     if (Array.isArray(data)) {
         const validData = data.filter(n => n !== null && n !== undefined && !isNaN(parseFloat(n)));
@@ -97,7 +96,7 @@ const getNilaiKepribadianDebug = (siswa) => {
     return 0;
 };
 
-// --- KALKULASI PERINGKAT ---
+// --- KALKULASI PERINGKAT & NILAI UNTUK TABEL ---
 const calculateAllStudentRanks = async (studentGroup) => {
     if (!studentGroup || studentGroup.length === 0) return {};
 
@@ -114,21 +113,17 @@ const calculateAllStudentRanks = async (studentGroup) => {
         const rerataKepribadian = getNilaiKepribadianDebug(siswa);
 
         let finalScore = 0;
+        let rerataJasmani = 0;
         
-        // [LOGIKA PEMBOBOTAN NILAI AKHIR 4-4-2]
         if (siswa.kategori !== 'Dikbangspes') {
             const nilaiJasmaniList = siswa.nilaiJasmani || [];
-            const rerataJasmani = nilaiJasmaniList.length > 0 ? (nilaiJasmaniList.reduce((a, b) => a + b, 0) / nilaiJasmaniList.length) : 0;
-            
-            // Rumus: ((Akademik * 4) + (Mental * 4) + (Jasmani * 2)) / 10
+            rerataJasmani = nilaiJasmaniList.length > 0 ? (nilaiJasmaniList.reduce((a, b) => a + b, 0) / nilaiJasmaniList.length) : 0;
             finalScore = ((rerataAkademik * 4) + (rerataKepribadian * 4) + (rerataJasmani * 2)) / 10;
-            
         } else {
-            // Dikbangspes (Tanpa Jasmani): Rata-rata Akademik & Mental
-            finalScore = (rerataAkademik + rerataKepribadian) / 2;
+            finalScore = (rerataAkademik * 0.7) + (rerataKepribadian * 0.3);
         }
 
-        return { studentId: siswa.id, finalScore };
+        return { studentId: siswa.id, finalScore, rerataAkademik, rerataKepribadian, rerataJasmani };
     }));
 
     // Urutkan berdasarkan nilai akhir tertinggi
@@ -136,7 +131,13 @@ const calculateAllStudentRanks = async (studentGroup) => {
 
     const ranks = {};
     studentScores.forEach((score, index) => {
-        ranks[score.studentId] = index + 1;
+        ranks[score.studentId] = {
+            rank: index + 1,
+            akademik: score.rerataAkademik,
+            kepribadian: score.rerataKepribadian,
+            jasmani: score.rerataJasmani,
+            akhir: score.finalScore 
+        };
     });
 
     return ranks;
@@ -152,6 +153,28 @@ const renderTranskripMainView = () => {
         const tableBody = document.getElementById(tableBodyId);
         if (!tableBody) return;
         
+        const tableElement = tableBody.parentElement;
+        if (tableElement) {
+            const prev = tableElement.previousElementSibling;
+            if (prev && prev.classList.contains('metode-penilaian-info')) {
+                prev.remove();
+            }
+            
+            let infoText = '';
+            if (kategori === 'Diktuk Tamtama' || kategori === 'Diktuk Bintara' || kategori === 'DIKBANGUM SEKOLAH BINTARA POLISI') {
+                infoText = '<i class="fas fa-info-circle mr-1"></i> <strong>Metode Penilaian:</strong> tiga komponen penilaian 40%+40%+20%= 100% dengan bobot <strong>40% Akademik, 40% Mental, dan 20% Jasmani</strong>';
+            } else if (kategori === 'Dikbangspes') {
+                infoText = '<i class="fas fa-info-circle mr-1"></i> <strong>Metode Penilaian:</strong> dua komponen penilaian 70%+30%= 100% dengan bobot <strong>70% Akademik, 30% Mental</strong>';
+            }
+
+            if (infoText) {
+                const infoDiv = document.createElement('div');
+                infoDiv.className = 'metode-penilaian-info text-xs text-blue-800 bg-blue-50 border border-blue-200 p-2 mb-3 rounded shadow-sm';
+                infoDiv.innerHTML = infoText;
+                tableElement.parentNode.insertBefore(infoDiv, tableElement);
+            }
+        }
+
         const allItems = allPendidikanData
             .filter(p => p.jenis === kategori)
             .sort((a,b) => (b.tahun - a.tahun) || (b.isActive - a.isActive));
@@ -234,8 +257,47 @@ const renderTranskripSiswaListView = () => {
     transkripSiswaTableBody.innerHTML = '';
 
     const { kategori, detail, tahun } = selectedTranskripFilters;
-    
     const searchTerm = searchTranskripInput ? searchTranskripInput.value.toLowerCase() : '';
+
+    // [1] UPDATE THEAD: Menggunakan bg-blue-700 secara langsung agar terhindar dari bentrok class tema
+    const tableElement = transkripSiswaTableBody.parentElement;
+    const thead = tableElement ? tableElement.querySelector('thead') : null;
+    if (thead) {
+        thead.className = "bg-blue-700 text-white text-xs uppercase tracking-wider";
+        
+        if (kategori === 'Dikbangspes') {
+            thead.innerHTML = `
+                <tr>
+                    <th class="p-3 text-center w-12">No</th>
+                    <th class="p-3 text-left">Nama Siswa</th>
+                    <th class="p-3 text-center">Nosis</th>
+                    <th class="p-3 text-center">No. Ijazah</th>
+                    <th class="p-3 text-center">No. Seri</th>
+                    <th class="p-3 text-center">N. Akademik</th>
+                    <th class="p-3 text-center">N. Mental</th>
+                    <th class="p-3 text-center">N. Akhir</th>
+                    <th class="p-3 text-center">Peringkat</th>
+                    <th class="p-3 text-center w-32">Aksi</th>
+                </tr>
+            `;
+        } else {
+            thead.innerHTML = `
+                <tr>
+                    <th class="p-3 text-center w-12">No</th>
+                    <th class="p-3 text-left">Nama Siswa</th>
+                    <th class="p-3 text-center">Nosis</th>
+                    <th class="p-3 text-center">No. Ijazah</th>
+                    <th class="p-3 text-center">No. Seri</th>
+                    <th class="p-3 text-center">N. Akademik</th>
+                    <th class="p-3 text-center">N. Mental</th>
+                    <th class="p-3 text-center">N. Jasmani</th>
+                    <th class="p-3 text-center">N. Akhir</th>
+                    <th class="p-3 text-center">Peringkat</th>
+                    <th class="p-3 text-center w-32">Aksi</th>
+                </tr>
+            `;
+        }
+    }
 
     const subtitleElement = document.getElementById('transkrip-view-subtitle');
     if (subtitleElement) {
@@ -249,10 +311,21 @@ const renderTranskripSiswaListView = () => {
             s.tahunAjaran === parseInt(tahun)
         ).length;
 
+        let infoText = '';
+        if (kategori === 'Diktuk Tamtama' || kategori === 'Diktuk Bintara' || kategori === 'DIKBANGUM SEKOLAH BINTARA POLISI') {
+            infoText = 'Metode Penilaian: 40% Akademik, 40% Mental, 20% Jasmani';
+        } else if (kategori === 'Dikbangspes') {
+            infoText = 'Metode Penilaian: 70% Akademik, 30% Mental';
+        }
+
         subtitleElement.innerHTML = `
             Jumlah Siswa : ${studentCount} &nbsp; | &nbsp;
             Tanggal Mulai Dik : ${formatDate(tahunAjaranData?.tanggalMulai)} &nbsp; | &nbsp;
             Tanggal Selesai Dik : ${formatDate(tahunAjaranData?.tanggalBerakhir)}
+            <br>
+            <span class="inline-block mt-2 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded shadow-sm border border-blue-200">
+                <i class="fas fa-info-circle mr-1"></i> ${infoText}
+            </span>
         `;
     }
 
@@ -263,11 +336,9 @@ const renderTranskripSiswaListView = () => {
         (searchTerm ? s.nama.toLowerCase().includes(searchTerm) || (s.nosis && s.nosis.toLowerCase().includes(searchTerm)) : true)
     );
 
-    // [BARU] Ambil nilai dari dropdown sort
     const sortSelect = document.getElementById('sort-transkrip-siswa-select');
     const sortValue = sortSelect ? sortSelect.value : 'nosis_asc';
 
-    // [BARU] Lakukan pengurutan berdasarkan pilihan
     filteredSiswa.sort((a, b) => {
         if (sortValue === 'nosis_asc') {
             return String(a.nosis || '').localeCompare(String(b.nosis || ''));
@@ -278,9 +349,8 @@ const renderTranskripSiswaListView = () => {
         } else if (sortValue === 'nama_desc') {
             return String(b.nama || '').localeCompare(String(a.nama || ''));
         } else if (sortValue === 'rank_asc') {
-            // Urutkan peringkat, jika belum ada nilainya taruh di urutan terbawah
-            const rankA = currentTranskripRanks[a.id] || 999999;
-            const rankB = currentTranskripRanks[b.id] || 999999;
+            const rankA = currentTranskripRanks[a.id] ? currentTranskripRanks[a.id].rank : 999999;
+            const rankB = currentTranskripRanks[b.id] ? currentTranskripRanks[b.id].rank : 999999;
             return rankA - rankB; 
         }
         return 0;
@@ -294,7 +364,8 @@ const renderTranskripSiswaListView = () => {
     const paginatedSiswa = filteredSiswa.slice(startIndex, startIndex + TRANSKRIP_ROWS_PER_PAGE);
 
     if (paginatedSiswa.length === 0) {
-        transkripSiswaTableBody.innerHTML = `<tr><td colspan="7" class="text-center p-4">Tidak ada data siswa yang cocok.</td></tr>`;
+        const colSpan = kategori === 'Dikbangspes' ? 10 : 11;
+        transkripSiswaTableBody.innerHTML = `<tr><td colspan="${colSpan}" class="text-center p-4">Tidak ada data siswa yang cocok.</td></tr>`;
         renderTranskripPagination(0, 0); 
         return;
     }
@@ -303,8 +374,24 @@ const renderTranskripSiswaListView = () => {
         const row = document.createElement('tr');
         row.className = 'border-b border-main hover:bg-tertiary';
         
-        // [BARU] Ambil data peringkat dari variabel state yang sudah dihitung
-        const peringkat = currentTranskripRanks[siswa.id] || '-';
+        const dtRank = currentTranskripRanks[siswa.id] || { rank: '-', akademik: 0, kepribadian: 0, jasmani: 0, akhir: 0 };
+        
+        // [2] TAMBAHKAN KOLOM NILAI
+        let dynamicCols = '';
+        if (kategori === 'Dikbangspes') {
+            dynamicCols = `
+                <td class="p-3 text-center">${(dtRank.akademik || 0).toFixed(2)}</td>
+                <td class="p-3 text-center">${(dtRank.kepribadian || 0).toFixed(2)}</td>
+                <td class="p-3 text-center font-bold text-main">${(dtRank.akhir || 0).toFixed(2)}</td>
+            `;
+        } else {
+            dynamicCols = `
+                <td class="p-3 text-center">${(dtRank.akademik || 0).toFixed(2)}</td>
+                <td class="p-3 text-center">${(dtRank.kepribadian || 0).toFixed(2)}</td>
+                <td class="p-3 text-center">${(dtRank.jasmani || 0).toFixed(2)}</td>
+                <td class="p-3 text-center font-bold text-main">${(dtRank.akhir || 0).toFixed(2)}</td>
+            `;
+        }
 
         row.innerHTML = `
             <td class="p-3 text-center">${startIndex + index + 1}</td>
@@ -312,8 +399,8 @@ const renderTranskripSiswaListView = () => {
             <td class="p-3 text-center">${siswa.nosis}</td>
             <td class="p-3 text-center">${siswa.noIjazah || '-'}</td>
             <td class="p-3 text-center">${siswa.noSeri || '-'}</td>
-            
-            <td class="p-3 text-center font-bold text-blue-600">${peringkat}</td>
+            ${dynamicCols}
+            <td class="p-3 text-center font-bold text-blue-600">${dtRank.rank}</td>
             
             <td class="p-3 text-center whitespace-nowrap">
                 <button class="bg-green-600 text-white text-xs py-1 px-3 rounded-md hover:bg-green-700 btn-lihat-transkrip" data-id="${siswa.id}">
@@ -407,7 +494,7 @@ const openTranskripModal = async (siswaId) => {
     );
 
     const ranks = await calculateAllStudentRanks(studentGroup);
-    const peringkatSiswa = ranks[siswa.id];
+    const peringkatSiswa = ranks[siswa.id] ? ranks[siswa.id].rank : '-';
     const totalSiswaDiKelas = studentGroup.length;
 
     const academicScores = await getAcademicScores(siswaId);
@@ -428,14 +515,12 @@ const openTranskripModal = async (siswaId) => {
     let rerataJasmani = 0;
     let nilaiAkhir = 0;
 
-    // [UPDATE] Hitung Nilai Akhir (4-4-2)
     if (siswa.kategori !== 'Dikbangspes') {
         nilaiJasmaniList = siswa.nilaiJasmani || [];
         rerataJasmani = nilaiJasmaniList.length > 0 ? (nilaiJasmaniList.reduce((a, b) => a + b, 0) / nilaiJasmaniList.length) : 0;
-        
         nilaiAkhir = ((rerataAkademik * 4) + (rerataKepribadian * 4) + (rerataJasmani * 2)) / 10;
     } else {
-        nilaiAkhir = (rerataAkademik + rerataKepribadian) / 2;
+        nilaiAkhir = (rerataAkademik * 0.7) + (rerataKepribadian * 0.3);
     }
 
     const rekap = { totalNilaiAkademik, rerataAkademik, rerataKepribadian, rerataJasmani, nilaiAkhir };
@@ -533,7 +618,6 @@ const generateTranscriptHTML = (siswa, mapels, rekap, peringkatSiswa, totalSiswa
     const signer2Name = s.signer2Name || '';
     const signer2Id = s.signer2Id || '';
     
-    // [UPDATE] Remove toUpperCase() to allow mixed case
     const signer1TitleLines = (s.signer1Title || '').split('|');
     const signer2TitleLines = (s.signer2Title || '').split('|');
 
@@ -579,7 +663,6 @@ const generateTranscriptHTML = (siswa, mapels, rekap, peringkatSiswa, totalSiswa
     const signerL2Left = s.signerL2Left || signer2Left;
     const signerL2LineWidth = s.signerL2LineWidth || s.signer2LineWidth;
     
-    // [UPDATE] Remove toUpperCase()
     const signerL2TitleHtml = (signerL2Title || '').split('|').map(line => `<p style="margin: 0;">${line}</p>`).join('');
     const signerL2LineWidthStyle = signerL2LineWidth ? `width: ${s.signerL2LineWidth}px;` : '';
     const signerL2BlockStyle = `width:45%; text-align:center; position: relative; top: ${signerL2Top}px; left: ${signerL2Left}px;`;
@@ -892,9 +975,9 @@ const handlePrintAllTranscripts = async () => {
 
     // 3. [BARU] Urutkan Array Siswa Berdasarkan Peringkat (1 ke Terbesar)
     filteredSiswa.sort((a, b) => {
-        const rankA = ranks[a.id] || 999999; // Default rank besar jika tidak ada
-        const rankB = ranks[b.id] || 999999;
-        return rankA - rankB; // Ascending (Kecil ke Besar)
+        const rankA = ranks[a.id] ? ranks[a.id].rank : 999999; 
+        const rankB = ranks[b.id] ? ranks[b.id].rank : 999999;
+        return rankA - rankB; 
     });
 
     showLoading(`Mempersiapkan halaman cetak... (0%)`);
@@ -909,7 +992,7 @@ const handlePrintAllTranscripts = async () => {
              showLoading(`Mempersiapkan halaman cetak... (${Math.round((count/totalSiswaDiKelas)*100)}%)`);
         }
 
-        const peringkatSiswa = ranks[siswa.id];
+        const peringkatSiswa = ranks[siswa.id] ? ranks[siswa.id].rank : '-';
         const academicScores = await getAcademicScores(siswa.id);
         const relevantMapels = localMapels
             .filter(m => m.tahunAjaran === siswa.tahunAjaran && m.kategori === siswa.kategori && m.detailPendidikan === siswa.detailPendidikan)
@@ -932,7 +1015,7 @@ const handlePrintAllTranscripts = async () => {
             rerataJasmani = nilaiJasmaniList.length > 0 ? (nilaiJasmaniList.reduce((a, b) => a + b, 0) / nilaiJasmaniList.length) : 0;
             nilaiAkhir = ((rerataAkademik * 4) + (rerataKepribadian * 4) + (rerataJasmani * 2)) / 10;
         } else {
-            nilaiAkhir = (rerataAkademik + rerataKepribadian) / 2;
+            nilaiAkhir = (rerataAkademik * 0.7) + (rerataKepribadian * 0.3);
         }
 
         const rekap = { totalNilaiAkademik, rerataAkademik, rerataKepribadian, rerataJasmani, nilaiAkhir };
@@ -1200,7 +1283,6 @@ export const initTranskripModule = async (studentsData, mapelsData, taData, sett
                         listTranskripView.classList.remove('hidden');
                         backButtonTranskrip.classList.remove('hidden');
                         
-                        // [UPDATE] Tampilan Judul
                         let displayDetail = selectedTranskripFilters.detail;
                         if(displayDetail === '-' || !displayDetail) displayDetail = selectedTranskripFilters.kategori;
 
@@ -1208,7 +1290,6 @@ export const initTranskripModule = async (studentsData, mapelsData, taData, sett
                         
                         transkripCurrentPage = 1;
 
-                        // [BARU] Hitung peringkat dulu sebelum me-render tabel
                         showLoading('Memuat daftar siswa & peringkat...');
                         const studentGroup = localStudents.filter(s =>
                             s.kategori === selectedTranskripFilters.kategori &&
@@ -1255,11 +1336,10 @@ export const initTranskripModule = async (studentsData, mapelsData, taData, sett
                 });
             }
 
-            // [BARU] Event Listener untuk Dropdown Sort
             const sortSelect = document.getElementById('sort-transkrip-siswa-select');
             if (sortSelect) {
                 sortSelect.addEventListener('change', () => {
-                    transkripCurrentPage = 1; // reset ke halaman 1
+                    transkripCurrentPage = 1;
                     renderTranskripSiswaListView();
                 });
             }

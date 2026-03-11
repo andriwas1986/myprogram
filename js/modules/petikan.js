@@ -180,6 +180,7 @@ const resetSession = () => {
 const getNilaiKepribadianCalc = (siswa) => {
     const kat = (siswa.kategori || '').toLowerCase();
     
+    // Untuk Dikbangspes dan SBP, gunakan logika instruktur(70) + sosiometri(30)
     if (kat.includes('dikbangspes') || kat.includes('sekolah bintara polisi')) {
         const nilaiList = siswa.nilaiKepribadian || [];
         const validNilaiList = Array.isArray(nilaiList) 
@@ -192,6 +193,7 @@ const getNilaiKepribadianCalc = (siswa) => {
         return (nilaiInstruktur * 0.7) + (nilaiSosiometri * 0.3);
     }
 
+    // Untuk Diktuk Tamtama dan Bintara, rata-rata dari inputan nilai harian/mingguan
     let data = siswa.nilaiKepribadian;
     if (data && typeof data === 'object' && !Array.isArray(data) && data.nilaiAkhir) {
         return parseFloat(data.nilaiAkhir) || 0;
@@ -253,10 +255,13 @@ const calculateRankingAndScores = async (studentsGroup) => {
         }
 
         let finalScore = 0;
+        // Penentuan Nilai Akhir sesuai kriteria
         if (!isDikbangspesOnly) {
+            // Diktuk Tamtama, Diktuk Bintara, SBP (40% Akademik + 40% Mental + 20% Jasmani)
             finalScore = ((rerataAkademik * 4) + (rerataKepribadian * 4) + (rerataJasmani * 2)) / 10;
         } else {
-            finalScore = (rerataAkademik + rerataKepribadian) / 2;
+            // Dikbangspes (70% Akademik + 30% Mental)
+            finalScore = (rerataAkademik * 0.7) + (rerataKepribadian * 0.3);
         }
 
         return {
@@ -292,7 +297,7 @@ const calculateRankingAndScores = async (studentsGroup) => {
 
 
 // ==========================================================
-// ===                  VIEW LOGIC                        ===
+// ===                 VIEW LOGIC                         ===
 // ==========================================================
 
 const showMainView = () => { 
@@ -301,9 +306,14 @@ const showMainView = () => {
     backButtonPetikan.classList.add('hidden'); 
     document.getElementById('btn-petikan-settings').classList.add('hidden'); 
     if (petikanViewInfo) petikanViewInfo.classList.add('hidden'); 
-    titlePetikan.textContent = 'PETIKAN KELULUSAN'; 
+    titlePetikan.textContent = 'Petikan Keputusan Kapusdik Polair'; 
     subtitlePetikan.textContent = 'Kelola dan cetak Petikan Keputusan Kelulusan Siswa.'; 
     if (searchPetikanInput) searchPetikanInput.value = ''; 
+    
+    // [BARU] Menghapus elemen info jika tersisa dari halaman detail
+    const detailInfoEl = document.getElementById('petikan-view-info-detail');
+    if (detailInfoEl) detailInfoEl.remove();
+
     renderPetikanMainView(); 
 };
 
@@ -343,11 +353,35 @@ const showDetailView = async () => {
     
     hideLoading();
 
+    // [PERBAIKAN TAMPILAN] Memisahkan teks Jumlah Siswa dengan Keterangan Metode
     if (petikanViewInfo) { 
         const tglMulai = currentTA?.tanggalMulai ? formatDateIndo(currentTA.tanggalMulai) : '-'; 
         const tglSelesai = currentTA?.tanggalBerakhir ? formatDateIndo(currentTA.tanggalBerakhir) : '-'; 
-        petikanViewInfo.textContent = `Jumlah Siswa : ${calculatedStudentList.length}  |  Tanggal Mulai Dik : ${tglMulai}  |  Tanggal Selesai Dik : ${tglSelesai}`; 
+        
+        let infoText = '';
+        if (jenis === 'Diktuk Tamtama' || jenis === 'Diktuk Bintara' || jenis === 'DIKBANGUM SEKOLAH BINTARA POLISI') {
+            infoText = 'Metode Penilaian: tiga komponen penilaian 40%+40%+20%= 100% dengan bobot 40% Akademik, 40% Mental, dan 20% Jasmani';
+        } else if (jenis === 'Dikbangspes') {
+            infoText = 'Metode Penilaian: dua komponen penilaian 70%+30%= 100% dengan bobot 70% Akademik, 30% Mental';
+        }
+
+        // Hapus elemen tambahan sebelumnya jika ada
+        const oldDetailInfo = document.getElementById('petikan-view-info-detail');
+        if (oldDetailInfo) oldDetailInfo.remove();
+
+        // Elemen Asli (Biru Solid) hanya untuk text Jumlah Siswa
+        petikanViewInfo.textContent = `Jumlah Siswa : ${calculatedStudentList.length} | Tanggal Mulai Dik : ${tglMulai} | Tanggal Selesai Dik : ${tglSelesai}`; 
+        petikanViewInfo.className = "inline-block bg-blue-600 text-white text-sm px-4 py-2 rounded-md font-medium shadow mt-3";
         petikanViewInfo.classList.remove('hidden'); 
+
+        // Buat elemen baru untuk teks "Metode Penilaian" dengan warna biru soft
+        const methodInfoDiv = document.createElement('div');
+        methodInfoDiv.id = 'petikan-view-info-detail';
+        methodInfoDiv.className = 'mt-2 mb-2 px-3 py-1.5 bg-blue-100 text-blue-800 text-sm rounded shadow-sm border border-blue-200 inline-block w-full max-w-max';
+        methodInfoDiv.innerHTML = `<i class="fas fa-info-circle mr-1"></i> <strong>${infoText}</strong>`;
+        
+        // Sisipkan elemen baru tersebut tepat di bawah kotak petikanViewInfo
+        petikanViewInfo.parentNode.insertBefore(methodInfoDiv, petikanViewInfo.nextSibling);
     } 
     
     petikanCurrentPage = 1; 
@@ -373,6 +407,29 @@ const renderPetikanMainView = () => {
         const tableBody = document.getElementById(tableBodyId); 
         if (!tableBody) return; 
         
+        // Menyisipkan Label Metode Penilaian di atas tabel secara dinamis
+        const tableElement = tableBody.parentElement;
+        if (tableElement) {
+            const prev = tableElement.previousElementSibling;
+            if (prev && prev.classList.contains('metode-penilaian-info')) {
+                prev.remove();
+            }
+            
+            let infoText = '';
+            if (kategori === 'Diktuk Tamtama' || kategori === 'Diktuk Bintara' || kategori === 'DIKBANGUM SEKOLAH BINTARA POLISI') {
+                infoText = '<i class="fas fa-info-circle mr-1"></i> <strong>Metode Penilaian:</strong> tiga komponen penilaian 40%+40%+20%= 100% dengan bobot <strong>40% Akademik, 40% Mental, dan 20% Jasmani</strong>';
+            } else if (kategori === 'Dikbangspes') {
+                infoText = '<i class="fas fa-info-circle mr-1"></i> <strong>Metode Penilaian:</strong> dua komponen penilaian 70%+30%= 100% dengan bobot <strong>70% Akademik, 30% Mental</strong>';
+            }
+
+            if (infoText) {
+                const infoDiv = document.createElement('div');
+                infoDiv.className = 'metode-penilaian-info text-xs text-blue-800 bg-blue-50 border border-blue-200 p-2 mb-3 rounded shadow-sm';
+                infoDiv.innerHTML = infoText;
+                tableElement.parentNode.insertBefore(infoDiv, tableElement);
+            }
+        }
+
         const allItems = allActivePendidikan
             .filter(p => p.jenis === kategori)
             .sort((a,b) => (b.tahun - a.tahun) || (b.isActive - a.isActive));
@@ -394,12 +451,10 @@ const renderPetikanMainView = () => {
             const row = document.createElement('tr'); 
             row.className = 'border-b border-main hover:bg-tertiary transition-colors'; 
             
-            // [UPDATE] Warna solid tua, tanpa gradasi/border terang, dengan teks putih
             const statusBadge = p.isActive 
                 ? `<span class="bg-green-700 text-white text-xs font-bold px-3 py-1 rounded">AKTIF</span>`
                 : `<span class="bg-red-700 text-white text-xs font-bold px-3 py-1 rounded">ARSIP</span>`;
 
-            // [UPDATE] Tombol Kelola (Biru Tua) dan Lihat (Abu-abu Tua)
             const btnClass = p.isActive ? 'bg-blue-700 hover:bg-blue-800' : 'bg-gray-600 hover:bg-gray-700';
             const btnText = p.isActive ? 'Kelola' : 'Lihat';
             

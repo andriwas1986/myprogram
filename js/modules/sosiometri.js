@@ -68,7 +68,7 @@ const renderSosiometriView = () => {
     const targetIndex = (currentUserIndex + 1) % peers.length;
     const targetSiswa = peers[targetIndex];
 
-    document.getElementById('target-siswa-foto').src = targetSiswa.fotoUrl || 'https://placehold.co/150x150/e2e8f0/4a5568?text=Foto';
+    document.getElementById('target-siswa-foto').src = targetSiswa.fotoUrl || 'https://ik.imagekit.io/d3nxlzdjsu/PRESISI%20POLAIR.png?updatedAt=1760423288483';
     document.getElementById('target-siswa-nama').textContent = targetSiswa.nama;
     document.getElementById('target-siswa-nosis').textContent = targetSiswa.nosis;
     document.getElementById('target-siswa-pendidikan').textContent = targetSiswa.detailPendidikan || 'Detail Pendidikan Tidak Tersedia';
