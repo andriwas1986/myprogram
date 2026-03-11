@@ -119,7 +119,7 @@ const setupEventListeners = () => {
     });
 
     document.getElementById('btn-petikan-settings')?.addEventListener('click', openSettingsModal);
-    document.getElementById('settings-petikan-form')?.addEventListener('submit', saveSKSettings);
+    document.getElementById('petikan-settings-form')?.addEventListener('submit', saveSKSettings);
     
     // Listener untuk tombol Cetak & Export Excel
     document.getElementById('btn-print-all-petikan')?.addEventListener('click', handlePrintAllPetikan);
